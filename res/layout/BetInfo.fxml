@@ -1,8 +1,93 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1">
-	<!-- TODO Add Nodes -->
-</AnchorPane>
 
+<VBox fx:id="betPanel" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+         <children>
+            <Label fx:id="playerLabel" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Player Name">
+               <font>
+                  <Font name="System Bold" size="24.0" />
+               </font>
+            </Label>
+            <Region maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
+            <Button fx:id="goalkeeperButton" alignment="CENTER" disable="true" mnemonicParsing="false" prefHeight="50.0" prefWidth="50.0" style="-fx-background-color: #888888; -fx-border-color: #000000;" text="P" textAlignment="CENTER" HBox.hgrow="NEVER">
+               <font>
+                  <Font name="System Bold Italic" size="14.0" />
+               </font>
+            </Button>
+            <Button fx:id="defenderButton" alignment="CENTER" disable="true" mnemonicParsing="false" prefHeight="50.0" prefWidth="50.0" style="-fx-background-color: #888888; -fx-border-color: #000000;" text="D" textAlignment="CENTER" HBox.hgrow="NEVER">
+               <font>
+                  <Font name="System Bold Italic" size="14.0" />
+               </font>
+            </Button>
+            <Button fx:id="midfielderButton" alignment="CENTER" disable="true" mnemonicParsing="false" prefHeight="50.0" prefWidth="50.0" style="-fx-background-color: #888888; -fx-border-color: #000000;" text="C" textAlignment="CENTER" HBox.hgrow="NEVER">
+               <font>
+                  <Font name="System Bold Italic" size="14.0" />
+               </font>
+            </Button>
+            <Button fx:id="strikerButton" alignment="CENTER" disable="true" mnemonicParsing="false" prefHeight="50.0" prefWidth="50.0" style="-fx-background-color: #888888; -fx-border-color: #000000;" text="A" textAlignment="CENTER" HBox.hgrow="NEVER">
+               <font>
+                  <Font name="System Bold Italic" size="14.0" />
+               </font>
+            </Button>
+         </children>
+         <padding>
+            <Insets bottom="10.0" top="10.0" />
+         </padding>
+      </HBox>
+      <Label fx:id="lastBetLabel" maxWidth="1.7976931348623157E308" text="Last Bet: ">
+         <font>
+            <Font name="System Bold" size="24.0" />
+         </font>
+         <VBox.margin>
+            <Insets bottom="15.0" top="15.0" />
+         </VBox.margin>
+      </Label>
+      <Label fx:id="timeLeftLabel" maxWidth="1.7976931348623157E308" text="Time Left:">
+         <font>
+            <Font name="System Bold" size="24.0" />
+         </font>
+         <VBox.margin>
+            <Insets bottom="15.0" top="15.0" />
+         </VBox.margin>
+      </Label>
+      <Region maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS" />
+      <VBox>
+         <children>
+            <Slider fx:id="betSlider" blockIncrement="1.0" majorTickUnit="1.0" minorTickCount="1" showTickLabels="true" showTickMarks="true" />
+            <HBox alignment="CENTER_RIGHT">
+               <children>
+                  <Label fx:id="betLabel" text="0 $">
+                     <font>
+                        <Font name="System Bold" size="15.0" />
+                     </font>
+                  </Label>
+                  <Region maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
+                  <Button fx:id="betButton" mnemonicParsing="false" text="Make Your Bet!">
+                     <font>
+                        <Font name="System Bold" size="15.0" />
+                     </font>
+                  </Button>
+               </children>
+               <VBox.margin>
+                  <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+               </VBox.margin>
+               <padding>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </padding>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+   <padding>
+      <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+   </padding>
+</VBox>
