@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<VBox fx:id="loginPanel" alignment="TOP_CENTER" minHeight="480.0" minWidth="640.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<VBox fx:id="loginPanel" alignment="TOP_CENTER" minHeight="480.0" minWidth="640.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.fantabid.controller.LoginController">
    <children>
       <Label alignment="CENTER" text="FANTABID" textAlignment="CENTER" VBox.vgrow="NEVER">
          <font>
