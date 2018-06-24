@@ -1,51 +1,53 @@
 package org.fantabid;
 
-import java.sql.Statement;
-import java.io.File;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.sql.Statement;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.apache.poi.ss.usermodel.*;
 import org.fantabid.entities.Player;
+import org.fantabid.entities.Role;
+import org.fantabid.stats.PlayersStats;
 
 public class Main {
 
-    public static final String PLAYERS_EXCEL_FILE_PATH = "./players.xls";
-    
-    public static void main(String[] args) throws IOException, InvalidFormatException, SQLException {
-        final List<Player> players = new LinkedList<>();
-        Workbook workbook = WorkbookFactory.create(new File(PLAYERS_EXCEL_FILE_PATH));
-        Sheet sheet = workbook.getSheetAt(0);
-        DataFormatter dataFormatter = new DataFormatter();
-
-        sheet.forEach(row -> {
-            players.add(new Player(Integer.parseInt(dataFormatter.formatCellValue(row.getCell(0))),
-                                   dataFormatter.formatCellValue(row.getCell(2)),
-                                   dataFormatter.formatCellValue(row.getCell(1)),
-                                   dataFormatter.formatCellValue(row.getCell(3)),
-                                   Integer.parseInt(dataFormatter.formatCellValue(row.getCell(4)))));
-        });
-        
-        workbook.close();
+    public static void main(String[] args) throws SQLException {
+        final PlayersStats stats = new PlayersStats("./players.xls");
+//        final List<Player> goalkeepers = stats.getPlayerByRole(Role.PORTIERE);
+//        final List<Player> defenders = stats.getPlayerByRole(Role.DIFENSORE);
+//        final List<Player> midfielders = stats.getPlayerByRole(Role.CENTROCAMPISTA);
+//        final List<Player> forwards = stats.getPlayerByRole(Role.ATTACCANTE);
 
         String url = "jdbc:postgresql://fantabid.czlxuwq0tdm7.us-west-2.rds.amazonaws.com/fantabidb?user=mazzio&password=crostopiada";
         Connection conn = DriverManager.getConnection(url);
+        
+        stats.getAllPlayers().forEach(p -> addPlayerToDB(conn, p));
+
         Statement s = conn.createStatement();
-        Player toAdd = players.get(0);
-//        players.forEach(p -> System.out.println(p.getName() + "->" + p.getTeam()));
-        s.executeUpdate("INSERT INTO CALCIATORE VALUES (" + toAdd.getId() + ", " + toAdd.getName() + ", " + toAdd.getTeam() + ", " + toAdd.getPrice() + ", " + toAdd.getRole() + ");");
-        ResultSet r = s.executeQuery("SELECT * FROM player");
+        ResultSet r = s.executeQuery("SELECT * FROM " + Arrays.asList(Role.values()).stream().map(Role::name).collect(Collectors.joining(", ", "", "")));
         while (r.next()) {
-            System.out.println(r.getString(2) + " " + r.getString(3) + " " + r.getString(4) + " " + r.getString(5));
+            System.out.println(r.getString(1) + " " + r.getString(2) + " " + r.getString(3) + " " + r.getString(4));
         }
-        System.out.println(players.size());
+        s.close();
+    }
+    
+    private static void addPlayerToDB(final Connection conn, final Player p) {
+        String table = p.getRole().name();
+        PreparedStatement st;
+        try {
+            st = conn.prepareStatement("INSERT INTO " + table + " VALUES (?, ?, ?, ?)");
+            st.setInt(1, p.getId());
+            st.setString(2, p.getName());
+            st.setString(3, p.getTeam());
+            st.setInt(4, p.getPrice());
+            st.executeUpdate();
+            st.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

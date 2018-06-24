@@ -1,5 +1,5 @@
 package org.fantabid.entities;
 
 public enum Role {
-    GOALKEEPER, DEFENDER, MIDFIELDER, FORWARD;
+    PORTIERE, DIFENSORE, CENTROCAMPISTA, ATTACCANTE;
 }
