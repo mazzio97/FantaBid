@@ -7,36 +7,76 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<VBox fx:id="leagueSignupPanel" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
-   <padding>
-      <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
-   </padding>
-   <children>
-      <Label fx:id="descriptionLabel" alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="League Description" VBox.vgrow="ALWAYS">
-         <font>
-            <Font size="15.0" />
-         </font>
-      </Label>
-      <HBox alignment="CENTER" VBox.vgrow="NEVER">
+<BorderPane prefHeight="480.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.fantabid.controller.LeagueSignupController">
+   <bottom>
+      <HBox alignment="CENTER" BorderPane.alignment="CENTER">
          <children>
-            <Label fx:id="infoLabel" text="League Info">
-               <HBox.margin>
-                  <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-               </HBox.margin>
-               <font>
-                  <Font name="System Italic" size="16.0" />
-               </font>
-            </Label>
-            <Region HBox.hgrow="ALWAYS" />
-            <Button fx:id="registerButton" mnemonicParsing="false" text="Register">
-               <HBox.margin>
-                  <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-               </HBox.margin>
+            <Button fx:id="cancelButton" mnemonicParsing="false" text="Cancel">
                <font>
                   <Font name="System Bold" size="18.0" />
                </font>
+               <HBox.margin>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </HBox.margin>
+            </Button>
+            <Region HBox.hgrow="ALWAYS">
+               <HBox.margin>
+                  <Insets />
+               </HBox.margin></Region>
+            <Button fx:id="registerButton" mnemonicParsing="false" text="Register">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+               <HBox.margin>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </HBox.margin>
             </Button>
          </children>
+         <BorderPane.margin>
+            <Insets top="20.0" />
+         </BorderPane.margin>
       </HBox>
-   </children>
-</VBox>
+   </bottom>
+   <center>
+      <Label fx:id="descriptionLabel" alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="League Description" BorderPane.alignment="TOP_CENTER">
+         <font>
+            <Font size="15.0" />
+         </font>
+         <BorderPane.margin>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </BorderPane.margin>
+      </Label>
+   </center>
+   <top>
+      <Label fx:id="nameLabel" text="League Name" BorderPane.alignment="CENTER">
+         <font>
+            <Font name="System Bold Italic" size="24.0" />
+         </font>
+         <BorderPane.margin>
+            <Insets bottom="20.0" />
+         </BorderPane.margin></Label>
+   </top>
+   <padding>
+      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+   </padding>
+   <left>
+      <Label fx:id="infoLabel" alignment="TOP_CENTER" prefWidth="120.0" text="League Info" BorderPane.alignment="TOP_CENTER">
+         <font>
+            <Font name="System Italic" size="16.0" />
+         </font>
+         <BorderPane.margin>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </BorderPane.margin>
+      </Label>
+   </left>
+   <right>
+      <Label fx:id="rulesLabel" alignment="TOP_CENTER" prefWidth="120.0" text="League Rules" BorderPane.alignment="TOP_CENTER">
+         <font>
+            <Font name="System Italic" size="16.0" />
+         </font>
+         <BorderPane.margin>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </BorderPane.margin>
+      </Label>
+   </right>
+</BorderPane>

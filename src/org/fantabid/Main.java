@@ -22,10 +22,10 @@ public final class Main extends Application {
         Connection conn = DriverManager.getConnection(url);
         Statement s = conn.createStatement();
 //        s.executeUpdate("INSERT INTO products VALUES (1, 'Cheese', 9.99);");
-        ResultSet r = s.executeQuery("SELECT * FROM products");
-        while (r.next()) {
-            System.out.println(r.getString(2));
-        }
+//        ResultSet r = s.executeQuery("SELECT * FROM products");
+//        while (r.next()) {
+//            System.out.println(r.getString(2));
+//        }
         
         launch();
     }
@@ -35,7 +35,7 @@ public final class Main extends Application {
         setPrimaryStage(primaryStage);
         primaryStage.setTitle("Fantabid");
         primaryStage.getIcons().add(new Image("org/fantabid/images/Icon.png"));
-        Views.loadUserAreaScene();
+        Views.loadLoginScene();
         primaryStage.show();
         primaryStage.setX((Screen.getPrimary().getVisualBounds().getWidth() - primaryStage.getWidth()) / 2);
         primaryStage.setY((Screen.getPrimary().getVisualBounds().getHeight() - primaryStage.getHeight()) / 2);

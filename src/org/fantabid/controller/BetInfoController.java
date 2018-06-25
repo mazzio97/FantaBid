@@ -19,6 +19,7 @@ public class BetInfoController {
     @FXML private Label timeLeftLabel;
     @FXML private Slider betSlider;
     @FXML private Label betLabel;
+    @FXML private Button cancelButton;
     @FXML private Button betButton;
     
     public final void initialize() {
@@ -27,6 +28,7 @@ public class BetInfoController {
         lastBetLabel.setText("Last Bet: ");
         timeLeftLabel.setText("Time Left: ");
         betLabel.textProperty().bind(Bindings.format("%.0f $", betSlider.valueProperty()));
+        cancelButton.setOnAction(e -> Views.loadLeagueScene());
         betButton.setOnAction(e -> Views.loadLeagueScene());
     }
 }

@@ -13,9 +13,11 @@ public class NewLeagueController {
     @FXML private TextField nameField;
     @FXML private TextArea descriptionField;
     @FXML private CheckBox rulePlaceholder;
+    @FXML private Button cancelButton;
     @FXML private Button createButton;
     
     public final void initialize() {
         createButton.setOnAction(e -> Views.loadUserAreaScene());
+        cancelButton.setOnAction(e -> Views.loadUserAreaScene());
     }
 }

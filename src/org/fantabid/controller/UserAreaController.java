@@ -11,10 +11,12 @@ public class UserAreaController {
     @FXML private Label usernameLabel;
     @FXML private Button leaguePlaceholder;
     @FXML private Button findLeagueButton;
+    @FXML private Button backButton;
     
     public final void initialize() {
         usernameLabel.setText("Player Name");
         leaguePlaceholder.setOnAction(e -> Views.loadLeagueScene());
         findLeagueButton.setOnAction(e -> Views.loadLeaguesScene());
+        backButton.setOnAction(e -> Views.loadLoginScene());
     }
 }
