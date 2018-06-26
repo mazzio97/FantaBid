@@ -6,5 +6,8 @@
 	<classpathentry kind="lib" path="lib/postgresql-42.2.2.jar"/>
 	<classpathentry kind="lib" path="lib/poi-3.17.jar"/>
 	<classpathentry kind="lib" path="lib/poi-ooxml-3.17.jar"/>
+	<classpathentry kind="lib" path="lib/jooq-3.11.1.jar"/>
+	<classpathentry kind="lib" path="lib/jooq-codegen-3.11.1.jar"/>
+	<classpathentry kind="lib" path="lib/jooq-meta-3.11.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
