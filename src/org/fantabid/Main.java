@@ -22,10 +22,10 @@ public final class Main extends Application {
         Connection conn = DriverManager.getConnection(url);
         Statement s = conn.createStatement();
 //        s.executeUpdate("INSERT INTO products VALUES (1, 'Cheese', 9.99);");
-//        ResultSet r = s.executeQuery("SELECT * FROM products");
-//        while (r.next()) {
-//            System.out.println(r.getString(2));
-//        }
+        ResultSet r = s.executeQuery("SELECT * FROM Calciatore");
+        while (r.next()) {
+            System.out.println(r.getString(2));
+        }
         
         launch();
     }
