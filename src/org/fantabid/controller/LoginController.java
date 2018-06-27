@@ -1,5 +1,8 @@
 package org.fantabid.controller;
 
+import org.fantabid.utils.Model;
+import org.fantabid.utils.Queries;
+import org.fantabid.view.Dialogs;
 import org.fantabid.view.Views;
 
 import javafx.fxml.FXML;
@@ -10,15 +13,19 @@ import javafx.scene.control.TextField;
 public class LoginController {
 
     @FXML private TextField usernameField;
-    @FXML private TextField surnameField;
-    @FXML private TextField nameField;
-    @FXML private PasswordField confirmField;
     @FXML private PasswordField passwordField;
     @FXML private Button signupButton;
     @FXML private Button loginButton;
 
     public final void initialize() {
         signupButton.setOnAction(e -> Views.loadSignupScene());
-        loginButton.setOnAction(e -> Views.loadUserAreaScene());
+        loginButton.setOnAction(e -> {
+            if (Queries.checkPassword(usernameField.getText(), passwordField.getText())) {
+                Model.get().setUser(usernameField.getText());
+                Views.loadUserAreaScene();
+            } else {
+                Dialogs.showErrorDialog("User doesn't exist!", "Reinsert the username or the password");
+            }
+        });
     }
 }

@@ -1,5 +1,6 @@
 package org.fantabid.controller;
 
+import org.fantabid.utils.Model;
 import org.fantabid.view.Views;
 
 import javafx.fxml.FXML;
@@ -14,7 +15,7 @@ public class UserAreaController {
     @FXML private Button backButton;
     
     public final void initialize() {
-        usernameLabel.setText("Player Name");
+        usernameLabel.setText(Model.get().getUser());
         leaguePlaceholder.setOnAction(e -> Views.loadLeagueScene());
         findLeagueButton.setOnAction(e -> Views.loadLeaguesScene());
         backButton.setOnAction(e -> Views.loadLoginScene());

@@ -1,13 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.text.*?>
-<?import javafx.scene.control.*?>
-<?import java.lang.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="480.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.fantabid.controller.LoginController">
+<BorderPane prefHeight="480.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/8.0.162-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.fantabid.controller.LoginController">
    <bottom>
       <HBox BorderPane.alignment="CENTER">
          <children>
@@ -23,7 +29,7 @@
                </HBox.margin>
             </Button>
             <Region maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
-            <Button fx:id="loginButton" alignment="CENTER" maxHeight="1.7976931348623157E308" mnemonicParsing="false" text="Log In">
+            <Button fx:id="loginButton" alignment="CENTER" maxHeight="1.7976931348623157E308" mnemonicParsing="false" text="Sign In">
                <font>
                   <Font name="System Bold" size="16.0" />
                </font>
@@ -67,7 +73,7 @@
       </GridPane>
    </center>
    <top>
-      <Label alignment="CENTER" text="FANTABID" textAlignment="CENTER" BorderPane.alignment="CENTER">
+      <Label alignment="CENTER" text="LOGIN" textAlignment="CENTER" BorderPane.alignment="CENTER">
          <font>
             <Font name="System Bold Italic" size="48.0" />
          </font>

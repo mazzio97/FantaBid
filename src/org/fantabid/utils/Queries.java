@@ -34,4 +34,10 @@ public final class Queries {
                     .filter(password::equals)
                     .isPresent();
     }
+    
+    public static void registerUser(String name, String surname, String user, String password) {
+        query.insertInto(ALLENATORE)
+             .values(user, password, name, surname)
+             .execute();
+    }
 }
