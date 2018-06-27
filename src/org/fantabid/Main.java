@@ -6,12 +6,9 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import org.fantabid.utils.Queries;
 import org.fantabid.view.Views;
-import org.jooq.DSLContext;
-import org.jooq.Record;
 import org.jooq.Result;
-import org.jooq.SQLDialect;
-import org.jooq.impl.DSL;
 
 import javafx.application.Application;
 import javafx.scene.image.Image;
@@ -20,23 +17,24 @@ import javafx.stage.Stage;
 
 public final class Main extends Application {
 
-    private final static String DB_URL = "jdbc:postgresql://fantabid.czlxuwq0tdm7.us-west-2.rds.amazonaws.com/fantabidb";
-    private final static String USER = "mazzio";
-    private final static String PASSWORD = "crostopiada";
+    private static final String DB_URL = "jdbc:postgresql://fantabid.czlxuwq0tdm7.us-west-2.rds.amazonaws.com/fantabidb";
+    private static final String USER = "mazzio";
+    private static final String PASSWORD = "crostopiada";
     private static Stage primaryStage;
-    public static DSLContext create;
+    private static Connection connection;
     
     public static void main(final String[] args) throws SQLException {
         System.getProperties().setProperty("org.jooq.no-logo", "true");
-        Connection conn = DriverManager.getConnection(DB_URL, USER, PASSWORD);
-        create = DSL.using(conn, SQLDialect.POSTGRES);
-        Result<Record> r = create.select()
-                         .from(CALCIATORE)
-                         .where(CALCIATORE.RUOLO.eq("A"))
-                         .and(CALCIATORE.SQUADRA.eq("Inter"))
-                         .fetch();
-        
-        r.forEach(rec -> System.out.println(rec.getValue(CALCIATORE.NOME) + " " + rec.getValue(CALCIATORE.SQUADRA) +  " " + rec.getValue(CALCIATORE.PREZZOSTANDARD)));
+        connection = DriverManager.getConnection(DB_URL, USER, PASSWORD);
+        Result<?> resultSet = Queries.query.select(CALCIATORE.NOME, CALCIATORE.PREZZOSTANDARD)
+                                           .from(CALCIATORE)
+                                           .where(CALCIATORE.RUOLO.eq("A"))
+                                           .and(CALCIATORE.SQUADRA.eq("Inter"))
+                                           .fetch();
+
+        resultSet.stream()
+                 .map(r -> r.intoList())
+                 .forEach(System.out::println);
         
         launch();
     }
@@ -52,21 +50,15 @@ public final class Main extends Application {
         primaryStage.setY((Screen.getPrimary().getVisualBounds().getHeight() - primaryStage.getHeight()) / 2);
     }
 
-    /**
-     * Static setter of the primary stage.
-     * @param stage
-     *          the stage to set as primary
-     */
     public static void setPrimaryStage(final Stage stage) {
         Main.primaryStage = stage;
     }
 
-    /**
-     * Getter for primaryStage.
-     * @return
-     *      the primaryStage
-     */
     public static Stage getPrimaryStage() {
         return primaryStage;
+    }
+    
+    public static Connection getConnection() {
+        return connection;
     }
 }

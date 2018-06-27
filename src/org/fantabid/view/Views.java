@@ -10,6 +10,8 @@ public final class Views {
     private static final String PACKAGE_PATH = "/org/fantabid/layout/";
     private static final String EXTENSION = ".fxml";
     
+    private Views() { }
+    
     public static Scene loadLoginScene() {
         return loadPrimaryStage("Login");
     }

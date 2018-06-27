@@ -8,6 +8,8 @@ import javafx.scene.control.Alert.AlertType;
 
 public final class Dialogs {
     
+    private Dialogs() { }
+    
     public static Optional<ButtonType> showConfirmationDialog(String header, String message) {
         return showDialog(AlertType.CONFIRMATION, "Confirmation", header, message);
     }
