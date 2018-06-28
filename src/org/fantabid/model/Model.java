@@ -1,4 +1,4 @@
-package org.fantabid.utils;
+package org.fantabid.model;
 
 import java.util.Optional;
 

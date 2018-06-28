@@ -4,7 +4,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import org.fantabid.utils.Model;
+import org.fantabid.model.Model;
+import org.fantabid.model.Queries;
 import org.fantabid.view.Views;
 
 import javafx.application.Application;
@@ -22,7 +23,8 @@ public final class Main extends Application {
     
     public static void main(final String[] args) throws SQLException {
         System.getProperties().setProperty("org.jooq.no-logo", "true");
-        connection = DriverManager.getConnection(DB_URL, USER, PASSWORD);        
+        connection = DriverManager.getConnection(DB_URL, USER, PASSWORD);
+        
         launch();
     }
 

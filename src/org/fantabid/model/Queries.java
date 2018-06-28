@@ -1,10 +1,11 @@
-package org.fantabid.utils;
+package org.fantabid.model;
 
 import static org.fantabid.generated.Tables.*;
 
 import java.util.stream.Stream;
 
 import org.fantabid.Main;
+import org.fantabid.generated.tables.records.RegolaRecord;
 import org.jooq.DSLContext;
 import org.jooq.Result;
 import org.jooq.SQLDialect;
@@ -52,6 +53,14 @@ public final class Queries {
                     .fetch()
                     .stream()
                     .map(r -> r.field1() + " (" + r.field2() + "), closing: " + r.field3());
+    }
+
+    public static Stream<RegolaRecord> getRules() {
+        return query.select()
+                    .from(REGOLA)
+                    .fetch()
+                    .stream()
+                    .map(r -> (RegolaRecord) r);
     }
 
     // TODO: TO BE REMOVED

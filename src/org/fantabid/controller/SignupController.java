@@ -1,7 +1,7 @@
 package org.fantabid.controller;
 
-import org.fantabid.utils.Model;
-import org.fantabid.utils.Queries;
+import org.fantabid.model.Model;
+import org.fantabid.model.Queries;
 import org.fantabid.view.Dialogs;
 import org.fantabid.view.Views;
 
