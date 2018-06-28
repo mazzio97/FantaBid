@@ -1,6 +1,6 @@
 package org.fantabid.controller;
 
-import org.fantabid.utils.Model;
+import org.fantabid.model.Model;
 import org.fantabid.view.Views;
 
 import javafx.fxml.FXML;

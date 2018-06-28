@@ -1,9 +1,11 @@
-package org.fantabid.utils;
+package org.fantabid.model;
 
 import static org.fantabid.generated.Tables.*;
 
 import org.fantabid.Main;
 import org.jooq.DSLContext;
+import org.jooq.Record2;
+import org.jooq.Result;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
 
@@ -39,5 +41,11 @@ public final class Queries {
         query.insertInto(ALLENATORE)
              .values(user, password, name, surname)
              .execute();
+    }
+    
+    public static Result<Record2<String, String>> getRules() {
+        return query.select(REGOLA.NOME, REGOLA.DESCRIZIONE)
+                    .from(REGOLA)
+                    .fetch();
     }
 }
