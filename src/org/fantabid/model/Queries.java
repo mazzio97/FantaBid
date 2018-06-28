@@ -2,6 +2,7 @@ package org.fantabid.model;
 
 import static org.fantabid.generated.Tables.*;
 
+import java.sql.Date;
 import java.util.stream.Stream;
 
 import org.fantabid.Main;
@@ -50,9 +51,19 @@ public final class Queries {
         return query.select(CAMPIONATO.IDCAMPIONATO, SQUADRA.NOMESQUADRA, CAMPIONATO.DATACHIUSURA)
                     .from(SQUADRA.join(CAMPIONATO).on(CAMPIONATO.IDCAMPIONATO.eq(SQUADRA.IDCAMPIONATO)))
                     .where(SQUADRA.USERNAME.eq(user))
+                    .orderBy(CAMPIONATO.DATACHIUSURA)
                     .fetch()
                     .stream()
                     .map(r -> r.field1() + " (" + r.field2() + "), closing: " + r.field3());
+    }
+    
+    public static Stream<String> getOpenLeagues() {
+        return query.select(CAMPIONATO.IDCAMPIONATO, CAMPIONATO.DATACHIUSURA)
+                    .where(CAMPIONATO.DATAAPERTURA.ge(new Date(System.currentTimeMillis())))
+                    .and(CAMPIONATO.DATACHIUSURA.le(new Date(System.currentTimeMillis())))
+                    .fetch()
+                    .stream()
+                    .map(r -> r.field1() + ", closing: " + r.field2());
     }
 
     public static Stream<RegolaRecord> getRules() {
