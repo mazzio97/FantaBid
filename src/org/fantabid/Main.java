@@ -1,14 +1,11 @@
 package org.fantabid;
 
-import static org.fantabid.generated.Tables.*;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import org.fantabid.utils.Queries;
+import org.fantabid.utils.Model;
 import org.fantabid.view.Views;
-import org.jooq.Result;
 
 import javafx.application.Application;
 import javafx.scene.image.Image;
@@ -25,17 +22,7 @@ public final class Main extends Application {
     
     public static void main(final String[] args) throws SQLException {
         System.getProperties().setProperty("org.jooq.no-logo", "true");
-        connection = DriverManager.getConnection(DB_URL, USER, PASSWORD);
-        Result<?> resultSet = Queries.query.select(CALCIATORE.NOME, CALCIATORE.PREZZOSTANDARD)
-                                           .from(CALCIATORE)
-                                           .where(CALCIATORE.RUOLO.eq("A"))
-                                           .and(CALCIATORE.SQUADRA.eq("Inter"))
-                                           .fetch();
-
-        resultSet.stream()
-                 .map(r -> r.intoList())
-                 .forEach(System.out::println);
-        
+        connection = DriverManager.getConnection(DB_URL, USER, PASSWORD);        
         launch();
     }
 
@@ -44,7 +31,10 @@ public final class Main extends Application {
         setPrimaryStage(primaryStage);
         primaryStage.setTitle("Fantabid");
         primaryStage.getIcons().add(new Image("org/fantabid/images/Icon.png"));
-        Views.loadLoginScene();
+        
+        Model.get().setUser("giuluck");
+        Views.loadUserAreaScene();
+        
         primaryStage.show();
         primaryStage.setX((Screen.getPrimary().getVisualBounds().getWidth() - primaryStage.getWidth()) / 2);
         primaryStage.setY((Screen.getPrimary().getVisualBounds().getHeight() - primaryStage.getHeight()) / 2);

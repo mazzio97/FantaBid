@@ -22,9 +22,13 @@ public class SignupController {
     
     public final void initialize() {
         backButton.setOnAction(e -> Views.loadLoginScene());
-        signupButton.setOnAction(e -> {
-            if (Queries.checkUsername(usernameField.getText())) {
-                Dialogs.showWarningDialog("User already existing", "The username inserted cannot be used");
+        
+        signupButton.setOnAction(e -> {            
+            if(!passwordField.getText().equals(confirmField.getText())) {
+                Dialogs.showErrorDialog("Password Error", "The given passwords are not the same");
+            }
+            else if (Queries.checkUsername(usernameField.getText())) {
+                Dialogs.showWarningDialog("User Already Exists", "This username cannot be used, try another one");
             } else {
                 Queries.registerUser(nameField.getText(), surnameField.getText(), 
                                      usernameField.getText(), passwordField.getText());

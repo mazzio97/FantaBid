@@ -19,12 +19,13 @@ public class LoginController {
 
     public final void initialize() {
         signupButton.setOnAction(e -> Views.loadSignupScene());
+        
         loginButton.setOnAction(e -> {
             if (Queries.checkPassword(usernameField.getText(), passwordField.getText())) {
                 Model.get().setUser(usernameField.getText());
                 Views.loadUserAreaScene();
             } else {
-                Dialogs.showErrorDialog("User doesn't exist!", "Reinsert the username or the password");
+                Dialogs.showErrorDialog("Wrong User or Password", "Reinsert the username or the password");
             }
         });
     }
