@@ -54,6 +54,11 @@
                            </HBox.margin>
                         </ComboBox>
                         <ComboBox fx:id="teamComboBox" prefWidth="150.0" />
+                        <Button fx:id="updatePlayersButton" mnemonicParsing="false" text="Update" textAlignment="CENTER">
+                           <HBox.margin>
+                              <Insets left="20.0" />
+                           </HBox.margin>
+                        </Button>
                      </children>
                   </HBox>
                   <TableView fx:id="playersTable" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS">

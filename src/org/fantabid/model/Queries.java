@@ -94,16 +94,15 @@ public final class Queries {
                     .collect(Collectors.toList());
     }
     
-    public static Collection<String> filterPlayers(Optional<String> namePart, Optional<String> role, Optional<String> team) {
+    public static Collection<Player> filterPlayers(String namePart, String role, String team) {
         return query.select()
                     .from(CALCIATORE)
-                    .where(CALCIATORE.NOME.contains(namePart.get()).or(!namePart.isPresent()))
-                    .and(CALCIATORE.RUOLO.eq(role.get()))
-                    .and(CALCIATORE.SQUADRA.eq(team.get()).or(!team.isPresent()))
+                    .where(CALCIATORE.NOME.contains(namePart.toUpperCase()))
+                    .and(CALCIATORE.RUOLO.eq(role).or(role.equals("Any")))
+                    .and(CALCIATORE.SQUADRA.eq(team).or(team.equals("Any")))
                     .fetch()
                     .stream()
-                    .map(r -> new Player(Integer.parseInt(r.getValue(0).toString()), r.getValue(1).toString(), r.getValue(2).toString(), r.getValue(4).toString(), Integer.parseInt(r.getValue(3).toString())))
-                    .map(p -> p.getName())
+                    .map(r -> new Player(Integer.parseInt(r.getValue(0).toString()), r.getValue(1).toString(), r.getValue(4).toString(), r.getValue(2).toString(), Integer.parseInt(r.getValue(3).toString())))
                     .collect(Collectors.toList());
     }
 
