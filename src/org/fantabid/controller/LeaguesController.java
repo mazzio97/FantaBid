@@ -19,7 +19,7 @@ public class LeaguesController {
     private final Model model = Model.get();
 
     public final void initialize() {
-        
+
         leaguesBox.getChildren().addAll(Queries.getOpenLeagues()
                                                .map(Buttons::listButton)
                                                .peek(b -> b.setOnAction(e -> {
