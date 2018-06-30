@@ -39,7 +39,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Regola extends TableImpl<RegolaRecord> {
 
-    private static final long serialVersionUID = 433813460;
+    private static final long serialVersionUID = 1199705312;
 
     /**
      * The reference instance of <code>public.regola</code>
@@ -67,7 +67,7 @@ public class Regola extends TableImpl<RegolaRecord> {
     /**
      * The column <code>public.regola.descrizione</code>.
      */
-    public final TableField<RegolaRecord, String> DESCRIZIONE = createField("descrizione", org.jooq.impl.SQLDataType.VARCHAR(140).nullable(false), this, "");
+    public final TableField<RegolaRecord, String> DESCRIZIONE = createField("descrizione", org.jooq.impl.SQLDataType.VARCHAR(1000).nullable(false), this, "");
 
     /**
      * Create a <code>public.regola</code> table reference
