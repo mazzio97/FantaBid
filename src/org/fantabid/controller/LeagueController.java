@@ -17,7 +17,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 
 public class LeagueController {
 
-    private static final String ALL_AVAILABLE_OPTIONS = "Any";
+    public static final String ALL_AVAILABLE_OPTIONS = "Any";
 
     @FXML private Label leagueLabel;
     @FXML private Label teamLabel;

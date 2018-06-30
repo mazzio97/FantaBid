@@ -40,7 +40,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Campionato extends TableImpl<CampionatoRecord> {
 
-    private static final long serialVersionUID = 1411027040;
+    private static final long serialVersionUID = -890377885;
 
     /**
      * The reference instance of <code>public.campionato</code>
@@ -84,6 +84,11 @@ public class Campionato extends TableImpl<CampionatoRecord> {
      * The column <code>public.campionato.datachiusura</code>.
      */
     public final TableField<CampionatoRecord, Date> DATACHIUSURA = createField("datachiusura", org.jooq.impl.SQLDataType.DATE, this, "");
+
+    /**
+     * The column <code>public.campionato.nome</code>.
+     */
+    public final TableField<CampionatoRecord, String> NOME = createField("nome", org.jooq.impl.SQLDataType.VARCHAR(30).nullable(false), this, "");
 
     /**
      * Create a <code>public.campionato</code> table reference

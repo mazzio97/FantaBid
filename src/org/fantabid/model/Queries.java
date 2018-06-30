@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.fantabid.Main;
+import org.fantabid.controller.LeagueController;
 import org.fantabid.entities.Player;
 import org.fantabid.generated.tables.records.RegolaRecord;
 import org.jooq.DSLContext;
@@ -98,8 +99,8 @@ public final class Queries {
         return query.select()
                     .from(CALCIATORE)
                     .where(CALCIATORE.NOME.contains(namePart.toUpperCase()))
-                    .and(CALCIATORE.RUOLO.eq(role).or(role.equals("Any")))
-                    .and(CALCIATORE.SQUADRA.eq(team).or(team.equals("Any")))
+                    .and(CALCIATORE.RUOLO.eq(role).or(role.equals(LeagueController.ALL_AVAILABLE_OPTIONS)))
+                    .and(CALCIATORE.SQUADRA.eq(team).or(team.equals(LeagueController.ALL_AVAILABLE_OPTIONS)))
                     .fetch()
                     .stream()
                     .map(r -> new Player(Integer.parseInt(r.getValue(0).toString()), r.getValue(1).toString(), r.getValue(4).toString(), r.getValue(2).toString(), Integer.parseInt(r.getValue(3).toString())))
