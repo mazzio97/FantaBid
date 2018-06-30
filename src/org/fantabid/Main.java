@@ -36,8 +36,8 @@ public final class Main extends Application {
         
 //        Model.get().setUser("giuluck");
 //        Views.loadUserAreaScene();
-        
-        Views.loadLeagueScene();
+        Views.loadLoginScene();
+//        Views.loadLeagueScene();
         
         primaryStage.show();
         primaryStage.setX((Screen.getPrimary().getVisualBounds().getWidth() - primaryStage.getWidth()) / 2);

@@ -38,7 +38,11 @@ public class NewLeagueController {
         leagueType.getSelectionModel().select(1);
         Spinner<Integer> numTeamsSpinner = new Spinner<>(MIN_NUM_TEAMS, MAX_NUM_TEAMS, DEFAULT_NUM_TEAMS);
         numTeamsBox.getChildren().add(numTeamsSpinner);
-        Queries.getRules().forEach(r -> rulesBox.getChildren().add(new CheckBox(r.getValue(0).toString())));
+        Queries.getRules().forEach(r -> rulesBox.getChildren().add(new CheckBox(r.getValue(1).toString())));
+        leagueType.setOnAction(e -> {
+            numTeamsSpinner.setDisable(leagueType.getSelectionModel().getSelectedIndex() == 0);
+            teamBudgetSlider.setDisable(leagueType.getSelectionModel().getSelectedIndex() == 0);
+        });
         createButton.setOnAction(e -> {
             System.out.println("Name: " + nameField.getText());
             System.out.println("Type: " + leagueType.getValue());

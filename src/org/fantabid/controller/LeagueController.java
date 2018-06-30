@@ -1,13 +1,9 @@
-
 package org.fantabid.controller;
-
-import java.util.Optional;
 
 import org.fantabid.entities.Player;
 import org.fantabid.model.Queries;
 import org.fantabid.view.Views;
 
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
