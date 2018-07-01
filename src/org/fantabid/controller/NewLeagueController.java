@@ -3,14 +3,17 @@ package org.fantabid.controller;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-import org.fantabid.entities.LeagueType;
+import org.fantabid.generated.tables.records.RegolaRecord;
+import org.fantabid.model.LeagueType;
 import org.fantabid.model.Queries;
 import org.fantabid.view.Views;
 
+import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.TextArea;
@@ -25,24 +28,36 @@ public class NewLeagueController {
     public static final int DEFAULT_NUM_TEAMS = 8;
     
     @FXML private TextField nameField;
-    @FXML private ChoiceBox<String> leagueType;
+    @FXML private ChoiceBox<LeagueType> leagueType;
     @FXML private HBox numTeamsBox;
     @FXML private TextArea descriptionArea;
     @FXML private VBox rulesBox;
+    @FXML private HBox teamBudgetBox;
+    @FXML private Label teamBudgetLabel;
     @FXML private Slider teamBudgetSlider;
     @FXML private Button cancelButton;
     @FXML private Button createButton;
     
     public final void initialize() {
-        leagueType.getItems().addAll(Arrays.asList(LeagueType.values()).stream().map(t -> t.name()).collect(Collectors.toList()));
-        leagueType.getSelectionModel().select(1);
+        Arrays.asList(LeagueType.values()).forEach(leagueType.getItems()::add);
+        leagueType.getSelectionModel().select(LeagueType.CLASSIC);
+        
         Spinner<Integer> numTeamsSpinner = new Spinner<>(MIN_NUM_TEAMS, MAX_NUM_TEAMS, DEFAULT_NUM_TEAMS);
         numTeamsBox.getChildren().add(numTeamsSpinner);
-        Queries.getRules().forEach(r -> rulesBox.getChildren().add(new CheckBox(r.getValue(1).toString())));
+        
+        Queries.getRules()
+               .map(RegolaRecord::getNome)
+               .map(CheckBox::new)
+               .forEach(rulesBox.getChildren()::add);
+        
         leagueType.setOnAction(e -> {
-            numTeamsSpinner.setDisable(leagueType.getSelectionModel().getSelectedIndex() == 0);
-            teamBudgetSlider.setDisable(leagueType.getSelectionModel().getSelectedIndex() == 0);
+            numTeamsBox.setVisible(leagueType.getSelectionModel().getSelectedItem().equals(LeagueType.CLASSIC));
+            teamBudgetBox.setVisible(leagueType.getSelectionModel().getSelectedItem().equals(LeagueType.CLASSIC));
         });
+        
+        teamBudgetSlider.setSnapToTicks(true);
+        teamBudgetLabel.textProperty().bind(Bindings.format("Budget: %.0f$", teamBudgetSlider.valueProperty()));
+
         createButton.setOnAction(e -> {
             System.out.println("Name: " + nameField.getText());
             System.out.println("Type: " + leagueType.getValue());

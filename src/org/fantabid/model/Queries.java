@@ -3,24 +3,17 @@ package org.fantabid.model;
 import static org.fantabid.generated.Tables.*;
 
 import java.sql.Date;
-import java.util.Collection;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.fantabid.Main;
-import org.fantabid.controller.LeagueController;
-import org.fantabid.entities.Player;
+import org.fantabid.generated.tables.records.CalciatoreRecord;
 import org.fantabid.generated.tables.records.RegolaRecord;
 import org.jooq.DSLContext;
-import org.jooq.Record;
 import org.jooq.Result;
 import org.jooq.SQLDialect;
+import org.jooq.SelectConditionStep;
 import org.jooq.impl.DSL;
-
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 
 public final class Queries {
     
@@ -45,7 +38,6 @@ public final class Queries {
                     .fetch()
                     .stream()
                     .map(r -> r.getValue(0))
-                    .peek(System.out::println)
                     .findFirst()
                     .filter(password::equals)
                     .isPresent();
@@ -85,26 +77,22 @@ public final class Queries {
                     .map(r -> (RegolaRecord) r);
     }
 
-    public static Collection<String> getAllTeams() {
+    public static Stream<String> getAllTeams() {
         return query.selectDistinct(CALCIATORE.SQUADRA)
                     .from(CALCIATORE)
                     .fetch()
                     .stream()
-                    .map(r -> r.getValue(0).toString())
-                    .sorted()
-                    .collect(Collectors.toList());
+                    .map(r -> r.field1().toString())
+                    .sorted();
     }
     
-    public static Collection<Player> filterPlayers(String namePart, String role, String team) {
-        return query.select()
-                    .from(CALCIATORE)
-                    .where(CALCIATORE.NOME.contains(namePart.toUpperCase()))
-                    .and(CALCIATORE.RUOLO.eq(role).or(role.equals(LeagueController.ALL_AVAILABLE_OPTIONS)))
-                    .and(CALCIATORE.SQUADRA.eq(team).or(team.equals(LeagueController.ALL_AVAILABLE_OPTIONS)))
-                    .fetch()
-                    .stream()
-                    .map(r -> new Player(Integer.parseInt(r.getValue(0).toString()), r.getValue(1).toString(), r.getValue(4).toString(), r.getValue(2).toString(), Integer.parseInt(r.getValue(3).toString())))
-                    .collect(Collectors.toList());
+    public static Stream<CalciatoreRecord> filterPlayers(String namePart, String role, String team) {
+        SelectConditionStep<?> s = query.select()
+                                        .from(CALCIATORE)
+                                        .where(CALCIATORE.NOME.contains(namePart.toUpperCase()));
+        Optional.ofNullable(role).ifPresent(r -> s.and(CALCIATORE.RUOLO.eq(r)));
+        Optional.ofNullable(team).ifPresent(t -> s.and(CALCIATORE.SQUADRA.eq(t)));
+        return s.fetch().stream().map(r -> (CalciatoreRecord) r);
     }
 
     // TODO: TO BE REMOVED
