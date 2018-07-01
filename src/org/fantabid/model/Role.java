@@ -22,7 +22,7 @@ public enum Role {
     }
     
     public String getRoleString() {
-        return Optional.of(role).filter(c -> c == ANY.role).map(String::valueOf).orElse(null);
+        return Optional.of(role).filter(c -> c != ANY.role).map(String::valueOf).orElse(null);
     }
     
     public String toString() {

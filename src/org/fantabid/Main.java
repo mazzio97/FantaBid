@@ -35,6 +35,7 @@ public final class Main extends Application {
         
         Queries.testQuery();
         Views.loadLoginScene();
+        Views.loadTeamScene();
         
         primaryStage.show();
         primaryStage.setX((Screen.getPrimary().getVisualBounds().getWidth() - primaryStage.getWidth()) / 2);
