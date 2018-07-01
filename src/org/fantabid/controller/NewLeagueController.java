@@ -1,6 +1,8 @@
 package org.fantabid.controller;
 
 import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.fantabid.generated.tables.records.RegolaRecord;
@@ -40,19 +42,18 @@ public class NewLeagueController {
     
     public final void initialize() {
         Arrays.asList(LeagueType.values()).forEach(leagueType.getItems()::add);
-        leagueType.getSelectionModel().select(LeagueType.CLASSIC);
+        leagueType.getSelectionModel().select(LeagueType.BID);
         
         Spinner<Integer> numTeamsSpinner = new Spinner<>(MIN_NUM_TEAMS, MAX_NUM_TEAMS, DEFAULT_NUM_TEAMS);
         numTeamsBox.getChildren().add(numTeamsSpinner);
         
-        Queries.getRules()
-               .map(RegolaRecord::getNome)
-               .map(CheckBox::new)
-               .forEach(rulesBox.getChildren()::add);
+        Map<CheckBox, RegolaRecord> rulesMap = new LinkedHashMap<>();
+        Queries.getRules().forEach(r -> rulesMap.put(new CheckBox(r.getNome()), r));
+        rulesBox.getChildren().addAll(rulesMap.keySet());
         
         leagueType.setOnAction(e -> {
-            numTeamsBox.setVisible(leagueType.getSelectionModel().getSelectedItem().equals(LeagueType.CLASSIC));
-            teamBudgetBox.setVisible(leagueType.getSelectionModel().getSelectedItem().equals(LeagueType.CLASSIC));
+            numTeamsBox.setVisible(leagueType.getSelectionModel().getSelectedItem().equals(LeagueType.BID));
+            teamBudgetBox.setVisible(leagueType.getSelectionModel().getSelectedItem().equals(LeagueType.BID));
         });
         
         teamBudgetSlider.setSnapToTicks(true);

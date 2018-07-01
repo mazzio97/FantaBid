@@ -20,7 +20,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="480.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.fantabid.controller.NewLeagueController">
+<BorderPane prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.fantabid.controller.NewLeagueController">
    <bottom>
       <HBox alignment="CENTER" BorderPane.alignment="CENTER">
          <children>
@@ -58,6 +58,9 @@
                            <HBox.margin>
                               <Insets bottom="5.0" top="5.0" />
                            </HBox.margin>
+                           <font>
+                              <Font name="System Italic" size="15.0" />
+                           </font>
                         </Label>
                      </children>
                      <VBox.margin>
@@ -76,7 +79,10 @@
                   <Region VBox.vgrow="ALWAYS" />
                   <HBox fx:id="teamBudgetBox" alignment="CENTER" spacing="10.0">
                      <children>
-                        <Label fx:id="teamBudgetLabel" text="Budget: 500$" HBox.hgrow="NEVER" />
+                        <Label fx:id="teamBudgetLabel" text="Budget: 500$" HBox.hgrow="NEVER">
+                           <font>
+                              <Font name="System Italic" size="15.0" />
+                           </font></Label>
                         <Slider fx:id="teamBudgetSlider" blockIncrement="100.0" max="800.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" min="200.0" minorTickCount="0" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="500.0" HBox.hgrow="ALWAYS">
                            <VBox.margin>
                               <Insets bottom="5.0" top="5.0" />
@@ -91,6 +97,23 @@
             </VBox>
             <VBox alignment="TOP_CENTER" HBox.hgrow="SOMETIMES">
                <children>
+                  <HBox alignment="CENTER_LEFT" spacing="20.0" VBox.vgrow="NEVER">
+                     <children>
+                        <Label text="Registration Ending Date:" HBox.hgrow="NEVER">
+                           <font>
+                              <Font name="System Bold" size="15.0" />
+                           </font>
+                        </Label>
+                        <DatePicker fx:id="endingDatePicker" promptText="Ending Date" HBox.hgrow="ALWAYS" VBox.vgrow="SOMETIMES">
+                           <VBox.margin>
+                              <Insets bottom="20.0" />
+                           </VBox.margin>
+                        </DatePicker>
+                     </children>
+                     <VBox.margin>
+                        <Insets bottom="30.0" />
+                     </VBox.margin>
+                  </HBox>
                   <Label alignment="CENTER" contentDisplay="CENTER" text="Rules">
                      <font>
                         <Font name="System Italic" size="18.0" />
@@ -99,7 +122,7 @@
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </VBox.margin>
                   </Label>
-                  <ScrollPane fitToHeight="true" fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="220.0" VBox.vgrow="ALWAYS">
+                  <ScrollPane fitToHeight="true" fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="220.0" VBox.vgrow="SOMETIMES">
                      <content>
                         <VBox fx:id="rulesBox" spacing="5.0">
                            <padding>

@@ -19,6 +19,9 @@ public final class Queries {
     
     public static final DSLContext query = DSL.using(Main.getConnection(), SQLDialect.POSTGRES);
     
+//    private static int leagueId = 0;
+//    private static int teamId = 0;
+    
     private Queries() { }
     
     public static boolean checkUsername(String username) {
@@ -48,6 +51,12 @@ public final class Queries {
              .values(user, password, name, surname)
              .execute();
     }
+    
+//    public static void registerLeague(String name) {
+//        query.insertInto(CAMPIONATO)
+//             .values()
+//             .execute();
+//    }
     
     public static Stream<String> getLeagueFromUser(String user) {
         return query.select(CAMPIONATO.IDCAMPIONATO, SQUADRA.NOMESQUADRA, CAMPIONATO.DATACHIUSURA)
@@ -96,7 +105,7 @@ public final class Queries {
     }
 
     // TODO: TO BE REMOVED
-    public static Result<?> testQuery(Object ...args) {
+    public static Result<?> testQuery(Object ...args) {        
         return query.select()
                     .from(CAMPIONATO)
                     .fetch();

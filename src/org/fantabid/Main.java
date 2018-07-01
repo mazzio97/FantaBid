@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import org.fantabid.model.Model;
 import org.fantabid.view.Views;
 
 import javafx.application.Application;
@@ -32,6 +33,7 @@ public final class Main extends Application {
         primaryStage.setTitle("Fantabid");
         primaryStage.getIcons().add(new Image("org/fantabid/images/Icon.png"));
         
+        Model.get().setUser("giuluck");
         Views.loadNewLeagueScene();
         
         primaryStage.show();
