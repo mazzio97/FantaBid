@@ -24,7 +24,7 @@ public class LeaguesController {
                                                .map(Buttons::listButton)
                                                .peek(b -> b.setOnAction(e -> {
                                                    model.setLeague(b.getText());
-                                                   Views.loadLeagueScene();
+                                                   Views.loadTeamScene();
                                                }))
                                                .collect(Collectors.toList()));
         

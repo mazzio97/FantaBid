@@ -24,8 +24,8 @@ public final class Views {
         return loadPrimaryStage("UserArea");
     }
     
-    public static Scene loadLeagueScene() {
-        return loadPrimaryStage("League");
+    public static Scene loadTeamScene() {
+        return loadPrimaryStage("Team");
     }
     
     public static Scene loadLeaguesScene() {

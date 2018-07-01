@@ -28,7 +28,7 @@ public class BetInfoController {
         lastBetLabel.setText("Last Bet: ");
         timeLeftLabel.setText("Time Left: ");
         betLabel.textProperty().bind(Bindings.format("%.0f $", betSlider.valueProperty()));
-        cancelButton.setOnAction(e -> Views.loadLeagueScene());
-        betButton.setOnAction(e -> Views.loadLeagueScene());
+        cancelButton.setOnAction(e -> Views.loadTeamScene());
+        betButton.setOnAction(e -> Views.loadTeamScene());
     }
 }
