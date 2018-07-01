@@ -1,6 +1,6 @@
 package org.fantabid.controller;
 
-import java.util.stream.Collectors;
+import static org.fantabid.generated.Tables.*;
 
 import org.fantabid.model.Model;
 import org.fantabid.model.Queries;
@@ -23,13 +23,18 @@ public class UserAreaController {
     public final void initialize() {
         usernameLabel.setText(model.getUser());
         
-        leaguesBox.getChildren().addAll(Queries.getLeagueFromUser(model.getUser())
-                                               .map(Buttons::listButton)
-                                               .peek(b -> b.setOnAction(e -> {
-                                                   model.setLeague(b.getText());
-                                                   Views.loadTeamScene();
-                                               }))
-                                               .collect(Collectors.toList()));
+        Queries.getTeamsFromUser(model.getUser())
+               .map(r -> {
+                   Button b = Buttons.listButton(r.getValue(SQUADRA.NOMESQUADRA) +
+                                                 " (" + r.getValue(CAMPIONATO.NOME) + "), " +
+                                                 "closing at: " + r.getValue(CAMPIONATO.DATACHIUSURA));
+                   b.setOnAction(e -> {
+                       model.setLeague(r.getValue(CAMPIONATO.IDCAMPIONATO));
+                       Views.loadTeamScene();
+                   });
+                   return b;
+               })
+               .forEach(leaguesBox.getChildren()::add);
         
         findLeagueButton.setOnAction(e -> Views.loadLeaguesScene());
         

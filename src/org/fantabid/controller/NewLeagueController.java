@@ -1,9 +1,9 @@
 package org.fantabid.controller;
 
+import java.sql.Date;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.fantabid.generated.tables.records.RegolaRecord;
 import org.fantabid.model.LeagueType;
@@ -15,6 +15,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.Spinner;
@@ -33,6 +34,7 @@ public class NewLeagueController {
     @FXML private ChoiceBox<LeagueType> leagueType;
     @FXML private HBox numTeamsBox;
     @FXML private TextArea descriptionArea;
+    @FXML private DatePicker endingDatePicker;
     @FXML private VBox rulesBox;
     @FXML private HBox teamBudgetBox;
     @FXML private Label teamBudgetLabel;
@@ -60,18 +62,22 @@ public class NewLeagueController {
         teamBudgetLabel.textProperty().bind(Bindings.format("Budget: %.0f$", teamBudgetSlider.valueProperty()));
 
         createButton.setOnAction(e -> {
-            System.out.println("Name: " + nameField.getText());
-            System.out.println("Type: " + leagueType.getValue());
-            System.out.println("Num of Teams: " + numTeamsSpinner.getValue());
-            System.out.println("Rules: " + rulesBox.getChildren()
-                                                   .stream()
-                                                   .map(n -> (CheckBox) n)
-                                                   .filter(c -> c.isSelected())
-                                                   .map(c -> c.getText())
-                                                   .collect(Collectors.joining(", ", "", "")));
-            System.out.println("Description: " + descriptionArea.getText());
-            System.out.println("Team Budget: " + Double.valueOf(teamBudgetSlider.getValue()).intValue());
+            int leagueId = Queries.registerLeague(nameField.getText(),
+                                                  descriptionArea.getText(),
+                                                  Double.valueOf(teamBudgetSlider.getValue()).intValue(),
+                                                  new Date(System.currentTimeMillis()),
+                                                  Date.valueOf(endingDatePicker.getValue()),
+                                                  leagueType.getValue().isBid(),
+                                                  numTeamsSpinner.getValue());
+            rulesBox.getChildren()
+                    .stream()
+                    .map(n -> (CheckBox) n)
+                    .filter(CheckBox::isSelected)
+                    .map(rulesMap::get)
+                    .map(RegolaRecord::getIdregola)
+                    .forEach(i -> Queries.linkRuleToLeague(i, leagueId));
         });
+        
         cancelButton.setOnAction(e -> Views.loadUserAreaScene());
     }
 }
