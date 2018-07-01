@@ -40,7 +40,7 @@ public class NewLeagueController {
     
     public final void initialize() {
         Arrays.asList(LeagueType.values()).forEach(leagueType.getItems()::add);
-        leagueType.getSelectionModel().select(LeagueType.CLASSIC);
+        leagueType.getSelectionModel().select(LeagueType.BID);
         
         Spinner<Integer> numTeamsSpinner = new Spinner<>(MIN_NUM_TEAMS, MAX_NUM_TEAMS, DEFAULT_NUM_TEAMS);
         numTeamsBox.getChildren().add(numTeamsSpinner);
@@ -51,8 +51,8 @@ public class NewLeagueController {
                .forEach(rulesBox.getChildren()::add);
         
         leagueType.setOnAction(e -> {
-            numTeamsBox.setVisible(leagueType.getSelectionModel().getSelectedItem().equals(LeagueType.CLASSIC));
-            teamBudgetBox.setVisible(leagueType.getSelectionModel().getSelectedItem().equals(LeagueType.CLASSIC));
+            numTeamsBox.setVisible(leagueType.getSelectionModel().getSelectedItem().equals(LeagueType.BID));
+            teamBudgetBox.setVisible(leagueType.getSelectionModel().getSelectedItem().equals(LeagueType.BID));
         });
         
         teamBudgetSlider.setSnapToTicks(true);

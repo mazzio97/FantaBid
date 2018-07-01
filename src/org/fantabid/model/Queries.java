@@ -82,7 +82,7 @@ public final class Queries {
                     .from(CALCIATORE)
                     .fetch()
                     .stream()
-                    .map(r -> r.field1().toString())
+                    .map(r -> r.getValue(0).toString())
                     .sorted();
     }
     

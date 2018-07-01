@@ -32,7 +32,7 @@ public final class Main extends Application {
         primaryStage.setTitle("Fantabid");
         primaryStage.getIcons().add(new Image("org/fantabid/images/Icon.png"));
         
-        Views.loadNewLeagueScene();
+        Views.loadTeamScene();
         
         primaryStage.show();
         primaryStage.setX((Screen.getPrimary().getVisualBounds().getWidth() - primaryStage.getWidth()) / 2);

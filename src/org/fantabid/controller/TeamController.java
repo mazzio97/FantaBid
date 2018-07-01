@@ -48,16 +48,16 @@ public class TeamController {
         teamComboBox.getSelectionModel().select(0);
         
         TableColumn<CalciatoreRecord, String> nameCol = new TableColumn<>("Name");
-        nameCol.setCellValueFactory(new PropertyValueFactory<CalciatoreRecord, String>("name"));
+        nameCol.setCellValueFactory(new PropertyValueFactory<CalciatoreRecord, String>("nome"));
         playersTable.getColumns().add(nameCol);
         TableColumn<CalciatoreRecord, String> roleCol = new TableColumn<>("Role");
-        roleCol.setCellValueFactory(new PropertyValueFactory<CalciatoreRecord, String>("role"));
+        roleCol.setCellValueFactory(new PropertyValueFactory<CalciatoreRecord, String>("ruolo"));
         playersTable.getColumns().add(roleCol);
         TableColumn<CalciatoreRecord, String> teamCol = new TableColumn<>("Team");
-        teamCol.setCellValueFactory(new PropertyValueFactory<CalciatoreRecord, String>("team"));
+        teamCol.setCellValueFactory(new PropertyValueFactory<CalciatoreRecord, String>("squadra"));
         playersTable.getColumns().add(teamCol);
         TableColumn<CalciatoreRecord, Integer> priceCol = new TableColumn<>("Price");
-        priceCol.setCellValueFactory(new PropertyValueFactory<CalciatoreRecord, Integer>("price"));
+        priceCol.setCellValueFactory(new PropertyValueFactory<CalciatoreRecord, Integer>("prezzostandard"));
         playersTable.getColumns().add(priceCol);                
         
         playersTable.setItems(filteredPlayers);
@@ -66,11 +66,11 @@ public class TeamController {
         updatePlayersButton.setOnAction(e -> {
             filteredPlayers.clear();
             Queries.filterPlayers(playerFilterField.getText(),
-                    roleComboBox.getSelectionModel().getSelectedItem().getRoleString(),
-                    Optional.of(teamComboBox.getSelectionModel().getSelectedItem())
-                            .filter(ANY::equals)
-                            .orElse(null))
-            .forEach(filteredPlayers::add);
+                                  roleComboBox.getSelectionModel().getSelectedItem().getRoleString(),
+                                  Optional.of(teamComboBox.getSelectionModel().getSelectedItem())
+                                                          .filter(ANY::equals)
+                                                          .orElse(null))
+                   .forEach(filteredPlayers::add);
 
         });
         backButton.setOnAction(e -> Views.loadLeaguesScene());
