@@ -34,8 +34,10 @@ public final class Main extends Application {
         primaryStage.setTitle("Fantabid");
         primaryStage.getIcons().add(new Image("org/fantabid/images/Icon.png"));
         
-        Model.get().setUser("giuluck");
-        Views.loadUserAreaScene();
+//        Model.get().setUser("giuluck");
+//        Views.loadUserAreaScene();
+        Views.loadLoginScene();
+//        Views.loadLeagueScene();
         
         primaryStage.show();
         primaryStage.setX((Screen.getPrimary().getVisualBounds().getWidth() - primaryStage.getWidth()) / 2);

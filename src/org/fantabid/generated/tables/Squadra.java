@@ -39,7 +39,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Squadra extends TableImpl<SquadraRecord> {
 
-    private static final long serialVersionUID = -7828091;
+    private static final long serialVersionUID = -751367725;
 
     /**
      * The reference instance of <code>public.squadra</code>
@@ -53,6 +53,11 @@ public class Squadra extends TableImpl<SquadraRecord> {
     public Class<SquadraRecord> getRecordType() {
         return SquadraRecord.class;
     }
+
+    /**
+     * The column <code>public.squadra.idsquadra</code>.
+     */
+    public final TableField<SquadraRecord, Integer> IDSQUADRA = createField("idsquadra", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>public.squadra.idcampionato</code>.
@@ -73,11 +78,6 @@ public class Squadra extends TableImpl<SquadraRecord> {
      * The column <code>public.squadra.creditoresiduo</code>.
      */
     public final TableField<SquadraRecord, Short> CREDITORESIDUO = createField("creditoresiduo", org.jooq.impl.SQLDataType.SMALLINT.nullable(false), this, "");
-
-    /**
-     * The column <code>public.squadra.idcalciatore</code>.
-     */
-    public final TableField<SquadraRecord, Short> IDCALCIATORE = createField("idcalciatore", org.jooq.impl.SQLDataType.SMALLINT, this, "");
 
     /**
      * Create a <code>public.squadra</code> table reference
@@ -125,7 +125,7 @@ public class Squadra extends TableImpl<SquadraRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.IDSQUADRA);
+        return Arrays.<Index>asList(Indexes.IDSQUADRA, Indexes.IDSQUADRA_1);
     }
 
     /**
@@ -141,7 +141,7 @@ public class Squadra extends TableImpl<SquadraRecord> {
      */
     @Override
     public List<UniqueKey<SquadraRecord>> getKeys() {
-        return Arrays.<UniqueKey<SquadraRecord>>asList(Keys.IDSQUADRA);
+        return Arrays.<UniqueKey<SquadraRecord>>asList(Keys.IDSQUADRA, Keys.IDSQUADRA_1);
     }
 
     /**
@@ -149,7 +149,7 @@ public class Squadra extends TableImpl<SquadraRecord> {
      */
     @Override
     public List<ForeignKey<SquadraRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<SquadraRecord, ?>>asList(Keys.SQUADRA__FKPARTECIPA, Keys.SQUADRA__FKGESTISCE, Keys.SQUADRA__FKCOMPRAATTACCANTE);
+        return Arrays.<ForeignKey<SquadraRecord, ?>>asList(Keys.SQUADRA__FKPARTECIPA, Keys.SQUADRA__FKGESTISCE);
     }
 
     public Campionato campionato() {
@@ -158,10 +158,6 @@ public class Squadra extends TableImpl<SquadraRecord> {
 
     public Allenatore allenatore() {
         return new Allenatore(this, Keys.SQUADRA__FKGESTISCE);
-    }
-
-    public Calciatore calciatore() {
-        return new Calciatore(this, Keys.SQUADRA__FKCOMPRAATTACCANTE);
     }
 
     /**

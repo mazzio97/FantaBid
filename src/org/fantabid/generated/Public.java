@@ -13,8 +13,10 @@ import javax.annotation.Generated;
 import org.fantabid.generated.tables.Allenatore;
 import org.fantabid.generated.tables.Calciatore;
 import org.fantabid.generated.tables.Campionato;
+import org.fantabid.generated.tables.MembriSquadra;
 import org.fantabid.generated.tables.Puntata;
 import org.fantabid.generated.tables.Regola;
+import org.fantabid.generated.tables.RegolePerCampionato;
 import org.fantabid.generated.tables.Squadra;
 import org.jooq.Catalog;
 import org.jooq.Table;
@@ -34,7 +36,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = -2101678592;
+    private static final long serialVersionUID = 734807958;
 
     /**
      * The reference instance of <code>public</code>
@@ -57,6 +59,11 @@ public class Public extends SchemaImpl {
     public final Campionato CAMPIONATO = org.fantabid.generated.tables.Campionato.CAMPIONATO;
 
     /**
+     * The table <code>public.membri_squadra</code>.
+     */
+    public final MembriSquadra MEMBRI_SQUADRA = org.fantabid.generated.tables.MembriSquadra.MEMBRI_SQUADRA;
+
+    /**
      * The table <code>public.puntata</code>.
      */
     public final Puntata PUNTATA = org.fantabid.generated.tables.Puntata.PUNTATA;
@@ -65,6 +72,11 @@ public class Public extends SchemaImpl {
      * The table <code>public.regola</code>.
      */
     public final Regola REGOLA = org.fantabid.generated.tables.Regola.REGOLA;
+
+    /**
+     * The table <code>public.regole_per_campionato</code>.
+     */
+    public final RegolePerCampionato REGOLE_PER_CAMPIONATO = org.fantabid.generated.tables.RegolePerCampionato.REGOLE_PER_CAMPIONATO;
 
     /**
      * The table <code>public.squadra</code>.
@@ -99,8 +111,10 @@ public class Public extends SchemaImpl {
             Allenatore.ALLENATORE,
             Calciatore.CALCIATORE,
             Campionato.CAMPIONATO,
+            MembriSquadra.MEMBRI_SQUADRA,
             Puntata.PUNTATA,
             Regola.REGOLA,
+            RegolePerCampionato.REGOLE_PER_CAMPIONATO,
             Squadra.SQUADRA);
     }
 }

@@ -4,7 +4,7 @@ public class Player {
 
     private final int id;
     private final String name;
-    private Role role;
+    private String role;
     private String team;
     private int price;
     
@@ -13,19 +13,19 @@ public class Player {
         this.name = name;
         switch (role) {
         case "P":            
-            this.role = Role.PORTIERE;
+            this.role = "P"; // Role.PORTIERE;
             break;
 
         case "D":            
-            this.role = Role.DIFENSORE;
+            this.role = "D"; // Role.DIFENSORE;
             break;
             
         case "C":            
-            this.role = Role.CENTROCAMPISTA;
+            this.role = "C"; // Role.CENTROCAMPISTA;
             break;
             
         case "A":            
-            this.role = Role.ATTACCANTE;
+            this.role = "A"; // Role.ATTACCANTE;
             break;
 
         default:
@@ -43,7 +43,7 @@ public class Player {
         return name;
     }
 
-    public Role getRole() {
+    public String getRole() {
         return role;
     }
 

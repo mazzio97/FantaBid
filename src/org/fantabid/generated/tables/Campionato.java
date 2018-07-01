@@ -40,7 +40,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Campionato extends TableImpl<CampionatoRecord> {
 
-    private static final long serialVersionUID = -1786071876;
+    private static final long serialVersionUID = -890377885;
 
     /**
      * The reference instance of <code>public.campionato</code>
@@ -61,9 +61,14 @@ public class Campionato extends TableImpl<CampionatoRecord> {
     public final TableField<CampionatoRecord, Integer> IDCAMPIONATO = createField("idcampionato", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
-     * The column <code>public.campionato.budgetsquadra</code>.
+     * The column <code>public.campionato.tipoasta</code>.
      */
-    public final TableField<CampionatoRecord, Short> BUDGETSQUADRA = createField("budgetsquadra", org.jooq.impl.SQLDataType.SMALLINT.nullable(false), this, "");
+    public final TableField<CampionatoRecord, String> TIPOASTA = createField("tipoasta", org.jooq.impl.SQLDataType.CHAR(1).nullable(false), this, "");
+
+    /**
+     * The column <code>public.campionato.budgetpersquadra</code>.
+     */
+    public final TableField<CampionatoRecord, Short> BUDGETPERSQUADRA = createField("budgetpersquadra", org.jooq.impl.SQLDataType.SMALLINT.nullable(false), this, "");
 
     /**
      * The column <code>public.campionato.dataapertura</code>.
@@ -81,9 +86,9 @@ public class Campionato extends TableImpl<CampionatoRecord> {
     public final TableField<CampionatoRecord, Date> DATACHIUSURA = createField("datachiusura", org.jooq.impl.SQLDataType.DATE, this, "");
 
     /**
-     * The column <code>public.campionato.idregola</code>.
+     * The column <code>public.campionato.nome</code>.
      */
-    public final TableField<CampionatoRecord, Short> IDREGOLA = createField("idregola", org.jooq.impl.SQLDataType.SMALLINT, this, "");
+    public final TableField<CampionatoRecord, String> NOME = createField("nome", org.jooq.impl.SQLDataType.VARCHAR(30).nullable(false), this, "");
 
     /**
      * Create a <code>public.campionato</code> table reference
@@ -148,18 +153,6 @@ public class Campionato extends TableImpl<CampionatoRecord> {
     @Override
     public List<UniqueKey<CampionatoRecord>> getKeys() {
         return Arrays.<UniqueKey<CampionatoRecord>>asList(Keys.IDCAMPIONATO);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<ForeignKey<CampionatoRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<CampionatoRecord, ?>>asList(Keys.CAMPIONATO__FKATTINENTE_A);
-    }
-
-    public Regola regola() {
-        return new Regola(this, Keys.CAMPIONATO__FKATTINENTE_A);
     }
 
     /**
