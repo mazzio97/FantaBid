@@ -59,6 +59,7 @@ public final class Queries {
     
     public static Stream<String> getOpenLeagues() {
         return query.select(CAMPIONATO.IDCAMPIONATO, CAMPIONATO.DATACHIUSURA)
+                    .from(CAMPIONATO)
                     .where(CAMPIONATO.DATAAPERTURA.ge(new Date(System.currentTimeMillis())))
                     .and(CAMPIONATO.DATACHIUSURA.le(new Date(System.currentTimeMillis())))
                     .fetch()
