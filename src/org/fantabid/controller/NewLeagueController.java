@@ -75,7 +75,7 @@ public class NewLeagueController {
         numTeamsBox.getChildren().add(numTeamsSpinner);
 
         Map<CheckBox, RegolaRecord> rulesMap = new LinkedHashMap<>();
-        Queries.getRules().forEach(r -> rulesMap.put(new CheckBox(r.getNome()), r));
+        Queries.getAllRules().forEach(r -> rulesMap.put(new CheckBox(r.getNome()), r));
         rulesBox.getChildren().addAll(rulesMap.keySet());
 
         leagueType.setOnAction(e -> {

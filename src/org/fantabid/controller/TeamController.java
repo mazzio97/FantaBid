@@ -1,6 +1,8 @@
 package org.fantabid.controller;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.fantabid.generated.tables.records.CalciatoreRecord;
 import org.fantabid.model.Model;
@@ -37,6 +39,7 @@ public class TeamController {
     @FXML private Button backButton;
     private final Model model = Model.get();
 
+    private final List<CalciatoreRecord> allPlayers = Queries.getAllPlayers().collect(Collectors.toList());
     private final ObservableList<CalciatoreRecord> filteredPlayers = FXCollections.observableArrayList();
     private final ObservableList<CalciatoreRecord> teamPlayers = FXCollections.observableArrayList();
     
@@ -95,18 +98,11 @@ public class TeamController {
             teamPlayers.remove(teamTable.getSelectionModel().getSelectedItem());
             budgetLabel.setText(String.valueOf(model.getTeam().getCreditoresiduo() - budgetSpent()) + "M");
         });
-        updatePlayersButton.setOnAction(e -> {
-            filteredPlayers.clear();
-            Queries.filterPlayers(playerFilterField.getText(),
-                                  roleComboBox.getSelectionModel().getSelectedItem().getRoleString(),
-                                  Optional.of(teamComboBox.getSelectionModel().getSelectedItem())
-                                                          .filter(r -> !r.equals(ANY))
-                                                          .orElse(null))
-                   .forEach(filteredPlayers::add);
-
-        });
         backButton.setOnAction(e -> Views.loadLeaguesScene());
-        updatePlayersButton.fire();
+        playerFilterField.setOnKeyTyped(e -> filterPlayers());
+        roleComboBox.setOnAction(e -> filterPlayers());
+        teamComboBox.setOnAction(e -> filterPlayers());
+        filterPlayers();
     }
     
     private void addPlayerToTeam(CalciatoreRecord c) {
@@ -126,6 +122,21 @@ public class TeamController {
                           .map(CalciatoreRecord::getPrezzostandard)
                           .mapToInt(p -> p.intValue())
                           .sum();
+    }
+    
+    private void filterPlayers() {
+        String namePart = Optional.ofNullable(playerFilterField.getText()).map(String::toUpperCase).orElse("");
+        String roleFilter = roleComboBox.getSelectionModel().getSelectedItem().getRoleString();
+        String teamFilter = Optional.of(teamComboBox.getSelectionModel().getSelectedItem())
+                                    .filter(r -> !r.equals(ANY))
+                                    .orElse(null);
+        
+        filteredPlayers.clear();
+        allPlayers.stream()
+                  .filter(c -> c.getNome().toUpperCase().contains(namePart))
+                  .filter(c -> roleFilter == null || c.getRuolo().equals(roleFilter))
+                  .filter(c -> teamFilter == null || c.getSquadra().equals(teamFilter))
+                  .forEach(filteredPlayers::add);
     }
 
 }

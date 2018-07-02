@@ -146,12 +146,20 @@ public final class Queries {
                     .map(r -> (CampionatoRecord) r);
     }
 
-    public static Stream<RegolaRecord> getRules() {
+    public static Stream<RegolaRecord> getAllRules() {
         return query.select()
                     .from(REGOLA)
                     .fetch()
                     .stream()
                     .map(r -> (RegolaRecord) r);
+    }
+    
+    public static Stream<CalciatoreRecord> getAllPlayers() {
+        return query.select()
+                    .from(CALCIATORE)
+                    .fetch()
+                    .stream()
+                    .map(r -> (CalciatoreRecord) r);
     }
 
     public static Stream<String> getAllTeams() {
@@ -161,15 +169,6 @@ public final class Queries {
                     .stream()
                     .map(r -> r.value1())
                     .sorted();
-    }
-    
-    public static Stream<CalciatoreRecord> filterPlayers(String namePart, String role, String team) {
-        SelectConditionStep<?> s = query.select()
-                                        .from(CALCIATORE)
-                                        .where(CALCIATORE.NOME.contains(namePart.toUpperCase()));
-        Optional.ofNullable(role).ifPresent(r -> s.and(CALCIATORE.RUOLO.eq(r)));
-        Optional.ofNullable(team).ifPresent(t -> s.and(CALCIATORE.SQUADRA.eq(t)));
-        return s.fetch().stream().map(r -> (CalciatoreRecord) r);
     }
     
     public static Optional<Integer> getLastLeagueId() {
