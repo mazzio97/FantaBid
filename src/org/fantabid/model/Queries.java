@@ -14,7 +14,6 @@ import org.fantabid.generated.tables.records.CampionatoRecord;
 import org.fantabid.generated.tables.records.RegolaRecord;
 import org.fantabid.generated.tables.records.SquadraRecord;
 import org.jooq.DSLContext;
-import org.jooq.Record;
 import org.jooq.Record1;
 import org.jooq.SQLDialect;
 import org.jooq.SelectConditionStep;
@@ -193,6 +192,6 @@ public final class Queries {
 
     // TODO: TO BE REMOVED
     public static void testQuery(Object ...args) {
-        query.select().from(ALLENATORE).fetch().stream().map(Record::intoList).forEach(System.out::println);
+//        query.select().from(ALLENATORE).fetch().stream().map(Record::intoList).forEach(System.out::println);
     }
 }

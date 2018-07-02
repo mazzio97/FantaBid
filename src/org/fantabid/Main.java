@@ -34,7 +34,7 @@ public final class Main extends Application {
         primaryStage.getIcons().add(new Image("org/fantabid/images/Icon.png"));
         
         Queries.testQuery();
-        Views.loadLoginScene();
+        Views.loadNewLeagueScene();
         
         primaryStage.show();
         primaryStage.setX((Screen.getPrimary().getVisualBounds().getWidth() - primaryStage.getWidth()) / 2);

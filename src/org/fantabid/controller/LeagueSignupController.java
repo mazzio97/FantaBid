@@ -1,18 +1,20 @@
 package org.fantabid.controller;
 
-import java.awt.TextField;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.fantabid.generated.tables.records.CampionatoRecord;
 import org.fantabid.generated.tables.records.RegolaRecord;
+import org.fantabid.model.Limits;
 import org.fantabid.model.Model;
 import org.fantabid.model.Queries;
 import org.fantabid.view.Views;
 
+import javafx.beans.binding.BooleanBinding;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 
 public class LeagueSignupController {
     
@@ -26,6 +28,17 @@ public class LeagueSignupController {
     private final Model model = Model.get();
 
     public final void initialize() {
+        teamNameField.setTextFormatter(Limits.getTextFormatter(Limits.MAX_TEAM_NAME_CHARS));
+        registerButton.disableProperty().bind(new BooleanBinding() {{
+                super.bind(teamNameField.textProperty());
+            }
+
+            @Override
+            protected boolean computeValue() {
+                return teamNameField.getText().isEmpty();
+            }
+        });
+        
         CampionatoRecord league = model.getLeague();
         Stream<RegolaRecord> rules = Queries.getRulesFromLeague(league.getIdcampionato());
         

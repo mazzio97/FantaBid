@@ -29,11 +29,7 @@ public class SignupController {
         usernameField.setTextFormatter(Limits.getTextFormatter(Limits.MAX_USERNAME_CHARS));
         passwordField.setTextFormatter(Limits.getTextFormatter(Limits.MAX_PASSWORD_CHARS));
         confirmField.setTextFormatter(Limits.getTextFormatter(Limits.MAX_PASSWORD_CHARS));
-        
-        backButton.setOnAction(e -> Views.loadLoginScene());
-        
-        signupButton.disableProperty().bind(new BooleanBinding() {
-            {
+        signupButton.disableProperty().bind(new BooleanBinding() {{
                 super.bind(nameField.textProperty(), surnameField.textProperty(), usernameField.textProperty(),
                            passwordField.textProperty(), confirmField.textProperty());
             }
@@ -47,6 +43,8 @@ public class SignupController {
                        confirmField.getText().isEmpty();
             }
         });
+
+        backButton.setOnAction(e -> Views.loadLoginScene());
         
         signupButton.setOnAction(e -> {            
             if(!passwordField.getText().equals(confirmField.getText())) {
