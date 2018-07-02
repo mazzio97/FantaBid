@@ -1,7 +1,5 @@
 package org.fantabid.controller;
 
-import static org.fantabid.generated.Tables.*;
-
 import org.fantabid.model.Model;
 import org.fantabid.model.Queries;
 import org.fantabid.view.Buttons;
@@ -21,15 +19,16 @@ public class UserAreaController {
     private final Model model = Model.get();
     
     public final void initialize() {
-        usernameLabel.setText(model.getUser());
+        usernameLabel.setText(model.getUser().getUsername());
         
-        Queries.getTeamsFromUser(model.getUser())
+        Queries.getTeamsFromUser(model.getUser().getUsername())
                .map(r -> {
-                   Button b = Buttons.listButton(r.getValue(SQUADRA.NOMESQUADRA) +
-                                                 " (" + r.getValue(CAMPIONATO.NOME) + "), " +
-                                                 "closing at: " + r.getValue(CAMPIONATO.DATACHIUSURA));
+                   Button b = Buttons.listButton(r.getFirst().getNomesquadra() +
+                                                 " (" + r.getSecond().getNome() + "), " +
+                                                 "closing at: " + r.getSecond().getDatachiusura());
                    b.setOnAction(e -> {
-                       model.setLeague(r.getValue(CAMPIONATO.IDCAMPIONATO));
+                       model.setTeam(r.getFirst());
+                       model.setLeague(r.getSecond());
                        Views.loadTeamScene();
                    });
                    return b;

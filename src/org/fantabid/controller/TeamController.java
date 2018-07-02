@@ -35,6 +35,7 @@ public class TeamController {
     @FXML private Button addButton;
     @FXML private Button removeButton;
     @FXML private Button backButton;
+    private final Model model = Model.get();
 
     private final ObservableList<CalciatoreRecord> filteredPlayers = FXCollections.observableArrayList();
     private final ObservableList<CalciatoreRecord> teamPlayers = FXCollections.observableArrayList();
@@ -88,11 +89,11 @@ public class TeamController {
 //        addButton.setOnAction(e -> Views.loadBetInfoScene());
         addButton.setOnAction(e -> {
             addPlayerToTeam(playersTable.getSelectionModel().getSelectedItem());
-            budgetLabel.setText(String.valueOf(Model.get().getTeamBudget() - budgetSpent()) + "M");
+            budgetLabel.setText(String.valueOf(model.getTeam().getCreditoresiduo() - budgetSpent()) + "M");
         });
         removeButton.setOnAction(e -> {
             teamPlayers.remove(teamTable.getSelectionModel().getSelectedItem());
-            budgetLabel.setText(String.valueOf(Model.get().getTeamBudget() - budgetSpent()) + "M");
+            budgetLabel.setText(String.valueOf(model.getTeam().getCreditoresiduo() - budgetSpent()) + "M");
         });
         updatePlayersButton.setOnAction(e -> {
             filteredPlayers.clear();
@@ -110,7 +111,7 @@ public class TeamController {
     
     private void addPlayerToTeam(CalciatoreRecord c) {
         final Role r = Role.fromString(c.getRuolo());
-        final int remainingBudget = Model.get().getTeamBudget() - budgetSpent();
+        final int remainingBudget = model.getTeam().getCreditoresiduo() - budgetSpent();
         final int remainingPlayers = Role.ANY.getMaxInTeam() - (teamPlayers.size() + 1);
         Optional.of(teamPlayers)
                 .filter(tp -> tp.size() < Role.ANY.getMaxInTeam())

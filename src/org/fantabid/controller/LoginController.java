@@ -24,13 +24,17 @@ public class LoginController {
         
         signupButton.setOnAction(e -> Views.loadSignupScene());
         
-        loginButton.setOnAction(e -> {
-            if (Queries.checkPassword(usernameField.getText(), passwordField.getText())) {
-                Model.get().setUser(usernameField.getText());
-                Views.loadUserAreaScene();
-            } else {
-                Dialogs.showErrorDialog("Wrong User or Password", "Reinsert the username or the password");
-            }
-        });
+        loginButton.setOnAction(e ->  Queries.getUser(usernameField.getText())
+                                             .filter(u -> u.getPassword().equals(passwordField.getText()))
+                                             .map(u -> {
+                                                 Model.get().setUser(u);
+                                                 Views.loadUserAreaScene();
+                                                 return u;
+                                             })
+                                             .orElseGet(() -> {
+                                                 Dialogs.showErrorDialog("Wrong User or Password",
+                                                                         "Reinsert the username or the password");
+                                                 return null;
+                                             }));
     }
 }

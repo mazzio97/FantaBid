@@ -26,8 +26,8 @@ public class LeagueSignupController {
     private final Model model = Model.get();
 
     public final void initialize() {
-        CampionatoRecord league = Queries.getLeague(model.getLeague()).get();
-        Stream<RegolaRecord> rules = Queries.getRulesFromLeague(model.getLeague());
+        CampionatoRecord league = model.getLeague();
+        Stream<RegolaRecord> rules = Queries.getRulesFromLeague(league.getIdcampionato());
         
         nameLabel.setText(league.getNome());
         
@@ -38,8 +38,8 @@ public class LeagueSignupController {
         rulesLabel.setText("Rules:\n- " + rules.map(RegolaRecord::getNome).collect(Collectors.joining("\n- ")));
         
         registerButton.setOnAction(e -> {
-            Queries.registerTeam(league.getIdcampionato(), model.getUser(), teamNameField.getText(),
-                                 league.getBudgetpersquadra());
+            Queries.registerTeam(league.getIdcampionato(), model.getUser().getUsername(),
+                                 teamNameField.getText(), league.getBudgetpersquadra());
             Views.loadUserAreaScene();
         });
         

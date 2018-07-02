@@ -1,7 +1,5 @@
 package org.fantabid.controller;
 
-import static org.fantabid.generated.Tables.*;
-
 import org.fantabid.model.Model;
 import org.fantabid.model.Queries;
 import org.fantabid.view.Buttons;
@@ -21,16 +19,15 @@ public class LeaguesController {
     public final void initialize() {
 
         Queries.getOpenLeagues()
-        .map(r -> {
-            Button b = Buttons.listButton(r.getValue(CAMPIONATO.NOME) + ", closing at: " +
-                                          r.getValue(CAMPIONATO.DATACHIUSURA));
-            b.setOnAction(e -> {
-                model.setLeague(r.getValue(CAMPIONATO.IDCAMPIONATO));
-                Views.loadTeamScene();
-            });
-            return b;
-        })
-        .forEach(leaguesBox.getChildren()::add);
+               .map(r -> {
+                   Button b = Buttons.listButton(r.getNome() + ", closing at: " + r.getDatachiusura());
+                   b.setOnAction(e -> {
+                       model.setLeague(r);
+                       Views.loadTeamScene();
+                   });
+                   return b;
+               })
+               .forEach(leaguesBox.getChildren()::add);
 
         createLeagueButton.setOnAction(e -> Views.loadNewLeagueScene());
 

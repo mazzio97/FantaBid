@@ -4,7 +4,6 @@ import static org.fantabid.model.Role.*;
 
 import org.fantabid.generated.tables.records.CalciatoreRecord;
 import org.fantabid.model.Model;
-import org.fantabid.model.Queries;
 import org.fantabid.view.Views;
 
 import javafx.beans.binding.Bindings;
@@ -29,7 +28,7 @@ public class BetInfoController {
     private final Model model = Model.get();
     
     public final void initialize() {
-        CalciatoreRecord player = Queries.getPlayer(model.getPlayer()).get();
+        CalciatoreRecord player = model.getPlayer();
         
         playerLabel.setText(player.getNome());
         

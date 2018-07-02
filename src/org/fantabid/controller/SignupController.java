@@ -1,5 +1,6 @@
 package org.fantabid.controller;
 
+import org.fantabid.generated.tables.records.AllenatoreRecord;
 import org.fantabid.model.Limits;
 import org.fantabid.model.Model;
 import org.fantabid.model.Queries;
@@ -54,9 +55,9 @@ public class SignupController {
             else if (Queries.checkUsername(usernameField.getText())) {
                 Dialogs.showWarningDialog("User Already Exists", "This username cannot be used, try another one");
             } else {
-                Queries.registerUser(nameField.getText(), surnameField.getText(), 
-                                     usernameField.getText(), passwordField.getText());
-                Model.get().setUser(usernameField.getText());
+                AllenatoreRecord user = Queries.registerUser(nameField.getText(), surnameField.getText(), 
+                                                             usernameField.getText(), passwordField.getText());
+                Model.get().setUser(user);
                 Views.loadUserAreaScene();
             }
         });

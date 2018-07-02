@@ -2,26 +2,29 @@ package org.fantabid.model;
 
 import java.util.Optional;
 
+import org.fantabid.generated.tables.records.AllenatoreRecord;
+import org.fantabid.generated.tables.records.CalciatoreRecord;
+import org.fantabid.generated.tables.records.CampionatoRecord;
+import org.fantabid.generated.tables.records.SquadraRecord;
+
 public final class Model {
     
     private static final Model SINGLETON = new Model();
 
-    private Optional<String> currentUser = Optional.empty();
-    private Optional<Integer> currentTeam = Optional.empty();
-    private Optional<Integer> currentLeague = Optional.empty();
-    private Optional<Integer> currentPlayer = Optional.empty();
-    private Optional<Integer> teamBudget = Optional.of(250); // TODO: set when a league is selected
-    
+    private Optional<AllenatoreRecord> currentUser = Optional.empty();
+    private Optional<SquadraRecord> currentTeam = Optional.empty();
+    private Optional<CampionatoRecord> currentLeague = Optional.empty();
+    private Optional<CalciatoreRecord> currentPlayer = Optional.empty();
 
     public static Model get() {
         return SINGLETON;
     }
 
-    public String getUser() {
+    public AllenatoreRecord getUser() {
         return currentUser.orElseThrow(() -> new IllegalStateException());
     }
     
-    public void setUser(String username) {
+    public void setUser(AllenatoreRecord username) {
         currentUser = Optional.of(username);
     }
     
@@ -29,43 +32,39 @@ public final class Model {
         currentUser = Optional.empty();
     }
     
-    public int getTeam() {
+    public SquadraRecord getTeam() {
         return currentTeam.orElseThrow(() -> new IllegalStateException());
     }
     
-    public void setTeam(int teamId) {
-        currentTeam = Optional.of(teamId);
+    public void setTeam(SquadraRecord team) {
+        currentTeam = Optional.of(team);
     }
     
     public void removeTeam() {
         currentTeam = Optional.empty();
     }
     
-    public int getLeague() {
+    public CampionatoRecord getLeague() {
         return currentLeague.orElseThrow(() -> new IllegalStateException());
     }
     
-    public void setLeague(int leagueId) {
-        currentLeague = Optional.of(leagueId);
+    public void setLeague(CampionatoRecord league) {
+        currentLeague = Optional.of(league);
     }
     
     public void removeLeague() {
         currentLeague = Optional.empty();
     }
     
-    public int getPlayer() {
+    public CalciatoreRecord getPlayer() {
         return currentPlayer.orElseThrow(() -> new IllegalStateException());
     }
     
-    public void setPlayer(int playerId) {
-        currentPlayer = Optional.of(playerId);
+    public void setPlayer(CalciatoreRecord player) {
+        currentPlayer = Optional.of(player);
     }
     
     public void removePlayer() {
         currentPlayer = Optional.empty();
-    }
-
-    public int getTeamBudget() {
-        return teamBudget.get();
     }
 }

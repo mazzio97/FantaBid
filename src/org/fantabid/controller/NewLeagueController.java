@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.fantabid.generated.tables.records.CampionatoRecord;
 import org.fantabid.generated.tables.records.RegolaRecord;
 import org.fantabid.model.LeagueType;
 import org.fantabid.model.Queries;
@@ -62,20 +63,20 @@ public class NewLeagueController {
         teamBudgetLabel.textProperty().bind(Bindings.format("Budget: %.0f$", teamBudgetSlider.valueProperty()));
 
         createButton.setOnAction(e -> {
-            int leagueId = Queries.registerLeague(nameField.getText(),
-                                                  descriptionArea.getText(),
-                                                  Double.valueOf(teamBudgetSlider.getValue()).intValue(),
-                                                  new Date(System.currentTimeMillis()),
-                                                  Date.valueOf(endingDatePicker.getValue()),
-                                                  leagueType.getValue().isBid(),
-                                                  numTeamsSpinner.getValue());
+            CampionatoRecord league = Queries.registerLeague(nameField.getText(),
+                                                             descriptionArea.getText(),
+                                                             Double.valueOf(teamBudgetSlider.getValue()).intValue(),
+                                                             new Date(System.currentTimeMillis()),
+                                                             Date.valueOf(endingDatePicker.getValue()),
+                                                             leagueType.getValue().isBid(),
+                                                             numTeamsSpinner.getValue());
             rulesBox.getChildren()
                     .stream()
                     .map(n -> (CheckBox) n)
                     .filter(CheckBox::isSelected)
                     .map(rulesMap::get)
                     .map(RegolaRecord::getIdregola)
-                    .forEach(i -> Queries.linkRuleToLeague(i, leagueId));
+                    .forEach(i -> Queries.linkRuleToLeague(i, league.getIdcampionato()));
         });
         
         cancelButton.setOnAction(e -> Views.loadUserAreaScene());
