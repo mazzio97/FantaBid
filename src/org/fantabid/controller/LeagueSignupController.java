@@ -26,7 +26,7 @@ public class LeagueSignupController {
     private final Model model = Model.get();
 
     public final void initialize() {
-        CampionatoRecord league = Queries.getLeagueInfo(model.getLeague()).get();
+        CampionatoRecord league = Queries.getLeague(model.getLeague()).get();
         Stream<RegolaRecord> rules = Queries.getRulesFromLeague(model.getLeague());
         
         nameLabel.setText(league.getNome());

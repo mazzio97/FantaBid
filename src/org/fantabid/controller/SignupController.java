@@ -1,10 +1,12 @@
 package org.fantabid.controller;
 
+import org.fantabid.model.Limits;
 import org.fantabid.model.Model;
 import org.fantabid.model.Queries;
 import org.fantabid.view.Dialogs;
 import org.fantabid.view.Views;
 
+import javafx.beans.binding.BooleanBinding;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
@@ -15,13 +17,35 @@ public class SignupController {
     @FXML private TextField usernameField;
     @FXML private TextField surnameField;
     @FXML private TextField nameField;
-    @FXML private PasswordField confirmField;
     @FXML private PasswordField passwordField;
+    @FXML private PasswordField confirmField;
     @FXML private Button backButton;
     @FXML private Button signupButton;
     
     public final void initialize() {
+        nameField.setTextFormatter(Limits.getTextFormatter(Limits.MAX_NAME_CHARS));
+        surnameField.setTextFormatter(Limits.getTextFormatter(Limits.MAX_SURNAME_CHARS));
+        usernameField.setTextFormatter(Limits.getTextFormatter(Limits.MAX_USERNAME_CHARS));
+        passwordField.setTextFormatter(Limits.getTextFormatter(Limits.MAX_PASSWORD_CHARS));
+        confirmField.setTextFormatter(Limits.getTextFormatter(Limits.MAX_PASSWORD_CHARS));
+        
         backButton.setOnAction(e -> Views.loadLoginScene());
+        
+        signupButton.disableProperty().bind(new BooleanBinding() {
+            {
+                super.bind(nameField.textProperty(), surnameField.textProperty(), usernameField.textProperty(),
+                           passwordField.textProperty(), confirmField.textProperty());
+            }
+
+            @Override
+            protected boolean computeValue() {
+                return nameField.getText().isEmpty() ||
+                       surnameField.getText().isEmpty() ||
+                       usernameField.getText().isEmpty() ||
+                       passwordField.getText().isEmpty() ||
+                       confirmField.getText().isEmpty();
+            }
+        });
         
         signupButton.setOnAction(e -> {            
             if(!passwordField.getText().equals(confirmField.getText())) {

@@ -71,6 +71,24 @@ public final class Queries {
         return teamId;
     }
     
+    public static Optional<CampionatoRecord> getLeague(int leagueId) {
+        return query.select()
+                    .from(CAMPIONATO)
+                    .where(CAMPIONATO.IDCAMPIONATO.eq(leagueId))
+                    .stream()
+                    .map(r -> (CampionatoRecord) r)
+                    .findFirst();
+    }
+    
+    public static Optional<CalciatoreRecord> getPlayer(int playerId) {
+        return query.select()
+                    .from(CALCIATORE)
+                    .where(CALCIATORE.IDCALCIATORE.eq((short) playerId))
+                    .stream()
+                    .map(r -> (CalciatoreRecord) r)
+                    .findFirst();
+    }
+    
     public static void linkRuleToLeague(int ruleId, int leagueId) {
         query.insertInto(REGOLE_PER_CAMPIONATO)
              .values(ruleId, leagueId)
@@ -106,15 +124,6 @@ public final class Queries {
                     .fetch()
                     .stream()
                     .map(r -> (CampionatoRecord) r);
-    }
-    
-    public static Optional<CampionatoRecord> getLeagueInfo(int leagueId) {
-        return query.select()
-                    .from(CAMPIONATO)
-                    .where(CAMPIONATO.IDCAMPIONATO.eq(leagueId))
-                    .stream()
-                    .map(r -> (CampionatoRecord) r)
-                    .findFirst();
     }
 
     public static Stream<RegolaRecord> getRules() {

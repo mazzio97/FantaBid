@@ -1,5 +1,6 @@
 package org.fantabid.controller;
 
+import org.fantabid.model.Limits;
 import org.fantabid.model.Model;
 import org.fantabid.model.Queries;
 import org.fantabid.view.Dialogs;
@@ -11,13 +12,16 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
 public class LoginController {
-
+    
     @FXML private TextField usernameField;
     @FXML private PasswordField passwordField;
     @FXML private Button signupButton;
     @FXML private Button loginButton;
 
     public final void initialize() {
+        usernameField.setTextFormatter(Limits.getTextFormatter(Limits.MAX_USERNAME_CHARS));
+        passwordField.setTextFormatter(Limits.getTextFormatter(Limits.MAX_PASSWORD_CHARS));
+        
         signupButton.setOnAction(e -> Views.loadSignupScene());
         
         loginButton.setOnAction(e -> {

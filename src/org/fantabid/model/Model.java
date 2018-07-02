@@ -9,6 +9,7 @@ public final class Model {
     private Optional<String> currentUser = Optional.empty();
     private Optional<Integer> currentTeam = Optional.empty();
     private Optional<Integer> currentLeague = Optional.empty();
+    private Optional<Integer> currentPlayer = Optional.empty();
     
     public static Model get() {
         return SINGLETON;
@@ -48,5 +49,17 @@ public final class Model {
     
     public void removeLeague() {
         currentLeague = Optional.empty();
+    }
+    
+    public int getPlayer() {
+        return currentPlayer.orElseThrow(() -> new IllegalStateException());
+    }
+    
+    public void setPlayer(int playerId) {
+        currentPlayer = Optional.of(playerId);
+    }
+    
+    public void removePlayer() {
+        currentPlayer = Optional.empty();
     }
 }
