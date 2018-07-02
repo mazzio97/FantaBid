@@ -3,6 +3,7 @@ package org.fantabid.controller;
 import java.util.Optional;
 
 import org.fantabid.generated.tables.records.CalciatoreRecord;
+import org.fantabid.model.Model;
 import org.fantabid.model.Queries;
 import org.fantabid.model.Role;
 import org.fantabid.view.Views;
@@ -24,6 +25,7 @@ public class TeamController {
 
     @FXML private Label leagueLabel;
     @FXML private Label teamLabel;
+    @FXML private Label budgetLabel;
     @FXML private TextField playerFilterField;
     @FXML private ComboBox<Role> roleComboBox;
     @FXML private ComboBox<String> teamComboBox;
@@ -84,8 +86,14 @@ public class TeamController {
         teamTable.setItems(teamPlayers);
 
 //        addButton.setOnAction(e -> Views.loadBetInfoScene());
-        addButton.setOnAction(e -> teamPlayers.add(playersTable.getSelectionModel().getSelectedItem()));
-        removeButton.setOnAction(e -> teamPlayers.remove(teamTable.getSelectionModel().getSelectedItem()));
+        addButton.setOnAction(e -> {
+            addPlayerToTeam(playersTable.getSelectionModel().getSelectedItem());
+            budgetLabel.setText(String.valueOf(Model.get().getTeamBudget() - budgetSpent()) + "M");
+        });
+        removeButton.setOnAction(e -> {
+            teamPlayers.remove(teamTable.getSelectionModel().getSelectedItem());
+            budgetLabel.setText(String.valueOf(Model.get().getTeamBudget() - budgetSpent()) + "M");
+        });
         updatePlayersButton.setOnAction(e -> {
             filteredPlayers.clear();
             Queries.filterPlayers(playerFilterField.getText(),
@@ -98,6 +106,25 @@ public class TeamController {
         });
         backButton.setOnAction(e -> Views.loadLeaguesScene());
         updatePlayersButton.fire();
+    }
+    
+    private void addPlayerToTeam(CalciatoreRecord c) {
+        final Role r = Role.fromString(c.getRuolo());
+        final int remainingBudget = Model.get().getTeamBudget() - budgetSpent();
+        final int remainingPlayers = Role.ANY.getMaxInTeam() - (teamPlayers.size() + 1);
+        Optional.of(teamPlayers)
+                .filter(tp -> tp.size() < Role.ANY.getMaxInTeam())
+                .filter(tp -> remainingBudget >= c.getPrezzostandard() + remainingPlayers)
+                .filter(tp -> tp.stream().filter(p -> p.getRuolo().equals(c.getRuolo())).count() < r.getMaxInTeam())
+                .filter(tp -> !tp.contains(c))
+                .ifPresent(tp -> tp.add(c));
+    }
+    
+    private int budgetSpent() {
+        return teamPlayers.stream()
+                          .map(CalciatoreRecord::getPrezzostandard)
+                          .mapToInt(p -> p.intValue())
+                          .sum();
     }
 
 }
