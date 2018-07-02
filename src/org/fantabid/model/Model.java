@@ -9,7 +9,9 @@ public final class Model {
     private Optional<String> currentUser = Optional.empty();
     private Optional<Integer> currentTeam = Optional.empty();
     private Optional<Integer> currentLeague = Optional.empty();
+    private Optional<Integer> teamBudget = Optional.of(250); // TODO: set when a league is selected
     
+
     public static Model get() {
         return SINGLETON;
     }
@@ -48,5 +50,9 @@ public final class Model {
     
     public void removeLeague() {
         currentLeague = Optional.empty();
+    }
+
+    public int getTeamBudget() {
+        return teamBudget.get();
     }
 }
