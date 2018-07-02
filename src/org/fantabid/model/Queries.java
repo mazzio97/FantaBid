@@ -16,7 +16,6 @@ import org.fantabid.generated.tables.records.SquadraRecord;
 import org.jooq.DSLContext;
 import org.jooq.Record1;
 import org.jooq.SQLDialect;
-import org.jooq.SelectConditionStep;
 import org.jooq.impl.DSL;
 
 public final class Queries {

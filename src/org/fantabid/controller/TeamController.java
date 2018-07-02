@@ -33,7 +33,6 @@ public class TeamController {
     @FXML private ComboBox<String> teamComboBox;
     @FXML private TableView<CalciatoreRecord> playersTable;
     @FXML private TableView<CalciatoreRecord> teamTable;
-    @FXML private Button updatePlayersButton;
     @FXML private Button addButton;
     @FXML private Button removeButton;
     @FXML private Button backButton;
