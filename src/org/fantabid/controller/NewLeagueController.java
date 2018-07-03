@@ -6,6 +6,7 @@ import java.time.ZoneOffset;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import org.fantabid.generated.tables.records.CampionatoRecord;
 import org.fantabid.generated.tables.records.RegolaRecord;
@@ -38,6 +39,7 @@ public class NewLeagueController {
     public static final int MIN_HOUR = 0;
     public static final int MAX_HOUR = 23;
     public static final int DEFAULT_HOUR = 12;
+    public static final int CLASSIC_BUDGET = 250;
 
     @FXML private TextField nameField;
     @FXML private ChoiceBox<LeagueType> leagueType;
@@ -54,16 +56,20 @@ public class NewLeagueController {
     @FXML private Button cancelButton;
     @FXML private Button createButton;
 
-    public final void initialize() {        
+    public final void initialize() {
         nameField.setTextFormatter(Limits.getTextFormatter(Limits.MAX_LEAGUE_NAME_CHARS));
         descriptionArea.setTextFormatter(Limits.getTextFormatter(Limits.MAX_LEAGUE_DESCRIPTION_CHARS));
         createButton.disableProperty().bind(new BooleanBinding() {{
-                super.bind(nameField.textProperty(), endingDatePicker.valueProperty());
+                super.bind(nameField.textProperty(),
+                           descriptionArea.textProperty(),
+                           endingDatePicker.valueProperty());
             }
     
             @Override
             protected boolean computeValue() {
-                return nameField.getText().isEmpty() || endingDatePicker.getValue() == null;
+                return nameField.getText().isEmpty() ||
+                       descriptionArea.getText().isEmpty() ||
+                       endingDatePicker.getValue() == null;
             }
         });
         endingDatePicker.setDayCellFactory(p -> new DateCell() {
@@ -71,7 +77,9 @@ public class NewLeagueController {
             @Override
             public void updateItem(LocalDate item, boolean empty) {
                 super.updateItem(item, empty);
-                setDisable(empty || item.isBefore(LocalDate.now()) || item.isAfter(LocalDate.now().plusMonths(1)));
+                setDisable(empty ||
+                           item.isBefore(LocalDate.now().plusDays(1)) ||
+                           item.isAfter(LocalDate.now().plusMonths(1)));
             }
         });
 
@@ -96,21 +104,37 @@ public class NewLeagueController {
         createButton.setOnAction(e -> {
             CampionatoRecord league = Queries.registerLeague(nameField.getText(),
                                                              descriptionArea.getText(),
-                                                             Double.valueOf(teamBudgetSlider.getValue()).intValue(),
+                                                             computeBudget(),
                                                              new Date(System.currentTimeMillis()),
                                                              new Date(computeDateTimeMillis()),
                                                              leagueType.getValue().isBid(),
-                                                             numTeamsSpinner.getValue());
+                                                             computeMaxTeams());
             
             rulesBox.getChildren().stream()
-            .map(n -> (CheckBox) n)
-            .filter(CheckBox::isSelected)
-            .map(rulesMap::get)
-            .map(RegolaRecord::getIdregola)
-            .forEach(i -> Queries.linkRuleToLeague(i, league.getIdcampionato()));
+                                  .map(n -> (CheckBox) n)
+                                  .filter(CheckBox::isSelected)
+                                  .map(rulesMap::get)
+                                  .map(RegolaRecord::getIdregola)
+                                  .forEach(i -> Queries.linkRuleToLeague(i, league.getIdcampionato()));
+            
+            Views.loadUserAreaScene();
         });
 
         cancelButton.setOnAction(e -> Views.loadUserAreaScene());
+    }
+    
+    private int computeBudget() {
+        return Optional.of(teamBudgetSlider.getValue())
+                       .map(Double::valueOf)
+                       .map(Double::intValue)
+                       .filter(v -> leagueType.getValue().isBid())
+                       .orElse(CLASSIC_BUDGET);
+    }
+    
+    private Byte computeMaxTeams() {
+        return Optional.of(numTeamsSpinner.getValue().byteValue())
+                       .filter(v -> leagueType.getValue().isBid())
+                       .orElse(null);
     }
     
     private long computeDateTimeMillis() {

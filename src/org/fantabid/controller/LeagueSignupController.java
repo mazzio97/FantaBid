@@ -5,6 +5,7 @@ import java.util.stream.Stream;
 
 import org.fantabid.generated.tables.records.CampionatoRecord;
 import org.fantabid.generated.tables.records.RegolaRecord;
+import org.fantabid.model.LeagueType;
 import org.fantabid.model.Model;
 import org.fantabid.model.Queries;
 import org.fantabid.model.utils.Limits;
@@ -44,7 +45,7 @@ public class LeagueSignupController {
         
         nameLabel.setText(league.getNomecampionato());
         
-        descriptionLabel.setText("Type: " + league.getAstarialzo() + "\n" +
+        descriptionLabel.setText("Type: " + (league.getAstarialzo() ? LeagueType.BID : LeagueType.CLASSIC) + "\n" +
                                  "Closure Date: " + league.getDatachiusura() + "\n" +
                                  "Initial Budget:" + league.getBudgetpersquadra());
         

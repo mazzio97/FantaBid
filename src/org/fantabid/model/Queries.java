@@ -37,15 +37,16 @@ public final class Queries {
     }
     
     public static CampionatoRecord registerLeague(String leagueName, String description, int budget, Date opening,
-                                                  Date closure, boolean isBid, int maxTeam) {
+                                                  Date closure, boolean isBid, Byte maxTeams) {
         CampionatoRecord league = new CampionatoRecord();
         league.setIdcampionato(getLastLeagueId().orElse(-1) + 1);
         league.setNomecampionato(leagueName);
+        league.setDescrizione(description);
         league.setBudgetpersquadra((short) budget);
         league.setDataapertura(opening);
         league.setDatachiusura(closure);
         league.setAstarialzo(isBid);
-        Optional.ofNullable((byte) maxTeam).filter(m -> isBid).ifPresent(league::setNumeromassimosquadre);        
+        league.setNumeromassimosquadre(maxTeams);
         query.insertInto(CAMPIONATO).values(league.intoArray()).execute();
         return league;
     }
@@ -95,6 +96,7 @@ public final class Queries {
                     .where(ALLENATORE.USERNAME.eq(username))
                     .stream()
                     .map(r -> (AllenatoreRecord) r)
+                    .filter(o -> o != null)
                     .findFirst();
     }
     
@@ -104,6 +106,7 @@ public final class Queries {
                     .where(CAMPIONATO.IDCAMPIONATO.eq(leagueId))
                     .stream()
                     .map(r -> (CampionatoRecord) r)
+                    .filter(o -> o != null)
                     .findFirst();
     }
     
@@ -113,6 +116,7 @@ public final class Queries {
                     .where(SQUADRA.IDSQUADRA.eq(teamId))
                     .stream()
                     .map(r -> (SquadraRecord) r)
+                    .filter(o -> o != null)
                     .findFirst();
     }
     
@@ -122,6 +126,7 @@ public final class Queries {
                     .where(CALCIATORE.IDCALCIATORE.eq((short) playerId))
                     .stream()
                     .map(r -> (CalciatoreRecord) r)
+                    .filter(o -> o != null)
                     .findFirst();
     }
     
@@ -136,8 +141,7 @@ public final class Queries {
     public static Stream<CampionatoRecord> getOpenLeagues() {
         return query.select()
                     .from(CAMPIONATO)
-                    .where(CAMPIONATO.DATAAPERTURA.ge(new Date(System.currentTimeMillis())))
-                    .and(CAMPIONATO.DATACHIUSURA.le(new Date(System.currentTimeMillis())))
+                    .where(CAMPIONATO.DATACHIUSURA.ge(new Date(System.currentTimeMillis())))
                     .fetch()
                     .stream()
                     .map(r -> (CampionatoRecord) r);
@@ -210,6 +214,7 @@ public final class Queries {
                     .fetch()
                     .stream()
                     .map(r -> (PuntataRecord) r)
+                    .filter(o -> o != null)
                     .findFirst();
     }
     
@@ -219,6 +224,7 @@ public final class Queries {
                     .fetch()
                     .stream()
                     .map(Record1::value1)
+                    .filter(o -> o != null)
                     .findFirst();
     }
     
@@ -228,11 +234,13 @@ public final class Queries {
                     .fetch()
                     .stream()
                     .map(Record1::value1)
+                    .filter(o -> o != null)
                     .findFirst();
     }
 
     // TODO: TO BE REMOVED
     public static void testQuery(Object ...args) {
-//        PUNTATA.fieldStream().forEach(System.out::println);
+//        CampionatoRecord c = new CampionatoRecord();
+//        c.setNumeromassimosquadre(null);
     }
 }
