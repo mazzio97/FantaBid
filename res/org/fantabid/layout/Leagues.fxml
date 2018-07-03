@@ -38,7 +38,7 @@
             <Insets top="10.0" />
          </BorderPane.margin>
          <right>
-            <Button fx:id="backButton" mnemonicParsing="false" text="Back" BorderPane.alignment="CENTER">
+            <Button fx:id="backButton" maxHeight="40.0" maxWidth="70.0" minHeight="40.0" minWidth="70.0" mnemonicParsing="false" text="Back" BorderPane.alignment="CENTER">
                <font>
                   <Font name="System Bold" size="16.0" />
                </font>
@@ -61,7 +61,7 @@
             </Button>
          </center>
          <left>
-            <Button mnemonicParsing="false" text="Back" visible="false" BorderPane.alignment="CENTER">
+            <Button fx:id="refreshButton" maxHeight="40.0" maxWidth="70.0" minHeight="40.0" minWidth="70.0" mnemonicParsing="false" BorderPane.alignment="CENTER">
                <font>
                   <Font name="System Bold" size="16.0" />
                </font>

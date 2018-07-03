@@ -2,8 +2,14 @@ package org.fantabid.controller;
 
 import static org.fantabid.model.Role.*;
 
+import java.util.Date;
+
 import org.fantabid.generated.tables.records.CalciatoreRecord;
+import org.fantabid.generated.tables.records.CampionatoRecord;
+import org.fantabid.generated.tables.records.PuntataRecord;
+import org.fantabid.generated.tables.records.SquadraRecord;
 import org.fantabid.model.Model;
+import org.fantabid.model.Queries;
 import org.fantabid.view.Views;
 
 import javafx.beans.binding.Bindings;
@@ -20,17 +26,26 @@ public class BetInfoController {
     @FXML private Button midfielderButton;
     @FXML private Button strikerButton;
     @FXML private Label lastBetLabel;
-    @FXML private Label timeLeftLabel;
+    @FXML private Label expiryDateLabel;
     @FXML private Slider betSlider;
     @FXML private Label betLabel;
     @FXML private Button cancelButton;
     @FXML private Button betButton;
     private final Model model = Model.get();
     
-    public final void initialize() {
+    public final void initialize() {        
         CalciatoreRecord player = model.getPlayer();
+        SquadraRecord team = model.getTeam();
+        CampionatoRecord league = model.getLeague();
+        PuntataRecord lastBet = Queries.getLastBet(league.getIdcampionato(), player.getIdcalciatore())
+                                       .orElse(new PuntataRecord("giampaolo", league.getIdcampionato(), 
+                                                                 (short) player.getIdcalciatore(), (short) 0,
+                                                                 (short) 0, "", 0, (short) 0,
+                                                                 league.getDatachiusura()));
         
-        playerLabel.setText(player.getNome());
+        playerLabel.setText(player.getNome() + " (" + player.getSquadra() + ")");
+        lastBetLabel.setText("Last Bet: " + lastBet.getValore() + "$ (" + lastBet.getUsername() + ")");
+        expiryDateLabel.setText("Expiring At: " + new Date(league.getDatachiusura().getTime()));
         
         if(player.getRuolo() == PORTIERE.getRoleString()) {
             goalkeeperButton.setDisable(false);
@@ -42,14 +57,18 @@ public class BetInfoController {
             strikerButton.setDisable(false);
         }
         
-        lastBetLabel.setText("Last Bet: ");
-
-        timeLeftLabel.setText("Time Left: ");
-        
         betLabel.textProperty().bind(Bindings.format("%.0f $", betSlider.valueProperty()));
+        betSlider.setMin(lastBet.getValore());
+        betSlider.setMax(team.getCreditoresiduo());
         
-        cancelButton.setOnAction(e -> Views.loadTeamScene());
+        cancelButton.setOnAction(e -> {
+            model.removePlayer();
+            Views.loadTeamScene();
+        });
         
-        betButton.setOnAction(e -> Views.loadTeamScene());
+        betButton.setOnAction(e -> {
+            model.removePlayer();
+            Views.loadTeamScene();
+        });
     }
 }

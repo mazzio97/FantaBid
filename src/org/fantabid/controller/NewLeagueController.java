@@ -2,6 +2,7 @@ package org.fantabid.controller;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -34,11 +35,17 @@ public class NewLeagueController {
     public static final int MIN_NUM_TEAMS = 2;
     public static final int MAX_NUM_TEAMS = 12;
     public static final int DEFAULT_NUM_TEAMS = 8;
+    public static final int MIN_HOUR = 0;
+    public static final int MAX_HOUR = 23;
+    public static final int DEFAULT_HOUR = 12;
 
     @FXML private TextField nameField;
     @FXML private ChoiceBox<LeagueType> leagueType;
     @FXML private HBox numTeamsBox;
+    private final Spinner<Integer> numTeamsSpinner = new Spinner<>(MIN_NUM_TEAMS, MAX_NUM_TEAMS, DEFAULT_NUM_TEAMS);
     @FXML private TextArea descriptionArea;
+    @FXML private HBox dateTimeBox;
+    private final Spinner<Integer> endingHourSpinner = new Spinner<>(MIN_HOUR, MAX_HOUR, DEFAULT_HOUR);
     @FXML private DatePicker endingDatePicker;
     @FXML private VBox rulesBox;
     @FXML private HBox teamBudgetBox;
@@ -64,15 +71,15 @@ public class NewLeagueController {
             @Override
             public void updateItem(LocalDate item, boolean empty) {
                 super.updateItem(item, empty);
-                setDisable(empty || item.isBefore(LocalDate.now()));
+                setDisable(empty || item.isBefore(LocalDate.now()) || item.isAfter(LocalDate.now().plusMonths(1)));
             }
         });
 
+        numTeamsBox.getChildren().add(numTeamsSpinner);
+        dateTimeBox.getChildren().add(endingHourSpinner);
+
         Arrays.asList(LeagueType.values()).forEach(leagueType.getItems()::add);
         leagueType.getSelectionModel().select(LeagueType.BID);
-
-        Spinner<Integer> numTeamsSpinner = new Spinner<>(MIN_NUM_TEAMS, MAX_NUM_TEAMS, DEFAULT_NUM_TEAMS);
-        numTeamsBox.getChildren().add(numTeamsSpinner);
 
         Map<CheckBox, RegolaRecord> rulesMap = new LinkedHashMap<>();
         Queries.getAllRules().forEach(r -> rulesMap.put(new CheckBox(r.getNome()), r));
@@ -88,12 +95,13 @@ public class NewLeagueController {
 
         createButton.setOnAction(e -> {
             CampionatoRecord league = Queries.registerLeague(nameField.getText(),
-                    descriptionArea.getText(),
-                    Double.valueOf(teamBudgetSlider.getValue()).intValue(),
-                    new Date(System.currentTimeMillis()),
-                    Date.valueOf(endingDatePicker.getValue()),
-                    leagueType.getValue().isBid(),
-                    numTeamsSpinner.getValue());
+                                                             descriptionArea.getText(),
+                                                             Double.valueOf(teamBudgetSlider.getValue()).intValue(),
+                                                             new Date(System.currentTimeMillis()),
+                                                             new Date(computeDateTimeMillis()),
+                                                             leagueType.getValue().isBid(),
+                                                             numTeamsSpinner.getValue());
+            
             rulesBox.getChildren().stream()
             .map(n -> (CheckBox) n)
             .filter(CheckBox::isSelected)
@@ -103,5 +111,12 @@ public class NewLeagueController {
         });
 
         cancelButton.setOnAction(e -> Views.loadUserAreaScene());
+    }
+    
+    private long computeDateTimeMillis() {
+        return endingDatePicker.getValue()
+                               .atStartOfDay()
+                               .plusHours(endingHourSpinner.getValue() - 2)
+                               .toEpochSecond(ZoneOffset.UTC) * 1000;
     }
 }

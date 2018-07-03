@@ -50,7 +50,7 @@ public class TeamController {
         roleComboBox.getSelectionModel().select(0);
         
         teamComboBox.getItems().add(ANY);
-        Queries.getAllTeams().forEach(teamComboBox.getItems()::add);
+        Queries.getAllRealTeams().forEach(teamComboBox.getItems()::add);
         teamComboBox.getSelectionModel().select(0);
         
         // TODO: create a method to add a column in a table
@@ -97,7 +97,12 @@ public class TeamController {
             teamPlayers.remove(teamTable.getSelectionModel().getSelectedItem());
             budgetLabel.setText(String.valueOf(model.getTeam().getCreditoresiduo() - budgetSpent()) + "M");
         });
-        backButton.setOnAction(e -> Views.loadLeaguesScene());
+        backButton.setOnAction(e -> {
+            model.removeTeam();
+            model.removeLeague();
+            Views.loadUserAreaScene();
+        });
+        
         playerFilterField.setOnKeyTyped(e -> filterPlayers());
         roleComboBox.setOnAction(e -> filterPlayers());
         teamComboBox.setOnAction(e -> filterPlayers());

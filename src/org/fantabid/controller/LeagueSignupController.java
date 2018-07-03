@@ -53,9 +53,13 @@ public class LeagueSignupController {
         registerButton.setOnAction(e -> {
             Queries.registerTeam(league.getIdcampionato(), model.getUser().getUsername(),
                                  teamNameField.getText(), league.getBudgetpersquadra());
+            model.removeLeague();
             Views.loadUserAreaScene();
         });
         
-        cancelButton.setOnAction(e -> Views.loadUserAreaScene());
+        cancelButton.setOnAction(e -> {
+            model.removeLeague();
+            Views.loadUserAreaScene();
+        });
     }
 }

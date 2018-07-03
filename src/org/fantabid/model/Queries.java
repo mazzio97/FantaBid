@@ -11,6 +11,7 @@ import org.fantabid.Main;
 import org.fantabid.generated.tables.records.AllenatoreRecord;
 import org.fantabid.generated.tables.records.CalciatoreRecord;
 import org.fantabid.generated.tables.records.CampionatoRecord;
+import org.fantabid.generated.tables.records.PuntataRecord;
 import org.fantabid.generated.tables.records.RegolaRecord;
 import org.fantabid.generated.tables.records.SquadraRecord;
 import org.jooq.DSLContext;
@@ -103,13 +104,64 @@ public final class Queries {
                     .findFirst();
     }
     
-    public static Optional<CalciatoreRecord> getPlayer(int playerId) {
+    public static Optional<CalciatoreRecord> getPlayer(int playerId) {        
         return query.select()
                     .from(CALCIATORE)
                     .where(CALCIATORE.IDCALCIATORE.eq((short) playerId))
                     .stream()
                     .map(r -> (CalciatoreRecord) r)
                     .findFirst();
+    }
+    
+    public static Stream<AllenatoreRecord> getAllUsers() {
+        return query.select()
+                    .from(ALLENATORE)
+                    .fetch()
+                    .stream()
+                    .map(r -> (AllenatoreRecord) r);
+    }
+    
+    public static Stream<CampionatoRecord> getOpenLeagues() {
+        return query.select()
+                    .from(CAMPIONATO)
+                    .where(CAMPIONATO.DATAAPERTURA.ge(new Date(System.currentTimeMillis())))
+                    .and(CAMPIONATO.DATACHIUSURA.le(new Date(System.currentTimeMillis())))
+                    .fetch()
+                    .stream()
+                    .map(r -> (CampionatoRecord) r);
+    }
+
+    public static Stream<SquadraRecord> getAllFantabidTeams() {
+        return query.select()
+                    .from(SQUADRA)
+                    .fetch()
+                    .stream()
+                    .map(r -> (SquadraRecord) r);
+    }
+    
+    public static Stream<String> getAllRealTeams() {
+        return query.selectDistinct(CALCIATORE.SQUADRA)
+                    .from(CALCIATORE)
+                    .fetch()
+                    .stream()
+                    .map(r -> r.value1())
+                    .sorted();
+    }
+    
+    public static Stream<CalciatoreRecord> getAllPlayers() {
+        return query.select()
+                    .from(CALCIATORE)
+                    .fetch()
+                    .stream()
+                    .map(r -> (CalciatoreRecord) r);
+    }
+
+    public static Stream<RegolaRecord> getAllRules() {
+        return query.select()
+                    .from(REGOLA)
+                    .fetch()
+                    .stream()
+                    .map(r -> (RegolaRecord) r);
     }
     
     public static Stream<RegolaRecord> getRulesFromLeague(int leagueId) {
@@ -135,39 +187,16 @@ public final class Queries {
                     
     }
     
-    public static Stream<CampionatoRecord> getOpenLeagues() {
+    public static Optional<PuntataRecord> getLastBet(int leagueId, int playerId) {
         return query.select()
-                    .from(CAMPIONATO)
-                    .where(CAMPIONATO.DATAAPERTURA.ge(new Date(System.currentTimeMillis())))
-                    .and(CAMPIONATO.DATACHIUSURA.le(new Date(System.currentTimeMillis())))
+                    .from(PUNTATA)
+                    .where(PUNTATA.IDCAMPIONATO.eq(leagueId))
+                    .and(PUNTATA.IDCALCIATORE.eq((short) playerId))
+                    .and(PUNTATA.SUCCESSIVA_VALORE.isNull())
                     .fetch()
                     .stream()
-                    .map(r -> (CampionatoRecord) r);
-    }
-
-    public static Stream<RegolaRecord> getAllRules() {
-        return query.select()
-                    .from(REGOLA)
-                    .fetch()
-                    .stream()
-                    .map(r -> (RegolaRecord) r);
-    }
-    
-    public static Stream<CalciatoreRecord> getAllPlayers() {
-        return query.select()
-                    .from(CALCIATORE)
-                    .fetch()
-                    .stream()
-                    .map(r -> (CalciatoreRecord) r);
-    }
-
-    public static Stream<String> getAllTeams() {
-        return query.selectDistinct(CALCIATORE.SQUADRA)
-                    .from(CALCIATORE)
-                    .fetch()
-                    .stream()
-                    .map(r -> r.value1())
-                    .sorted();
+                    .map(r -> (PuntataRecord) r)
+                    .findFirst();
     }
     
     public static Optional<Integer> getLastLeagueId() {
@@ -190,6 +219,6 @@ public final class Queries {
 
     // TODO: TO BE REMOVED
     public static void testQuery(Object ...args) {
-//        query.select().from(ALLENATORE).fetch().stream().map(Record::intoList).forEach(System.out::println);
+//        PUNTATA.fieldStream().forEach(System.out::println);
     }
 }
