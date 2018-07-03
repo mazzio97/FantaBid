@@ -73,7 +73,6 @@ public class Keys {
     public static final ForeignKey<PuntataRecord, SquadraRecord> PUNTATA__FKOFFRE = ForeignKeys0.PUNTATA__FKOFFRE;
     public static final ForeignKey<RegolePerCampionatoRecord, RegolaRecord> REGOLE_PER_CAMPIONATO__FKR_1 = ForeignKeys0.REGOLE_PER_CAMPIONATO__FKR_1;
     public static final ForeignKey<RegolePerCampionatoRecord, CampionatoRecord> REGOLE_PER_CAMPIONATO__FKR = ForeignKeys0.REGOLE_PER_CAMPIONATO__FKR;
-    public static final ForeignKey<SquadraRecord, CampionatoRecord> SQUADRA__FKPARTECIPA = ForeignKeys0.SQUADRA__FKPARTECIPA;
     public static final ForeignKey<SquadraRecord, AllenatoreRecord> SQUADRA__FKGESTISCE = ForeignKeys0.SQUADRA__FKGESTISCE;
 
     // -------------------------------------------------------------------------
@@ -102,7 +101,6 @@ public class Keys {
         public static final ForeignKey<PuntataRecord, SquadraRecord> PUNTATA__FKOFFRE = Internal.createForeignKey(org.fantabid.generated.Keys.IDSQUADRA, Puntata.PUNTATA, "puntata__fkoffre", Puntata.PUNTATA.IDSQUADRA);
         public static final ForeignKey<RegolePerCampionatoRecord, RegolaRecord> REGOLE_PER_CAMPIONATO__FKR_1 = Internal.createForeignKey(org.fantabid.generated.Keys.IDREGOLA, RegolePerCampionato.REGOLE_PER_CAMPIONATO, "regole_per_campionato__fkr_1", RegolePerCampionato.REGOLE_PER_CAMPIONATO.IDREGOLA);
         public static final ForeignKey<RegolePerCampionatoRecord, CampionatoRecord> REGOLE_PER_CAMPIONATO__FKR = Internal.createForeignKey(org.fantabid.generated.Keys.IDCAMPIONATO, RegolePerCampionato.REGOLE_PER_CAMPIONATO, "regole_per_campionato__fkr", RegolePerCampionato.REGOLE_PER_CAMPIONATO.IDCAMPIONATO);
-        public static final ForeignKey<SquadraRecord, CampionatoRecord> SQUADRA__FKPARTECIPA = Internal.createForeignKey(org.fantabid.generated.Keys.IDCAMPIONATO, Squadra.SQUADRA, "squadra__fkpartecipa", Squadra.SQUADRA.IDCAMPIONATO);
         public static final ForeignKey<SquadraRecord, AllenatoreRecord> SQUADRA__FKGESTISCE = Internal.createForeignKey(org.fantabid.generated.Keys.IDALLENATORE, Squadra.SQUADRA, "squadra__fkgestisce", Squadra.SQUADRA.USERNAME);
     }
 }

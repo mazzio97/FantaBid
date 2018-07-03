@@ -20,7 +20,7 @@ create table CAMPIONATO (
      budgetPerSquadra numeric(4) not null,
      dataApertura date not null,
      dataChiusura date not null,
-     astaRialzo char not null,
+     astaRialzo boolean not null,
      numeroMassimoSquadre numeric(2),
      constraint IDCAMPIONATO primary key (idCampionato));
 

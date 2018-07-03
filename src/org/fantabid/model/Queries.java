@@ -44,7 +44,7 @@ public final class Queries {
         league.setBudgetpersquadra((short) budget);
         league.setDataapertura(opening);
         league.setDatachiusura(closure);
-        league.setAstarialzo(String.valueOf(isBid));
+        league.setAstarialzo(isBid);
         Optional.ofNullable((byte) maxTeam).filter(m -> isBid).ifPresent(league::setNumeromassimosquadre);        
         query.insertInto(CAMPIONATO).values(league.intoArray()).execute();
         return league;

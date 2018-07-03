@@ -40,7 +40,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Campionato extends TableImpl<CampionatoRecord> {
 
-    private static final long serialVersionUID = -1341953152;
+    private static final long serialVersionUID = 1587423849;
 
     /**
      * The reference instance of <code>public.campionato</code>
@@ -88,7 +88,7 @@ public class Campionato extends TableImpl<CampionatoRecord> {
     /**
      * The column <code>public.campionato.astarialzo</code>.
      */
-    public final TableField<CampionatoRecord, String> ASTARIALZO = createField("astarialzo", org.jooq.impl.SQLDataType.CHAR(1).nullable(false), this, "");
+    public final TableField<CampionatoRecord, Boolean> ASTARIALZO = createField("astarialzo", org.jooq.impl.SQLDataType.BOOLEAN.nullable(false), this, "");
 
     /**
      * The column <code>public.campionato.numeromassimosquadre</code>.

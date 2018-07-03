@@ -39,7 +39,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Squadra extends TableImpl<SquadraRecord> {
 
-    private static final long serialVersionUID = -751367725;
+    private static final long serialVersionUID = 2014084832;
 
     /**
      * The reference instance of <code>public.squadra</code>
@@ -149,11 +149,7 @@ public class Squadra extends TableImpl<SquadraRecord> {
      */
     @Override
     public List<ForeignKey<SquadraRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<SquadraRecord, ?>>asList(Keys.SQUADRA__FKPARTECIPA, Keys.SQUADRA__FKGESTISCE);
-    }
-
-    public Campionato campionato() {
-        return new Campionato(this, Keys.SQUADRA__FKPARTECIPA);
+        return Arrays.<ForeignKey<SquadraRecord, ?>>asList(Keys.SQUADRA__FKGESTISCE);
     }
 
     public Allenatore allenatore() {
