@@ -74,7 +74,6 @@ public final class Queries {
                 .where(ALLENATORE.USERNAME.eq(username))
                 .fetch()
                 .stream()
-                .filter(Queries::filterNullValues)
                 .findFirst()
                 .isPresent();
     }
@@ -86,7 +85,6 @@ public final class Queries {
                 .fetch()
                 .stream()
                 .map(Record1::value1)
-                .filter(Queries::filterNullValues)
                 .filter(password::equals)
                 .findFirst()
                 .isPresent();
@@ -97,8 +95,7 @@ public final class Queries {
                     .from(ALLENATORE)
                     .where(ALLENATORE.USERNAME.eq(username))
                     .stream()
-                    .filter(Queries::filterNullValues)
-                    .map(r -> (AllenatoreRecord) r)
+                    .map(r -> r.into(ALLENATORE))
                     .findFirst();
     }
     
@@ -107,8 +104,7 @@ public final class Queries {
                     .from(CAMPIONATO)
                     .where(CAMPIONATO.IDCAMPIONATO.eq(leagueId))
                     .stream()
-                    .filter(Queries::filterNullValues)
-                    .map(r -> (CampionatoRecord) r)
+                    .map(r -> r.into(CAMPIONATO))
                     .findFirst();
     }
     
@@ -117,8 +113,7 @@ public final class Queries {
                     .from(SQUADRA)
                     .where(SQUADRA.IDSQUADRA.eq(teamId))
                     .stream()
-                    .filter(Queries::filterNullValues)
-                    .map(r -> (SquadraRecord) r)
+                    .map(r -> r.into(SQUADRA))
                     .findFirst();
     }
     
@@ -127,8 +122,7 @@ public final class Queries {
                     .from(CALCIATORE)
                     .where(CALCIATORE.IDCALCIATORE.eq((short) playerId))
                     .stream()
-                    .filter(Queries::filterNullValues)
-                    .map(r -> (CalciatoreRecord) r)
+                    .map(r -> r.into(CALCIATORE))
                     .findFirst();
     }
     
@@ -137,68 +131,7 @@ public final class Queries {
                     .from(ALLENATORE)
                     .fetch()
                     .stream()
-                    .filter(Queries::filterNullValues)
-                    .map(r -> (AllenatoreRecord) r);
-    }
-    
-    public static Stream<CampionatoRecord> getOpenLeagues() {
-        return query.select()
-                    .from(CAMPIONATO)
-                    .where(CAMPIONATO.DATACHIUSURA.ge(new Date(System.currentTimeMillis())))
-                    .fetch()
-                    .stream()
-                    .filter(Queries::filterNullValues)
-                    .map(r -> (CampionatoRecord) r);
-    }
-
-    public static Stream<SquadraRecord> getAllFantabidTeams() {
-        return query.select()
-                    .from(SQUADRA)
-                    .fetch()
-                    .stream()
-                    .filter(Queries::filterNullValues)
-                    .map(r -> (SquadraRecord) r);
-    }
-    
-    public static Stream<String> getAllRealTeams() {
-        return query.selectDistinct(CALCIATORE.SQUADRA)
-                    .from(CALCIATORE)
-                    .fetch()
-                    .stream()
-                    .filter(Queries::filterNullValues)
-                    .map(r -> r.value1())
-                    .sorted();
-    }
-    
-    public static Stream<CalciatoreRecord> getAllPlayers() {
-        return query.select()
-                    .from(CALCIATORE)
-                    .fetch()
-                    .stream()
-                    .filter(Queries::filterNullValues)
-                    .map(r -> (CalciatoreRecord) r);
-    }
-
-    public static Stream<RegolaRecord> getAllRules() {
-        return query.select()
-                    .from(REGOLA)
-                    .fetch()
-                    .stream()
-                    .filter(Queries::filterNullValues)
-                    .map(r -> (RegolaRecord) r);
-    }
-    
-    public static Stream<RegolaRecord> getRulesFromLeague(int leagueId) {
-        return query.select(REGOLA.asterisk())
-                    .from(REGOLE_PER_CAMPIONATO)
-                    .join(REGOLA)
-                    .on(REGOLE_PER_CAMPIONATO.IDREGOLA.eq(REGOLA.IDREGOLA))
-                    .where(REGOLE_PER_CAMPIONATO.IDCAMPIONATO.eq(leagueId))
-                    .fetch()
-                    .stream()
-                    .filter(Queries::filterNullValues)
-                    .map(r -> r.into(REGOLA))
-                    .map(r -> (RegolaRecord) r);
+                    .map(r -> r.into(ALLENATORE));
     }
     
     public static Stream<Pair<SquadraRecord, CampionatoRecord>> getTeamsFromUser(String user) {
@@ -210,9 +143,65 @@ public final class Queries {
                     .orderBy(CAMPIONATO.DATACHIUSURA)
                     .fetch()
                     .stream()
-                    .filter(Queries::filterNullValues)
                     .map(r -> Pair.of(r.into(SQUADRA), r.into(CAMPIONATO)));
                     
+    }
+    
+    public static Stream<CampionatoRecord> getNotRegisteredLeagues(String user) {
+        return query.selectDistinct(CAMPIONATO.asterisk())
+                    .from(CAMPIONATO)
+                    .leftOuterJoin(SQUADRA)
+                    .on(CAMPIONATO.IDCAMPIONATO.eq(SQUADRA.IDCAMPIONATO))
+                    .where(CAMPIONATO.DATACHIUSURA.ge(new Date(System.currentTimeMillis())))
+                    .and(SQUADRA.USERNAME.isNull())
+                    .or(SQUADRA.USERNAME.ne(user))
+                    .fetch()
+                    .stream()
+                    .map(r -> r.into(CAMPIONATO));
+    }
+
+    public static Stream<RegolaRecord> getRulesFromLeague(int leagueId) {
+        return query.select(REGOLA.asterisk())
+                    .from(REGOLE_PER_CAMPIONATO)
+                    .join(REGOLA)
+                    .on(REGOLE_PER_CAMPIONATO.IDREGOLA.eq(REGOLA.IDREGOLA))
+                    .where(REGOLE_PER_CAMPIONATO.IDCAMPIONATO.eq(leagueId))
+                    .fetch()
+                    .stream()
+                    .map(r -> r.into(REGOLA));
+    }
+
+    public static Stream<SquadraRecord> getAllFantabidTeams() {
+        return query.select()
+                    .from(SQUADRA)
+                    .fetch()
+                    .stream()
+                    .map(r -> r.into(SQUADRA));
+    }
+    
+    public static Stream<String> getAllRealTeams() {
+        return query.selectDistinct(CALCIATORE.SQUADRA)
+                    .from(CALCIATORE)
+                    .fetch()
+                    .stream()
+                    .map(Record1::value1)
+                    .sorted();
+    }
+    
+    public static Stream<CalciatoreRecord> getAllPlayers() {
+        return query.select()
+                    .from(CALCIATORE)
+                    .fetch()
+                    .stream()
+                    .map(r -> r.into(CALCIATORE));
+    }
+
+    public static Stream<RegolaRecord> getAllRules() {
+        return query.select()
+                    .from(REGOLA)
+                    .fetch()
+                    .stream()
+                    .map(r -> r.into(REGOLA));
     }
     
     public static Optional<PuntataRecord> getLastBet(int leagueId, int playerId) {
@@ -225,8 +214,7 @@ public final class Queries {
                     .and(PUNTATA.PUNTATASUCCESSIVA.isNull())
                     .fetch()
                     .stream()
-                    .filter(Queries::filterNullValues)
-                    .map(r -> (PuntataRecord) r)
+                    .map(r -> r.into(PUNTATA))
                     .findFirst();
     }
     
@@ -235,8 +223,8 @@ public final class Queries {
                     .from(CAMPIONATO)
                     .fetch()
                     .stream()
-                    .filter(Queries::filterNullValues)
                     .map(Record1::value1)
+                    .filter(Queries::filterNullValues)
                     .findFirst();
     }
     
@@ -245,8 +233,8 @@ public final class Queries {
                     .from(SQUADRA)
                     .fetch()
                     .stream()
-                    .filter(Queries::filterNullValues)
                     .map(Record1::value1)
+                    .filter(Queries::filterNullValues)
                     .findFirst();
     }
     
@@ -256,7 +244,5 @@ public final class Queries {
 
     // TODO: TO BE REMOVED
     public static void testQuery(Object ...args) {
-//        CampionatoRecord c = new CampionatoRecord();
-//        c.setNumeromassimosquadre(null);
     }
 }

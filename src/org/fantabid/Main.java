@@ -32,8 +32,7 @@ public final class Main extends Application {
                 Dialogs.showErrorDialog("Error While Connecting to Database", "The application will stop.");
                 e.printStackTrace();
                 System.exit(1);
-            });
-            
+            });            
         }
     }
 
@@ -42,6 +41,7 @@ public final class Main extends Application {
         setPrimaryStage(primaryStage);
         primaryStage.setTitle("Fantabid");
         primaryStage.getIcons().add(new Image("org/fantabid/images/Icon.png"));
+
         
         Queries.testQuery();
         Model.get().setUser(Queries.getUser("giuluck").get());

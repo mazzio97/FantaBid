@@ -41,46 +41,71 @@
          </padding>
       </HBox>
    </bottom>
-   <center>
-      <Label fx:id="descriptionLabel" alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="League Description" BorderPane.alignment="TOP_CENTER">
-         <font>
-            <Font size="15.0" />
-         </font>
-         <BorderPane.margin>
-            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-         </BorderPane.margin>
-      </Label>
-   </center>
    <top>
       <Label fx:id="nameLabel" text="League Name" BorderPane.alignment="CENTER">
          <font>
             <Font name="System Bold Italic" size="24.0" />
          </font>
          <BorderPane.margin>
-            <Insets bottom="20.0" />
-         </BorderPane.margin></Label>
+            <Insets bottom="40.0" />
+         </BorderPane.margin>
+      </Label>
    </top>
    <padding>
       <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
    </padding>
    <left>
-      <Label fx:id="infoLabel" alignment="TOP_CENTER" prefWidth="120.0" text="League Info" BorderPane.alignment="TOP_CENTER">
-         <font>
-            <Font name="System Italic" size="16.0" />
-         </font>
-         <BorderPane.margin>
-            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-         </BorderPane.margin>
-      </Label>
+      <VBox alignment="TOP_CENTER" spacing="10.0" BorderPane.alignment="TOP_CENTER">
+         <children>
+            <Label alignment="CENTER" text="INFO" VBox.vgrow="NEVER">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Label>
+            <Label fx:id="infoLabel" alignment="TOP_CENTER" text="League Info" BorderPane.alignment="TOP_CENTER" VBox.vgrow="ALWAYS">
+               <font>
+                  <Font name="System Italic" size="14.0" />
+               </font>
+               <BorderPane.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </BorderPane.margin>
+            </Label>
+         </children>
+      </VBox>
    </left>
    <right>
-      <Label fx:id="rulesLabel" alignment="TOP_CENTER" prefWidth="120.0" text="League Rules" BorderPane.alignment="TOP_CENTER">
-         <font>
-            <Font name="System Italic" size="16.0" />
-         </font>
-         <BorderPane.margin>
-            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-         </BorderPane.margin>
-      </Label>
+      <VBox alignment="TOP_CENTER" spacing="10.0" BorderPane.alignment="TOP_CENTER">
+         <children>
+            <Label alignment="CENTER" text="DESCRIPTION" VBox.vgrow="NEVER">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Label>
+            <Label fx:id="descriptionLabel" alignment="TOP_CENTER" text="League Description" BorderPane.alignment="TOP_CENTER" VBox.vgrow="ALWAYS">
+               <font>
+                  <Font name="System Italic" size="14.0" />
+               </font>
+               <BorderPane.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </BorderPane.margin>
+            </Label>
+         </children>
+      </VBox>
    </right>
+   <center>
+      <VBox alignment="TOP_CENTER" spacing="10.0" BorderPane.alignment="TOP_CENTER">
+         <children>
+            <Label alignment="CENTER" text="RULES">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Label>
+            <Label fx:id="rulesLabel" alignment="TOP_CENTER" text="League Rules" BorderPane.alignment="TOP_CENTER" VBox.vgrow="ALWAYS">
+               <font>
+                  <Font name="System Italic" size="14.0" />
+               </font>
+            </Label>
+         </children>
+      </VBox>
+   </center>
 </BorderPane>

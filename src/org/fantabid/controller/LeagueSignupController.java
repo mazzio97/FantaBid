@@ -45,9 +45,11 @@ public class LeagueSignupController {
         
         nameLabel.setText(league.getNomecampionato());
         
-        descriptionLabel.setText("Type: " + (league.getAstarialzo() ? LeagueType.BID : LeagueType.CLASSIC) + "\n" +
-                                 "Closure Date: " + league.getDatachiusura() + "\n" +
-                                 "Initial Budget:" + league.getBudgetpersquadra());
+        descriptionLabel.setText(league.getDescrizione());
+        
+        infoLabel.setText("Type: " + (league.getAstarialzo() ? LeagueType.BID : LeagueType.CLASSIC) + "\n" +
+                          "Closure Date: " + league.getDatachiusura() + "\n" +
+                          "Initial Budget: " + league.getBudgetpersquadra());
         
         rulesLabel.setText("Rules:\n- " + rules.map(RegolaRecord::getNome).collect(Collectors.joining("\n- ")));
         

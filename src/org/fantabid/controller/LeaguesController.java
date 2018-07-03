@@ -28,7 +28,7 @@ public class LeaguesController {
     
     private void fillLeaguesBox() {
         leaguesBox.getChildren().clear();
-        Queries.getOpenLeagues()
+        Queries.getNotRegisteredLeagues(model.getUser().getUsername())
                .map(r -> {
                    Button b = Buttons.listButton(r.getNomecampionato() + ", closing at: " + r.getDatachiusura());
                    b.setOnAction(e -> {
