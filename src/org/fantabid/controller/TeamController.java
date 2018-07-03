@@ -98,7 +98,7 @@ public class TeamController {
             budgetLabel.setText(String.valueOf(model.getTeam().getCreditoresiduo() - budgetSpent()) + "M");
         });
         backButton.setOnAction(e -> Views.loadLeaguesScene());
-        playerFilterField.setOnKeyTyped(e -> filterPlayers());
+        playerFilterField.textProperty().addListener((observable, oldValue, newValue) -> filterPlayers());
         roleComboBox.setOnAction(e -> filterPlayers());
         teamComboBox.setOnAction(e -> filterPlayers());
         filterPlayers();
@@ -129,7 +129,6 @@ public class TeamController {
         String teamFilter = Optional.of(teamComboBox.getSelectionModel().getSelectedItem())
                                     .filter(r -> !r.equals(ANY))
                                     .orElse(null);
-        
         filteredPlayers.clear();
         allPlayers.stream()
                   .filter(c -> c.getNome().toUpperCase().contains(namePart))

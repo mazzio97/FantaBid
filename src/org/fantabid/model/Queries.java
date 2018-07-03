@@ -13,6 +13,7 @@ import org.fantabid.generated.tables.records.CalciatoreRecord;
 import org.fantabid.generated.tables.records.CampionatoRecord;
 import org.fantabid.generated.tables.records.RegolaRecord;
 import org.fantabid.generated.tables.records.SquadraRecord;
+import org.fantabid.model.utils.Pair;
 import org.jooq.DSLContext;
 import org.jooq.Record1;
 import org.jooq.SQLDialect;
