@@ -4,7 +4,6 @@
 package org.fantabid.generated.tables;
 
 
-import java.sql.Date;
 import java.util.Arrays;
 import java.util.List;
 
@@ -40,7 +39,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Puntata extends TableImpl<PuntataRecord> {
 
-    private static final long serialVersionUID = 838460040;
+    private static final long serialVersionUID = 295883262;
 
     /**
      * The reference instance of <code>public.puntata</code>
@@ -56,19 +55,14 @@ public class Puntata extends TableImpl<PuntataRecord> {
     }
 
     /**
-     * The column <code>public.puntata.username</code>.
+     * The column <code>public.puntata.idpuntata</code>.
      */
-    public final TableField<PuntataRecord, String> USERNAME = createField("username", org.jooq.impl.SQLDataType.VARCHAR(30).nullable(false), this, "");
+    public final TableField<PuntataRecord, Integer> IDPUNTATA = createField("idpuntata", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
-     * The column <code>public.puntata.idcampionato</code>.
+     * The column <code>public.puntata.puntatasuccessiva</code>.
      */
-    public final TableField<PuntataRecord, Integer> IDCAMPIONATO = createField("idcampionato", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
-
-    /**
-     * The column <code>public.puntata.idcalciatore</code>.
-     */
-    public final TableField<PuntataRecord, Short> IDCALCIATORE = createField("idcalciatore", org.jooq.impl.SQLDataType.SMALLINT.nullable(false), this, "");
+    public final TableField<PuntataRecord, Integer> PUNTATASUCCESSIVA = createField("puntatasuccessiva", org.jooq.impl.SQLDataType.INTEGER, this, "");
 
     /**
      * The column <code>public.puntata.valore</code>.
@@ -76,29 +70,14 @@ public class Puntata extends TableImpl<PuntataRecord> {
     public final TableField<PuntataRecord, Short> VALORE = createField("valore", org.jooq.impl.SQLDataType.SMALLINT.nullable(false), this, "");
 
     /**
-     * The column <code>public.puntata.successiva_idcalciatore</code>.
+     * The column <code>public.puntata.idcalciatore</code>.
      */
-    public final TableField<PuntataRecord, Short> SUCCESSIVA_IDCALCIATORE = createField("successiva_idcalciatore", org.jooq.impl.SQLDataType.SMALLINT, this, "");
+    public final TableField<PuntataRecord, Short> IDCALCIATORE = createField("idcalciatore", org.jooq.impl.SQLDataType.SMALLINT.nullable(false), this, "");
 
     /**
-     * The column <code>public.puntata.successiva_username</code>.
+     * The column <code>public.puntata.idsquadra</code>.
      */
-    public final TableField<PuntataRecord, String> SUCCESSIVA_USERNAME = createField("successiva_username", org.jooq.impl.SQLDataType.VARCHAR(30), this, "");
-
-    /**
-     * The column <code>public.puntata.successiva_idcampionato</code>.
-     */
-    public final TableField<PuntataRecord, Integer> SUCCESSIVA_IDCAMPIONATO = createField("successiva_idcampionato", org.jooq.impl.SQLDataType.INTEGER, this, "");
-
-    /**
-     * The column <code>public.puntata.successiva_valore</code>.
-     */
-    public final TableField<PuntataRecord, Short> SUCCESSIVA_VALORE = createField("successiva_valore", org.jooq.impl.SQLDataType.SMALLINT, this, "");
-
-    /**
-     * The column <code>public.puntata.datascadenza</code>.
-     */
-    public final TableField<PuntataRecord, Date> DATASCADENZA = createField("datascadenza", org.jooq.impl.SQLDataType.DATE.nullable(false), this, "");
+    public final TableField<PuntataRecord, Integer> IDSQUADRA = createField("idsquadra", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * Create a <code>public.puntata</code> table reference
@@ -146,7 +125,7 @@ public class Puntata extends TableImpl<PuntataRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.FKRIALZA_ID, Indexes.IDPUNTATA);
+        return Arrays.<Index>asList(Indexes.FKRIALZA_ID, Indexes.IDPUNTATA, Indexes.IDPUNTATA_1);
     }
 
     /**
@@ -162,7 +141,7 @@ public class Puntata extends TableImpl<PuntataRecord> {
      */
     @Override
     public List<UniqueKey<PuntataRecord>> getKeys() {
-        return Arrays.<UniqueKey<PuntataRecord>>asList(Keys.IDPUNTATA, Keys.FKRIALZA_ID);
+        return Arrays.<UniqueKey<PuntataRecord>>asList(Keys.IDPUNTATA, Keys.FKRIALZA_ID, Keys.IDPUNTATA_1);
     }
 
     /**
@@ -170,15 +149,19 @@ public class Puntata extends TableImpl<PuntataRecord> {
      */
     @Override
     public List<ForeignKey<PuntataRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<PuntataRecord, ?>>asList(Keys.PUNTATA__FKRICEVE, Keys.PUNTATA__FKRIALZA_FK);
+        return Arrays.<ForeignKey<PuntataRecord, ?>>asList(Keys.PUNTATA__FKRIALZA_FK, Keys.PUNTATA__FKRICEVE, Keys.PUNTATA__FKOFFRE);
+    }
+
+    public org.fantabid.generated.tables.Puntata puntata() {
+        return new org.fantabid.generated.tables.Puntata(this, Keys.PUNTATA__FKRIALZA_FK);
     }
 
     public Calciatore calciatore() {
         return new Calciatore(this, Keys.PUNTATA__FKRICEVE);
     }
 
-    public org.fantabid.generated.tables.Puntata puntata() {
-        return new org.fantabid.generated.tables.Puntata(this, Keys.PUNTATA__FKRIALZA_FK);
+    public Squadra squadra() {
+        return new Squadra(this, Keys.PUNTATA__FKOFFRE);
     }
 
     /**

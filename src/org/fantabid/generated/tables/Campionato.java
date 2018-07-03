@@ -40,7 +40,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Campionato extends TableImpl<CampionatoRecord> {
 
-    private static final long serialVersionUID = -890377885;
+    private static final long serialVersionUID = -1341953152;
 
     /**
      * The reference instance of <code>public.campionato</code>
@@ -61,9 +61,14 @@ public class Campionato extends TableImpl<CampionatoRecord> {
     public final TableField<CampionatoRecord, Integer> IDCAMPIONATO = createField("idcampionato", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
-     * The column <code>public.campionato.tipoasta</code>.
+     * The column <code>public.campionato.nomecampionato</code>.
      */
-    public final TableField<CampionatoRecord, String> TIPOASTA = createField("tipoasta", org.jooq.impl.SQLDataType.CHAR(1).nullable(false), this, "");
+    public final TableField<CampionatoRecord, String> NOMECAMPIONATO = createField("nomecampionato", org.jooq.impl.SQLDataType.VARCHAR(40).nullable(false), this, "");
+
+    /**
+     * The column <code>public.campionato.descrizione</code>.
+     */
+    public final TableField<CampionatoRecord, String> DESCRIZIONE = createField("descrizione", org.jooq.impl.SQLDataType.VARCHAR(1000).nullable(false), this, "");
 
     /**
      * The column <code>public.campionato.budgetpersquadra</code>.
@@ -76,19 +81,19 @@ public class Campionato extends TableImpl<CampionatoRecord> {
     public final TableField<CampionatoRecord, Date> DATAAPERTURA = createField("dataapertura", org.jooq.impl.SQLDataType.DATE.nullable(false), this, "");
 
     /**
+     * The column <code>public.campionato.datachiusura</code>.
+     */
+    public final TableField<CampionatoRecord, Date> DATACHIUSURA = createField("datachiusura", org.jooq.impl.SQLDataType.DATE.nullable(false), this, "");
+
+    /**
+     * The column <code>public.campionato.astarialzo</code>.
+     */
+    public final TableField<CampionatoRecord, String> ASTARIALZO = createField("astarialzo", org.jooq.impl.SQLDataType.CHAR(1).nullable(false), this, "");
+
+    /**
      * The column <code>public.campionato.numeromassimosquadre</code>.
      */
     public final TableField<CampionatoRecord, Byte> NUMEROMASSIMOSQUADRE = createField("numeromassimosquadre", org.jooq.impl.SQLDataType.TINYINT, this, "");
-
-    /**
-     * The column <code>public.campionato.datachiusura</code>.
-     */
-    public final TableField<CampionatoRecord, Date> DATACHIUSURA = createField("datachiusura", org.jooq.impl.SQLDataType.DATE, this, "");
-
-    /**
-     * The column <code>public.campionato.nome</code>.
-     */
-    public final TableField<CampionatoRecord, String> NOME = createField("nome", org.jooq.impl.SQLDataType.VARCHAR(30).nullable(false), this, "");
 
     /**
      * Create a <code>public.campionato</code> table reference

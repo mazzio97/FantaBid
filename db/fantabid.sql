@@ -15,11 +15,13 @@ create table CALCIATORE (
 
 create table CAMPIONATO (
      idCampionato numeric(6) not null,
-     tipoAsta char not null,
+     nomeCampionato varchar(40) not null,
+     descrizione varchar(1000) not null,
      budgetPerSquadra numeric(4) not null,
      dataApertura date not null,
+     dataChiusura date not null,
+     astaRialzo char not null,
      numeroMassimoSquadre numeric(2),
-     dataChiusura date,
      constraint IDCAMPIONATO primary key (idCampionato));
 
 create table MEMBRI_SQUADRA (
@@ -28,17 +30,14 @@ create table MEMBRI_SQUADRA (
      constraint IDMEMBRI_SQUADRA primary key (idCalciatore, idSquadra));
 
 create table PUNTATA (
-     username varchar(30) not null,
-     idCampionato numeric(6) not null,
-     idCalciatore numeric(4) not null,
+     idPuntata numeric(9) not null,
+     puntataSuccessiva numeric(9),
      valore numeric(4) not null,
-     Successiva_idCalciatore numeric(4),
-     Successiva_username varchar(30),
-     Successiva_idCampionato numeric(6),
-     Successiva_valore numeric(4),
-     dataScadenza date not null,
-     constraint IDPUNTATA primary key (idCalciatore, username, idCampionato, valore),
-     constraint FKrialza_ID unique (Successiva_idCalciatore, Successiva_username, Successiva_idCampionato, Successiva_valore));
+     idCalciatore numeric(4) not null,
+     idSquadra numeric(6) not null,
+     constraint IDPUNTATA primary key (idPuntata),
+     constraint FKrialza_ID unique (puntataSuccessiva),
+     constraint IDPUNTATA_1 unique (valore, idCalciatore, idSquadra));
 
 create table REGOLA (
      idRegola numeric(3) not null,
@@ -76,13 +75,13 @@ alter table PUNTATA add constraint FKriceve
      foreign key (idCalciatore)
      references CALCIATORE;
 
-alter table PUNTATA add constraint FKrialza_FK
-     foreign key (Successiva_idCalciatore, Successiva_username, Successiva_idCampionato, Successiva_valore)
-     references PUNTATA;
+alter table PUNTATA add constraint FKoffre
+     foreign key (idSquadra)
+     references SQUADRA;
 
-alter table PUNTATA add constraint FKrialza_CHK
-     check((Successiva_idCalciatore is not null and Successiva_username is not null and Successiva_idCampionato is not null and Successiva_valore is not null)
-           or (Successiva_idCalciatore is null and Successiva_username is null and Successiva_idCampionato is null and Successiva_valore is null)); 
+alter table PUNTATA add constraint FKrialza_FK
+     foreign key (puntataSuccessiva)
+     references PUNTATA;
 
 alter table REGOLE_PER_CAMPIONATO add constraint FKR
      foreign key (idCampionato)

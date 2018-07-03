@@ -56,6 +56,7 @@ public class Keys {
     public static final UniqueKey<MembriSquadraRecord> IDMEMBRI_SQUADRA = UniqueKeys0.IDMEMBRI_SQUADRA;
     public static final UniqueKey<PuntataRecord> IDPUNTATA = UniqueKeys0.IDPUNTATA;
     public static final UniqueKey<PuntataRecord> FKRIALZA_ID = UniqueKeys0.FKRIALZA_ID;
+    public static final UniqueKey<PuntataRecord> IDPUNTATA_1 = UniqueKeys0.IDPUNTATA_1;
     public static final UniqueKey<RegolaRecord> IDREGOLA = UniqueKeys0.IDREGOLA;
     public static final UniqueKey<RegolePerCampionatoRecord> IDREGOLE_PER_CAMPIONATO = UniqueKeys0.IDREGOLE_PER_CAMPIONATO;
     public static final UniqueKey<SquadraRecord> IDSQUADRA = UniqueKeys0.IDSQUADRA;
@@ -67,8 +68,9 @@ public class Keys {
 
     public static final ForeignKey<MembriSquadraRecord, SquadraRecord> MEMBRI_SQUADRA__FKR_1 = ForeignKeys0.MEMBRI_SQUADRA__FKR_1;
     public static final ForeignKey<MembriSquadraRecord, CalciatoreRecord> MEMBRI_SQUADRA__FKR = ForeignKeys0.MEMBRI_SQUADRA__FKR;
-    public static final ForeignKey<PuntataRecord, CalciatoreRecord> PUNTATA__FKRICEVE = ForeignKeys0.PUNTATA__FKRICEVE;
     public static final ForeignKey<PuntataRecord, PuntataRecord> PUNTATA__FKRIALZA_FK = ForeignKeys0.PUNTATA__FKRIALZA_FK;
+    public static final ForeignKey<PuntataRecord, CalciatoreRecord> PUNTATA__FKRICEVE = ForeignKeys0.PUNTATA__FKRICEVE;
+    public static final ForeignKey<PuntataRecord, SquadraRecord> PUNTATA__FKOFFRE = ForeignKeys0.PUNTATA__FKOFFRE;
     public static final ForeignKey<RegolePerCampionatoRecord, RegolaRecord> REGOLE_PER_CAMPIONATO__FKR_1 = ForeignKeys0.REGOLE_PER_CAMPIONATO__FKR_1;
     public static final ForeignKey<RegolePerCampionatoRecord, CampionatoRecord> REGOLE_PER_CAMPIONATO__FKR = ForeignKeys0.REGOLE_PER_CAMPIONATO__FKR;
     public static final ForeignKey<SquadraRecord, CampionatoRecord> SQUADRA__FKPARTECIPA = ForeignKeys0.SQUADRA__FKPARTECIPA;
@@ -83,8 +85,9 @@ public class Keys {
         public static final UniqueKey<CalciatoreRecord> IDCALCIATORE = Internal.createUniqueKey(Calciatore.CALCIATORE, "idcalciatore", Calciatore.CALCIATORE.IDCALCIATORE);
         public static final UniqueKey<CampionatoRecord> IDCAMPIONATO = Internal.createUniqueKey(Campionato.CAMPIONATO, "idcampionato", Campionato.CAMPIONATO.IDCAMPIONATO);
         public static final UniqueKey<MembriSquadraRecord> IDMEMBRI_SQUADRA = Internal.createUniqueKey(MembriSquadra.MEMBRI_SQUADRA, "idmembri_squadra", MembriSquadra.MEMBRI_SQUADRA.IDCALCIATORE, MembriSquadra.MEMBRI_SQUADRA.IDSQUADRA);
-        public static final UniqueKey<PuntataRecord> IDPUNTATA = Internal.createUniqueKey(Puntata.PUNTATA, "idpuntata", Puntata.PUNTATA.IDCALCIATORE, Puntata.PUNTATA.USERNAME, Puntata.PUNTATA.IDCAMPIONATO, Puntata.PUNTATA.VALORE);
-        public static final UniqueKey<PuntataRecord> FKRIALZA_ID = Internal.createUniqueKey(Puntata.PUNTATA, "fkrialza_id", Puntata.PUNTATA.SUCCESSIVA_IDCALCIATORE, Puntata.PUNTATA.SUCCESSIVA_USERNAME, Puntata.PUNTATA.SUCCESSIVA_IDCAMPIONATO, Puntata.PUNTATA.SUCCESSIVA_VALORE);
+        public static final UniqueKey<PuntataRecord> IDPUNTATA = Internal.createUniqueKey(Puntata.PUNTATA, "idpuntata", Puntata.PUNTATA.IDPUNTATA);
+        public static final UniqueKey<PuntataRecord> FKRIALZA_ID = Internal.createUniqueKey(Puntata.PUNTATA, "fkrialza_id", Puntata.PUNTATA.PUNTATASUCCESSIVA);
+        public static final UniqueKey<PuntataRecord> IDPUNTATA_1 = Internal.createUniqueKey(Puntata.PUNTATA, "idpuntata_1", Puntata.PUNTATA.VALORE, Puntata.PUNTATA.IDCALCIATORE, Puntata.PUNTATA.IDSQUADRA);
         public static final UniqueKey<RegolaRecord> IDREGOLA = Internal.createUniqueKey(Regola.REGOLA, "idregola", Regola.REGOLA.IDREGOLA);
         public static final UniqueKey<RegolePerCampionatoRecord> IDREGOLE_PER_CAMPIONATO = Internal.createUniqueKey(RegolePerCampionato.REGOLE_PER_CAMPIONATO, "idregole_per_campionato", RegolePerCampionato.REGOLE_PER_CAMPIONATO.IDCAMPIONATO, RegolePerCampionato.REGOLE_PER_CAMPIONATO.IDREGOLA);
         public static final UniqueKey<SquadraRecord> IDSQUADRA = Internal.createUniqueKey(Squadra.SQUADRA, "idsquadra", Squadra.SQUADRA.IDSQUADRA);
@@ -94,8 +97,9 @@ public class Keys {
     private static class ForeignKeys0 {
         public static final ForeignKey<MembriSquadraRecord, SquadraRecord> MEMBRI_SQUADRA__FKR_1 = Internal.createForeignKey(org.fantabid.generated.Keys.IDSQUADRA, MembriSquadra.MEMBRI_SQUADRA, "membri_squadra__fkr_1", MembriSquadra.MEMBRI_SQUADRA.IDSQUADRA);
         public static final ForeignKey<MembriSquadraRecord, CalciatoreRecord> MEMBRI_SQUADRA__FKR = Internal.createForeignKey(org.fantabid.generated.Keys.IDCALCIATORE, MembriSquadra.MEMBRI_SQUADRA, "membri_squadra__fkr", MembriSquadra.MEMBRI_SQUADRA.IDCALCIATORE);
+        public static final ForeignKey<PuntataRecord, PuntataRecord> PUNTATA__FKRIALZA_FK = Internal.createForeignKey(org.fantabid.generated.Keys.IDPUNTATA, Puntata.PUNTATA, "puntata__fkrialza_fk", Puntata.PUNTATA.PUNTATASUCCESSIVA);
         public static final ForeignKey<PuntataRecord, CalciatoreRecord> PUNTATA__FKRICEVE = Internal.createForeignKey(org.fantabid.generated.Keys.IDCALCIATORE, Puntata.PUNTATA, "puntata__fkriceve", Puntata.PUNTATA.IDCALCIATORE);
-        public static final ForeignKey<PuntataRecord, PuntataRecord> PUNTATA__FKRIALZA_FK = Internal.createForeignKey(org.fantabid.generated.Keys.IDPUNTATA, Puntata.PUNTATA, "puntata__fkrialza_fk", Puntata.PUNTATA.SUCCESSIVA_IDCALCIATORE, Puntata.PUNTATA.SUCCESSIVA_USERNAME, Puntata.PUNTATA.SUCCESSIVA_IDCAMPIONATO, Puntata.PUNTATA.SUCCESSIVA_VALORE);
+        public static final ForeignKey<PuntataRecord, SquadraRecord> PUNTATA__FKOFFRE = Internal.createForeignKey(org.fantabid.generated.Keys.IDSQUADRA, Puntata.PUNTATA, "puntata__fkoffre", Puntata.PUNTATA.IDSQUADRA);
         public static final ForeignKey<RegolePerCampionatoRecord, RegolaRecord> REGOLE_PER_CAMPIONATO__FKR_1 = Internal.createForeignKey(org.fantabid.generated.Keys.IDREGOLA, RegolePerCampionato.REGOLE_PER_CAMPIONATO, "regole_per_campionato__fkr_1", RegolePerCampionato.REGOLE_PER_CAMPIONATO.IDREGOLA);
         public static final ForeignKey<RegolePerCampionatoRecord, CampionatoRecord> REGOLE_PER_CAMPIONATO__FKR = Internal.createForeignKey(org.fantabid.generated.Keys.IDCAMPIONATO, RegolePerCampionato.REGOLE_PER_CAMPIONATO, "regole_per_campionato__fkr", RegolePerCampionato.REGOLE_PER_CAMPIONATO.IDCAMPIONATO);
         public static final ForeignKey<SquadraRecord, CampionatoRecord> SQUADRA__FKPARTECIPA = Internal.createForeignKey(org.fantabid.generated.Keys.IDCAMPIONATO, Squadra.SQUADRA, "squadra__fkpartecipa", Squadra.SQUADRA.IDCAMPIONATO);
