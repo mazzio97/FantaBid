@@ -4,7 +4,9 @@ import static org.fantabid.generated.Tables.*;
 import static org.jooq.impl.DSL.*;
 
 import java.sql.Date;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.fantabid.Main;
@@ -37,7 +39,7 @@ public final class Queries {
     }
     
     public static CampionatoRecord registerLeague(String leagueName, String description, int budget, Date opening,
-                                                  Date closure, boolean isBid, Byte maxTeams) {
+                                                  Date closure, boolean bid, Byte maxTeams) {
         CampionatoRecord league = new CampionatoRecord();
         league.setIdcampionato(getLastLeagueId().orElse(-1) + 1);
         league.setNomecampionato(leagueName);
@@ -45,7 +47,7 @@ public final class Queries {
         league.setBudgetpersquadra((short) budget);
         league.setDataapertura(opening);
         league.setDatachiusura(closure);
-        league.setAstarialzo(isBid);
+        league.setAstarialzo(bid);
         league.setNumeromassimosquadre(maxTeams);
         query.insertInto(CAMPIONATO).values(league.intoArray()).execute();
         return league;
@@ -148,16 +150,15 @@ public final class Queries {
     }
     
     public static Stream<CampionatoRecord> getNotRegisteredLeagues(String user) {
-        return query.selectDistinct(CAMPIONATO.asterisk())
-                    .from(CAMPIONATO)
-                    .leftOuterJoin(SQUADRA)
-                    .on(CAMPIONATO.IDCAMPIONATO.eq(SQUADRA.IDCAMPIONATO))
-                    .where(CAMPIONATO.DATACHIUSURA.ge(new Date(System.currentTimeMillis())))
-                    .and(SQUADRA.USERNAME.isNull())
-                    .or(SQUADRA.USERNAME.ne(user))
-                    .fetch()
-                    .stream()
-                    .map(r -> r.into(CAMPIONATO));
+        List<CampionatoRecord> leagues = query.select()
+                                              .from(CAMPIONATO)
+                                              .where(CAMPIONATO.DATACHIUSURA.ge(new Date(System.currentTimeMillis())))
+                                              .fetch()
+                                              .stream()
+                                              .map(r -> r.into(CAMPIONATO))
+                                              .collect(Collectors.toList());
+        leagues.removeAll(Queries.getTeamsFromUser(user).map(Pair::getSecond).collect(Collectors.toSet()));
+        return leagues.stream();
     }
 
     public static Stream<RegolaRecord> getRulesFromLeague(int leagueId) {

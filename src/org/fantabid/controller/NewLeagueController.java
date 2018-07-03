@@ -99,7 +99,7 @@ public class NewLeagueController {
         });
 
         teamBudgetSlider.setSnapToTicks(true);
-        teamBudgetLabel.textProperty().bind(Bindings.format("Budget: %.0f$", teamBudgetSlider.valueProperty()));
+        teamBudgetLabel.textProperty().bind(Bindings.format("Budget: %.0fM", teamBudgetSlider.valueProperty()));
 
         createButton.setOnAction(e -> {
             CampionatoRecord league = Queries.registerLeague(nameField.getText(),
@@ -117,10 +117,10 @@ public class NewLeagueController {
                                   .map(RegolaRecord::getIdregola)
                                   .forEach(i -> Queries.linkRuleToLeague(i, league.getIdcampionato()));
             
-            Views.loadUserAreaScene();
+            Views.loadLeaguesScene();
         });
 
-        cancelButton.setOnAction(e -> Views.loadUserAreaScene());
+        cancelButton.setOnAction(e -> Views.loadLeaguesScene());
     }
     
     private int computeBudget() {

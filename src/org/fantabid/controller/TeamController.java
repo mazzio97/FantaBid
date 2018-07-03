@@ -43,8 +43,8 @@ public class TeamController {
     private final ObservableList<CalciatoreRecord> teamPlayers = FXCollections.observableArrayList();
     
     public final void initialize() {
-        leagueLabel.setText("League Name");
-        teamLabel.setText("Team Name");
+        leagueLabel.setText(model.getLeague().getNomecampionato());
+        teamLabel.setText(model.getTeam().getNomesquadra());
         
         roleComboBox.getItems().addAll(Role.values());
         roleComboBox.getSelectionModel().select(0);
@@ -66,9 +66,11 @@ public class TeamController {
         TableColumn<CalciatoreRecord, String> playersTeamCol = new TableColumn<>("Team");
         playersTeamCol.setCellValueFactory(new PropertyValueFactory<CalciatoreRecord, String>("squadra"));
         playersTable.getColumns().add(playersTeamCol);
-        TableColumn<CalciatoreRecord, Integer> playersPriceCol = new TableColumn<>("Price");
-        playersPriceCol.setCellValueFactory(new PropertyValueFactory<CalciatoreRecord, Integer>("prezzostandard"));
-        playersTable.getColumns().add(playersPriceCol);
+        if (!Model.get().getLeague().getAstarialzo()) {
+            TableColumn<CalciatoreRecord, Integer> playersPriceCol = new TableColumn<>("Price");
+            playersPriceCol.setCellValueFactory(new PropertyValueFactory<CalciatoreRecord, Integer>("prezzostandard"));
+            playersTable.getColumns().add(playersPriceCol);
+        }
         /*
          * Create columns for teamTable
          */
@@ -81,17 +83,23 @@ public class TeamController {
         TableColumn<CalciatoreRecord, String> teamTeamCol = new TableColumn<>("Team");
         teamTeamCol.setCellValueFactory(new PropertyValueFactory<CalciatoreRecord, String>("squadra"));
         teamTable.getColumns().add(teamTeamCol);
-        TableColumn<CalciatoreRecord, Integer> teamPriceCol = new TableColumn<>("Price");
-        teamPriceCol.setCellValueFactory(new PropertyValueFactory<CalciatoreRecord, Integer>("prezzostandard"));
-        teamTable.getColumns().add(teamPriceCol);
+        if (!Model.get().getLeague().getAstarialzo()) {
+            TableColumn<CalciatoreRecord, Integer> teamPriceCol = new TableColumn<>("Price");
+            teamPriceCol.setCellValueFactory(new PropertyValueFactory<CalciatoreRecord, Integer>("prezzostandard"));
+            teamTable.getColumns().add(teamPriceCol);
+        }
 
         playersTable.setItems(filteredPlayers);
         teamTable.setItems(teamPlayers);
 
-//        addButton.setOnAction(e -> Views.loadBetInfoScene());
         addButton.setOnAction(e -> {
-            addPlayerToTeam(playersTable.getSelectionModel().getSelectedItem());
-            budgetLabel.setText(String.valueOf(model.getTeam().getCreditoresiduo() - budgetSpent()) + "M");
+            if (Model.get().getLeague().getAstarialzo()) {
+                Model.get().setPlayer(playersTable.getSelectionModel().getSelectedItem());
+                Views.loadBetInfoScene();
+            } else {
+                addPlayerToTeam(playersTable.getSelectionModel().getSelectedItem());
+                budgetLabel.setText(String.valueOf(model.getTeam().getCreditoresiduo() - budgetSpent()) + "M");
+            }
         });
         removeButton.setOnAction(e -> {
             teamPlayers.remove(teamTable.getSelectionModel().getSelectedItem());

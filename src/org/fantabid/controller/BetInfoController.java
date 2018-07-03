@@ -43,12 +43,12 @@ public class BetInfoController {
         playerLabel.setText(player.getNome() + " (" + player.getSquadra() + ")");
         lastBetLabel.setText("Last Bet: "
                              + lastBet.map(PuntataRecord::getValore).orElse((short) 0)
-                             + "$ ("
+                             + "M ("
                              + lastBet.map(PuntataRecord::getIdsquadra)
                                       .map(Queries::getTeam)
                                       .map(Optional::get)
                                       .map(SquadraRecord::getUsername)
-                                      .orElse("no one"));
+                                      .orElse("no one") + ")");
         expiryDateLabel.setText("Expiring At: " + new Date(league.getDatachiusura().getTime()));
         
         if(player.getRuolo() == PORTIERE.getRoleString()) {
@@ -61,8 +61,9 @@ public class BetInfoController {
             strikerButton.setDisable(false);
         }
         
-        betLabel.textProperty().bind(Bindings.format("%.0f $", betSlider.valueProperty()));
+        betLabel.textProperty().bind(Bindings.format("%.0fM", betSlider.valueProperty()));
         betSlider.setMin(lastBet.map(PuntataRecord::getValore).orElse((short) 0) + 1);
+        // TODO: must depend on the remaining players in the team
         betSlider.setMax(team.getCreditoresiduo());
         
         cancelButton.setOnAction(e -> {
