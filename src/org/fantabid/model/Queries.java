@@ -74,6 +74,7 @@ public final class Queries {
                 .where(ALLENATORE.USERNAME.eq(username))
                 .fetch()
                 .stream()
+                .filter(Queries::filterNullValues)
                 .findFirst()
                 .isPresent();
     }
@@ -84,9 +85,10 @@ public final class Queries {
                 .where(ALLENATORE.USERNAME.eq(username))
                 .fetch()
                 .stream()
-                .map(r -> r.getValue(0))
-                .findFirst()
+                .map(Record1::value1)
+                .filter(Queries::filterNullValues)
                 .filter(password::equals)
+                .findFirst()
                 .isPresent();
     }
     
@@ -95,8 +97,8 @@ public final class Queries {
                     .from(ALLENATORE)
                     .where(ALLENATORE.USERNAME.eq(username))
                     .stream()
+                    .filter(Queries::filterNullValues)
                     .map(r -> (AllenatoreRecord) r)
-                    .filter(o -> o != null)
                     .findFirst();
     }
     
@@ -105,8 +107,8 @@ public final class Queries {
                     .from(CAMPIONATO)
                     .where(CAMPIONATO.IDCAMPIONATO.eq(leagueId))
                     .stream()
+                    .filter(Queries::filterNullValues)
                     .map(r -> (CampionatoRecord) r)
-                    .filter(o -> o != null)
                     .findFirst();
     }
     
@@ -115,8 +117,8 @@ public final class Queries {
                     .from(SQUADRA)
                     .where(SQUADRA.IDSQUADRA.eq(teamId))
                     .stream()
+                    .filter(Queries::filterNullValues)
                     .map(r -> (SquadraRecord) r)
-                    .filter(o -> o != null)
                     .findFirst();
     }
     
@@ -125,8 +127,8 @@ public final class Queries {
                     .from(CALCIATORE)
                     .where(CALCIATORE.IDCALCIATORE.eq((short) playerId))
                     .stream()
+                    .filter(Queries::filterNullValues)
                     .map(r -> (CalciatoreRecord) r)
-                    .filter(o -> o != null)
                     .findFirst();
     }
     
@@ -135,6 +137,7 @@ public final class Queries {
                     .from(ALLENATORE)
                     .fetch()
                     .stream()
+                    .filter(Queries::filterNullValues)
                     .map(r -> (AllenatoreRecord) r);
     }
     
@@ -144,6 +147,7 @@ public final class Queries {
                     .where(CAMPIONATO.DATACHIUSURA.ge(new Date(System.currentTimeMillis())))
                     .fetch()
                     .stream()
+                    .filter(Queries::filterNullValues)
                     .map(r -> (CampionatoRecord) r);
     }
 
@@ -152,6 +156,7 @@ public final class Queries {
                     .from(SQUADRA)
                     .fetch()
                     .stream()
+                    .filter(Queries::filterNullValues)
                     .map(r -> (SquadraRecord) r);
     }
     
@@ -160,6 +165,7 @@ public final class Queries {
                     .from(CALCIATORE)
                     .fetch()
                     .stream()
+                    .filter(Queries::filterNullValues)
                     .map(r -> r.value1())
                     .sorted();
     }
@@ -169,6 +175,7 @@ public final class Queries {
                     .from(CALCIATORE)
                     .fetch()
                     .stream()
+                    .filter(Queries::filterNullValues)
                     .map(r -> (CalciatoreRecord) r);
     }
 
@@ -177,16 +184,20 @@ public final class Queries {
                     .from(REGOLA)
                     .fetch()
                     .stream()
+                    .filter(Queries::filterNullValues)
                     .map(r -> (RegolaRecord) r);
     }
     
     public static Stream<RegolaRecord> getRulesFromLeague(int leagueId) {
-        return query.select(REGOLE_PER_CAMPIONATO.asterisk())
+        return query.select(REGOLA.asterisk())
                     .from(REGOLE_PER_CAMPIONATO)
-                    .join(CAMPIONATO)
-                    .on(REGOLE_PER_CAMPIONATO.IDCAMPIONATO.eq(CAMPIONATO.IDCAMPIONATO))
+                    .join(REGOLA)
+                    .on(REGOLE_PER_CAMPIONATO.IDREGOLA.eq(REGOLA.IDREGOLA))
+                    .where(REGOLE_PER_CAMPIONATO.IDCAMPIONATO.eq(leagueId))
                     .fetch()
                     .stream()
+                    .filter(Queries::filterNullValues)
+                    .map(r -> r.into(REGOLA))
                     .map(r -> (RegolaRecord) r);
     }
     
@@ -199,6 +210,7 @@ public final class Queries {
                     .orderBy(CAMPIONATO.DATACHIUSURA)
                     .fetch()
                     .stream()
+                    .filter(Queries::filterNullValues)
                     .map(r -> Pair.of(r.into(SQUADRA), r.into(CAMPIONATO)));
                     
     }
@@ -213,8 +225,8 @@ public final class Queries {
                     .and(PUNTATA.PUNTATASUCCESSIVA.isNull())
                     .fetch()
                     .stream()
+                    .filter(Queries::filterNullValues)
                     .map(r -> (PuntataRecord) r)
-                    .filter(o -> o != null)
                     .findFirst();
     }
     
@@ -223,8 +235,8 @@ public final class Queries {
                     .from(CAMPIONATO)
                     .fetch()
                     .stream()
+                    .filter(Queries::filterNullValues)
                     .map(Record1::value1)
-                    .filter(o -> o != null)
                     .findFirst();
     }
     
@@ -233,9 +245,13 @@ public final class Queries {
                     .from(SQUADRA)
                     .fetch()
                     .stream()
+                    .filter(Queries::filterNullValues)
                     .map(Record1::value1)
-                    .filter(o -> o != null)
                     .findFirst();
+    }
+    
+    private static boolean filterNullValues(Object o) {
+        return o != null;
     }
 
     // TODO: TO BE REMOVED

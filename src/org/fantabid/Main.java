@@ -44,7 +44,8 @@ public final class Main extends Application {
         primaryStage.getIcons().add(new Image("org/fantabid/images/Icon.png"));
         
         Queries.testQuery();
-        Views.loadLoginScene();
+        Model.get().setUser(Queries.getUser("giuluck").get());
+        Views.loadUserAreaScene();
         
         primaryStage.show();
         primaryStage.setX((Screen.getPrimary().getVisualBounds().getWidth() - primaryStage.getWidth()) / 2);
