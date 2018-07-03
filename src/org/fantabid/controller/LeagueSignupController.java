@@ -5,9 +5,9 @@ import java.util.stream.Stream;
 
 import org.fantabid.generated.tables.records.CampionatoRecord;
 import org.fantabid.generated.tables.records.RegolaRecord;
-import org.fantabid.model.Limits;
 import org.fantabid.model.Model;
 import org.fantabid.model.Queries;
+import org.fantabid.model.utils.Limits;
 import org.fantabid.view.Views;
 
 import javafx.beans.binding.BooleanBinding;

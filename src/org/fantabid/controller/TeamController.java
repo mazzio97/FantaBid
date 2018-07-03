@@ -97,6 +97,7 @@ public class TeamController {
             teamPlayers.remove(teamTable.getSelectionModel().getSelectedItem());
             budgetLabel.setText(String.valueOf(model.getTeam().getCreditoresiduo() - budgetSpent()) + "M");
         });
+<<<<<<< HEAD
         backButton.setOnAction(e -> {
             model.removeTeam();
             model.removeLeague();
@@ -104,6 +105,10 @@ public class TeamController {
         });
         
         playerFilterField.setOnKeyTyped(e -> filterPlayers());
+=======
+        backButton.setOnAction(e -> Views.loadLeaguesScene());
+        playerFilterField.textProperty().addListener((observable, oldValue, newValue) -> filterPlayers());
+>>>>>>> 00a79a13d307173cbb997a74f7d1b8b0136c3c59
         roleComboBox.setOnAction(e -> filterPlayers());
         teamComboBox.setOnAction(e -> filterPlayers());
         filterPlayers();
@@ -134,7 +139,6 @@ public class TeamController {
         String teamFilter = Optional.of(teamComboBox.getSelectionModel().getSelectedItem())
                                     .filter(r -> !r.equals(ANY))
                                     .orElse(null);
-        
         filteredPlayers.clear();
         allPlayers.stream()
                   .filter(c -> c.getNome().toUpperCase().contains(namePart))
