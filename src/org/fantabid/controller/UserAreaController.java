@@ -24,7 +24,7 @@ public class UserAreaController {
         Queries.getTeamsFromUser(model.getUser().getUsername())
                .map(r -> {
                    Button b = Buttons.listButton(r.getFirst().getNomesquadra() +
-                                                 " (" + r.getSecond().getNome() + "), " +
+                                                 " (" + r.getSecond().getNomecampionato() + "), " +
                                                  "closing at: " + r.getSecond().getDatachiusura());
                    b.setOnAction(e -> {
                        model.setTeam(r.getFirst());

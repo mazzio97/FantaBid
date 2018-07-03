@@ -30,7 +30,7 @@ public class LeaguesController {
         leaguesBox.getChildren().clear();
         Queries.getOpenLeagues()
                .map(r -> {
-                   Button b = Buttons.listButton(r.getNome() + ", closing at: " + r.getDatachiusura());
+                   Button b = Buttons.listButton(r.getNomecampionato() + ", closing at: " + r.getDatachiusura());
                    b.setOnAction(e -> {
                        model.setLeague(r);
                        Views.loadLeagueSignupScene();

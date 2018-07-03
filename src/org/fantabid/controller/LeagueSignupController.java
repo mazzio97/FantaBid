@@ -42,9 +42,9 @@ public class LeagueSignupController {
         CampionatoRecord league = model.getLeague();
         Stream<RegolaRecord> rules = Queries.getRulesFromLeague(league.getIdcampionato());
         
-        nameLabel.setText(league.getNome());
+        nameLabel.setText(league.getNomecampionato());
         
-        descriptionLabel.setText("Type: " + league.getTipoasta() + "\n" +
+        descriptionLabel.setText("Type: " + league.getAstarialzo() + "\n" +
                                  "Closure Date: " + league.getDatachiusura() + "\n" +
                                  "Initial Budget:" + league.getBudgetpersquadra());
         

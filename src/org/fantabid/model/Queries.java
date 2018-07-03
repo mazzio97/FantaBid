@@ -27,25 +27,36 @@ public final class Queries {
     private Queries() { }
     
     public static AllenatoreRecord registerUser(String name, String surname, String username, String password) {
-        AllenatoreRecord user = new AllenatoreRecord(username, password, name, surname);
+        AllenatoreRecord user = new AllenatoreRecord();
+        user.setUsername(username);
+        user.setPassword(password);
+        user.setNome(name);
+        user.setCognome(surname);
         query.insertInto(ALLENATORE).values(user.intoArray()).execute();
         return user;
     }
     
     public static CampionatoRecord registerLeague(String leagueName, String description, int budget, Date opening,
                                                   Date closure, boolean isBid, int maxTeam) {
-        byte maxTeamB = (byte) maxTeam;
-        CampionatoRecord league = new CampionatoRecord(getLastLeagueId().orElse(-1) + 1, "Tipo Asta",
-                                                       (short) budget, opening,
-                                                       Optional.ofNullable(maxTeamB).filter(m -> isBid).orElse(null),
-                                                       closure, leagueName);
+        CampionatoRecord league = new CampionatoRecord();
+        league.setIdcampionato(getLastLeagueId().orElse(-1) + 1);
+        league.setNomecampionato(leagueName);
+        league.setBudgetpersquadra((short) budget);
+        league.setDataapertura(opening);
+        league.setDatachiusura(closure);
+        league.setAstarialzo(String.valueOf(isBid));
+        Optional.ofNullable((byte) maxTeam).filter(m -> isBid).ifPresent(league::setNumeromassimosquadre);        
         query.insertInto(CAMPIONATO).values(league.intoArray()).execute();
         return league;
     }
     
     public static SquadraRecord registerTeam(int leagueId, String username, String teamName, int budget) {
-        SquadraRecord team = new SquadraRecord(getLastTeamId().orElse(-1) + 1, leagueId,
-                                               username, teamName, (short) budget);
+        SquadraRecord team = new SquadraRecord();
+        team.setIdsquadra(getLastTeamId().orElse(-1) + 1);
+        team.setIdcampionato(leagueId);
+        team.setUsername(username);
+        team.setNomesquadra(teamName);
+        team.setCreditoresiduo((short) budget);
         query.insertInto(SQUADRA).values(team.intoArray()).execute();
         return team;
     }
@@ -191,9 +202,11 @@ public final class Queries {
     public static Optional<PuntataRecord> getLastBet(int leagueId, int playerId) {
         return query.select()
                     .from(PUNTATA)
-                    .where(PUNTATA.IDCAMPIONATO.eq(leagueId))
+                    .join(SQUADRA)
+                    .on(PUNTATA.IDSQUADRA.eq(SQUADRA.IDSQUADRA))
+                    .where(SQUADRA.IDCAMPIONATO.eq(leagueId))
                     .and(PUNTATA.IDCALCIATORE.eq((short) playerId))
-                    .and(PUNTATA.SUCCESSIVA_VALORE.isNull())
+                    .and(PUNTATA.PUNTATASUCCESSIVA.isNull())
                     .fetch()
                     .stream()
                     .map(r -> (PuntataRecord) r)

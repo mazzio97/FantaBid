@@ -3,6 +3,7 @@ package org.fantabid.controller;
 import static org.fantabid.model.Role.*;
 
 import java.util.Date;
+import java.util.Optional;
 
 import org.fantabid.generated.tables.records.CalciatoreRecord;
 import org.fantabid.generated.tables.records.CampionatoRecord;
@@ -37,14 +38,17 @@ public class BetInfoController {
         CalciatoreRecord player = model.getPlayer();
         SquadraRecord team = model.getTeam();
         CampionatoRecord league = model.getLeague();
-        PuntataRecord lastBet = Queries.getLastBet(league.getIdcampionato(), player.getIdcalciatore())
-                                       .orElse(new PuntataRecord("giampaolo", league.getIdcampionato(), 
-                                                                 (short) player.getIdcalciatore(), (short) 0,
-                                                                 (short) 0, "", 0, (short) 0,
-                                                                 league.getDatachiusura()));
+        Optional<PuntataRecord> lastBet = Queries.getLastBet(league.getIdcampionato(), player.getIdcalciatore());
         
         playerLabel.setText(player.getNome() + " (" + player.getSquadra() + ")");
-        lastBetLabel.setText("Last Bet: " + lastBet.getValore() + "$ (" + lastBet.getUsername() + ")");
+        lastBetLabel.setText("Last Bet: "
+                             + lastBet.map(PuntataRecord::getValore).orElse((short) 0)
+                             + "$ ("
+                             + lastBet.map(PuntataRecord::getIdsquadra)
+                                      .map(Queries::getTeam)
+                                      .map(Optional::get)
+                                      .map(SquadraRecord::getUsername)
+                                      .orElse("no one"));
         expiryDateLabel.setText("Expiring At: " + new Date(league.getDatachiusura().getTime()));
         
         if(player.getRuolo() == PORTIERE.getRoleString()) {
@@ -58,7 +62,7 @@ public class BetInfoController {
         }
         
         betLabel.textProperty().bind(Bindings.format("%.0f $", betSlider.valueProperty()));
-        betSlider.setMin(lastBet.getValore());
+        betSlider.setMin(lastBet.map(PuntataRecord::getValore).orElse((short) 0) + 1);
         betSlider.setMax(team.getCreditoresiduo());
         
         cancelButton.setOnAction(e -> {
