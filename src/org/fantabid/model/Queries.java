@@ -64,9 +64,37 @@ public final class Queries {
         return team;
     }
     
+    public static PuntataRecord registerBet(int teamId, int playerId, int value) {
+        PuntataRecord newBet = new PuntataRecord();
+        newBet.setIdpuntata(getLastBetId().orElse(-1) + 1);
+        newBet.setIdsquadra(teamId);
+        newBet.setIdcalciatore((short) playerId);
+        newBet.setValore((short) value);
+
+        Queries.getLastBet(Queries.getTeam(teamId).get().getIdcampionato(), playerId)
+               .ifPresent(oldBet -> query.update(PUNTATA)
+                                         .set(PUNTATA.PUNTATASUCCESSIVA, newBet.getIdpuntata())
+                                         .where(PUNTATA.IDPUNTATA.eq(oldBet.getIdpuntata())));
+        
+        return newBet;
+    }
+    
     public static void linkRuleToLeague(int ruleId, int leagueId) {
         query.insertInto(REGOLE_PER_CAMPIONATO)
              .values(ruleId, leagueId)
+             .execute();
+    }
+    
+    public static void insertPlayerIntoTeam(int teamId, int playerId) {
+        query.insertInto(MEMBRI_SQUADRA)
+             .values(teamId, playerId)
+             .execute();
+    }
+    
+    public static void removePlayerFromTeam(int teamId, int playerId) {
+        query.delete(MEMBRI_SQUADRA)
+             .where(MEMBRI_SQUADRA.IDSQUADRA.eq(teamId))
+             .and(MEMBRI_SQUADRA.IDCALCIATORE.eq((short) playerId))
              .execute();
     }
     
@@ -172,6 +200,32 @@ public final class Queries {
                     .map(r -> r.into(REGOLA));
     }
 
+    
+    public static Stream<CalciatoreRecord> getAllPlayersOfTeam(int teamId) {
+        return query.select(CALCIATORE.asterisk())
+                    .from(MEMBRI_SQUADRA)
+                    .join(CALCIATORE)
+                    .on(MEMBRI_SQUADRA.IDCALCIATORE.eq(CALCIATORE.IDCALCIATORE))
+                    .where(MEMBRI_SQUADRA.IDSQUADRA.eq(teamId))
+                    .fetch()
+                    .stream()
+                    .map(r -> r.into(CALCIATORE));
+    }
+    
+    public static Optional<PuntataRecord> getLastBet(int leagueId, int playerId) {
+        return query.select()
+                    .from(PUNTATA)
+                    .join(SQUADRA)
+                    .on(PUNTATA.IDSQUADRA.eq(SQUADRA.IDSQUADRA))
+                    .where(SQUADRA.IDCAMPIONATO.eq(leagueId))
+                    .and(PUNTATA.IDCALCIATORE.eq((short) playerId))
+                    .and(PUNTATA.PUNTATASUCCESSIVA.isNull())
+                    .fetch()
+                    .stream()
+                    .map(r -> r.into(PUNTATA))
+                    .findFirst();
+    }
+    
     public static Stream<SquadraRecord> getAllFantabidTeams() {
         return query.select()
                     .from(SQUADRA)
@@ -205,20 +259,6 @@ public final class Queries {
                     .map(r -> r.into(REGOLA));
     }
     
-    public static Optional<PuntataRecord> getLastBet(int leagueId, int playerId) {
-        return query.select()
-                    .from(PUNTATA)
-                    .join(SQUADRA)
-                    .on(PUNTATA.IDSQUADRA.eq(SQUADRA.IDSQUADRA))
-                    .where(SQUADRA.IDCAMPIONATO.eq(leagueId))
-                    .and(PUNTATA.IDCALCIATORE.eq((short) playerId))
-                    .and(PUNTATA.PUNTATASUCCESSIVA.isNull())
-                    .fetch()
-                    .stream()
-                    .map(r -> r.into(PUNTATA))
-                    .findFirst();
-    }
-    
     public static Optional<Integer> getLastLeagueId() {
         return query.select(max(CAMPIONATO.IDCAMPIONATO))
                     .from(CAMPIONATO)
@@ -232,6 +272,16 @@ public final class Queries {
     public static Optional<Integer> getLastTeamId() {
         return query.select(max(SQUADRA.IDSQUADRA))
                     .from(SQUADRA)
+                    .fetch()
+                    .stream()
+                    .map(Record1::value1)
+                    .filter(Queries::filterNullValues)
+                    .findFirst();
+    }
+    
+    public static Optional<Integer> getLastBetId() {
+        return query.select(max(PUNTATA.IDPUNTATA))
+                    .from(PUNTATA)
                     .fetch()
                     .stream()
                     .map(Record1::value1)
