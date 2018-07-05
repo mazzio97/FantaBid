@@ -7,8 +7,10 @@ import org.fantabid.generated.tables.records.CalciatoreRecord;
 import org.fantabid.model.Model;
 import org.fantabid.model.Queries;
 import org.fantabid.model.Role;
+import org.fantabid.view.Dialogs;
 import org.fantabid.view.Views;
 
+import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -90,7 +92,7 @@ public class TeamController {
         teamTable.setItems(teamPlayers);
         updateTeamBudgetLabel();        
         /*
-         * Buttons event handler
+         * Common buttons event handlers and bindings
          */
         backButton.setOnAction(e -> {
             model.removeTeam();
@@ -100,6 +102,8 @@ public class TeamController {
         playerFilterField.textProperty().addListener((observable, oldValue, newValue) -> filterPlayers());
         roleComboBox.setOnAction(e -> filterPlayers());
         teamComboBox.setOnAction(e -> filterPlayers());
+        addButton.disableProperty().bind(Bindings.isEmpty(playersTable.getSelectionModel().getSelectedItems()));
+        removeButton.disableProperty().bind(Bindings.isEmpty(teamTable.getSelectionModel().getSelectedItems()));
         /*
          * League-specific view and handlers
          */
@@ -109,14 +113,7 @@ public class TeamController {
             removeButton.setOnAction(e -> System.out.println("View all the previous bets!"));
         } else {
             addButton.setOnAction(e -> addPlayerToTeamClassicLeague(playersTable.getSelectionModel().getSelectedItem()));
-            removeButton.setOnAction(e -> {
-                CalciatoreRecord toRemove = teamTable.getSelectionModel().getSelectedItem();
-                Queries.removePlayerFromTeam(model.getTeam().getIdsquadra(), toRemove.getIdcalciatore());
-                Queries.updateBudgetLeft(model.getTeam().getIdsquadra(), toRemove.getPrezzostandard());
-                teamPlayers.remove(toRemove);
-                filterPlayers();
-                updateTeamBudgetLabel();
-            });
+            removeButton.setOnAction(e -> removePlayerFromTeamClassicLeague(teamTable.getSelectionModel().getSelectedItem()));
         }
     }
     
@@ -131,33 +128,48 @@ public class TeamController {
         final Role r = Role.fromString(c.getRuolo());
         final int remainingBudget = model.getTeam().getCreditoresiduo();
         final int remainingPlayers = Role.ANY.getMaxInTeam() - (teamPlayers.size() + 1);
-        Optional.of(teamPlayers)
-                .filter(tp -> tp.size() < Role.ANY.getMaxInTeam())
-                .filter(tp -> remainingBudget >= c.getPrezzostandard() + remainingPlayers)
-                .filter(tp -> tp.stream().filter(p -> p.getRuolo().equals(c.getRuolo())).count() < r.getMaxInTeam())
-//                .filter(tp -> !tp.contains(c))
-                .ifPresent(tp -> {
-                    tp.add(c);
-                    Queries.insertPlayerIntoTeam(model.getTeam().getIdsquadra(), c.getIdcalciatore());
-                    Queries.updateBudgetLeft(model.getTeam().getIdsquadra(), -c.getPrezzostandard()); 
-                });
+        boolean canAddPlayer = Optional.of(teamPlayers)
+                                       .filter(tp -> tp.size() < Role.ANY.getMaxInTeam())
+                                       .filter(tp -> remainingBudget >= c.getPrezzostandard() + remainingPlayers)
+                                       .filter(tp -> tp.stream().filter(p -> p.getRuolo().equals(c.getRuolo())).count() < r.getMaxInTeam())
+                                       .isPresent();
+        if (canAddPlayer) {
+            teamPlayers.add(c);
+            Queries.insertPlayerIntoTeam(model.getTeam().getIdsquadra(), c.getIdcalciatore());
+            Queries.updateBudgetLeft(model.getTeam().getIdsquadra(), -c.getPrezzostandard());
+        } else {
+            Dialogs.showWarningDialog("Can't add player", "You don't have enough budget \n or already " + 
+                                                          r.getMaxInTeam() + r.getRoleString() + " in your team.");
+        }
         filterPlayers();
         updateTeamBudgetLabel();
     }
-    
+
+    private void removePlayerFromTeamClassicLeague(CalciatoreRecord c) {
+        Queries.removePlayerFromTeam(model.getTeam().getIdsquadra(), c.getIdcalciatore());
+        Queries.updateBudgetLeft(model.getTeam().getIdsquadra(), c.getPrezzostandard());
+        teamPlayers.remove(c);
+        filterPlayers();
+        updateTeamBudgetLabel();
+    }
+
     private void addPlayerToTeamBidLeague(CalciatoreRecord c) {
         final Role r = Role.fromString(c.getRuolo());
-        Optional.of(teamPlayers)
-                .filter(tp -> tp.size() < Role.ANY.getMaxInTeam())
-                .filter(tp -> tp.stream().filter(p -> p.getRuolo().equals(c.getRuolo())).count() < r.getMaxInTeam())
-                .ifPresent(tp -> {
-                    model.setPlayer(c);
-                    Views.loadBetInfoScene();
-                    Optional.ofNullable(model.getPlayer()).ifPresent(c1 -> {
-                        tp.add(c1);
-                        model.removePlayer();
-                    });
-                });
+        boolean canAddPlayer = Optional.of(teamPlayers)
+                                       .filter(tp -> tp.size() < Role.ANY.getMaxInTeam())
+                                       .filter(tp -> tp.stream().filter(p -> p.getRuolo().equals(c.getRuolo())).count() < r.getMaxInTeam())
+                                       .isPresent();
+        if (canAddPlayer) {
+            model.setPlayer(c);
+            Views.loadBetInfoScene();
+            Optional.ofNullable(model.getPlayer()).ifPresent(c1 -> {
+                teamPlayers.add(c1);
+                model.removePlayer();
+            });
+        } else {
+            Dialogs.showWarningDialog("Can't add player", "You don't have enough budget \n or already " + 
+                                                          r.getMaxInTeam() + r.getRoleString() + " in your team.");
+        }
         filterPlayers();
         updateTeamBudgetLabel();
     }

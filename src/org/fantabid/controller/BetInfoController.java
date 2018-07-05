@@ -80,7 +80,7 @@ public class BetInfoController {
         });
         
         betButton.setOnAction(e -> {
-            Queries.registerBet(team.getIdsquadra(), player.getIdcalciatore(), betSlider.valueProperty().intValue());
+            Queries.registerBet(team.getIdsquadra(), player.getIdcalciatore(), Integer.parseInt(betLabel.getText().replace("M", "")));
 //            model.removePlayer();
             Views.loadTeamScene();
         });
