@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
@@ -9,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="betPanel" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/8.0.162-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.fantabid.controller.BetInfoController">
+<VBox fx:id="betPanel" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.fantabid.controller.BetInfoController">
    <children>
       <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
          <children>
@@ -64,7 +69,7 @@
       <VBox>
          <children>
             <Slider fx:id="betSlider" blockIncrement="1.0" majorTickUnit="10.0" minorTickCount="10" showTickLabels="true" showTickMarks="true" />
-            <HBox alignment="CENTER_RIGHT">
+            <HBox alignment="CENTER_RIGHT" spacing="10.0">
                <children>
                   <Label fx:id="betLabel" text="0 M">
                      <font>
@@ -72,12 +77,17 @@
                      </font>
                   </Label>
                   <Region maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
+                  <Button fx:id="refreshButton" mnemonicParsing="false">
+                     <font>
+                        <Font name="System Bold" size="15.0" />
+                     </font>
+                  </Button>
                   <Button fx:id="cancelButton" mnemonicParsing="false" text="Cancel">
                      <font>
                         <Font name="System Bold" size="15.0" />
                      </font>
                      <HBox.margin>
-                        <Insets left="5.0" right="5.0" />
+                        <Insets />
                      </HBox.margin>
                   </Button>
                   <Button fx:id="betButton" mnemonicParsing="false" text="Make Your Bet!">
@@ -85,7 +95,7 @@
                         <Font name="System Bold" size="15.0" />
                      </font>
                      <HBox.margin>
-                        <Insets left="5.0" right="5.0" />
+                        <Insets />
                      </HBox.margin>
                   </Button>
                </children>

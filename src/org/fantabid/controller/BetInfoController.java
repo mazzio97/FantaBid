@@ -12,6 +12,8 @@ import org.fantabid.generated.tables.records.SquadraRecord;
 import org.fantabid.model.Model;
 import org.fantabid.model.Queries;
 import org.fantabid.model.Role;
+import org.fantabid.view.Buttons;
+import org.fantabid.view.Dialogs;
 import org.fantabid.view.Views;
 
 import javafx.beans.binding.Bindings;
@@ -31,27 +33,24 @@ public class BetInfoController {
     @FXML private Label expiryDateLabel;
     @FXML private Slider betSlider;
     @FXML private Label betLabel;
+    @FXML private Button refreshButton;
     @FXML private Button cancelButton;
     @FXML private Button betButton;
     private final Model model = Model.get();
     
+    private Optional<PuntataRecord> lastBet;
+    private CalciatoreRecord player;
+    private SquadraRecord team;
+    private CampionatoRecord league;
+    
     public final void initialize() {        
-        CalciatoreRecord player = model.getPlayer();
-        SquadraRecord team = model.getTeam();
-        CampionatoRecord league = model.getLeague();
-        Optional<PuntataRecord> lastBet = Queries.getLastBet(league.getIdcampionato(), player.getIdcalciatore());
-        int lastBetValue = lastBet.map(PuntataRecord::getValore).orElse((short) 0);
-        playerLabel.setText(player.getNome() + " (" + player.getSquadra() + ")");
-        lastBetLabel.setText("Last Bet: "
-                             + lastBetValue
-                             + "M ("
-                             + lastBet.map(PuntataRecord::getIdsquadra)
-                                      .map(Queries::getTeam)
-                                      .map(Optional::get)
-                                      .map(SquadraRecord::getUsername)
-                                      .orElse("no one") + ")");
-        expiryDateLabel.setText("Expiring At: " + new Date(league.getDatachiusura().getTime()));
+        refreshButton.setGraphic(Buttons.REFRESH_BUTTON_GRAPHIC);
+        player = model.getPlayer();
+        team = model.getTeam();
+        league = model.getLeague();
+        refresh();
         
+        expiryDateLabel.setText("Expiring At: " + new Date(league.getDatachiusura().getTime()));
         if(player.getRuolo().equals(PORTIERE.getRoleString())) {
             goalkeeperButton.setDisable(false);
         } else if(player.getRuolo().equals(DIFENSORE.getRoleString())) {
@@ -62,7 +61,40 @@ public class BetInfoController {
             strikerButton.setDisable(false);
         }
         
-        int teamBudgetAvailable = Queries.getTeamBudget(team.getIdsquadra()) - (Role.ANY.getMaxInTeam() - (int) Queries.getAllPlayersOfTeam(team.getIdsquadra()).count());
+        cancelButton.setOnAction(e -> {
+            model.removePlayer();
+            Views.loadTeamScene();
+        });
+        
+        betButton.setOnAction(e -> {
+            if(lastBet.map(PuntataRecord::getIdpuntata).map(Queries::getBet).map(o -> o.orElse(null))
+                      .map(PuntataRecord::getPuntatasuccessiva).isPresent()) {
+                Dialogs.showErrorDialog("Cannot Make Bet", "Another Bet Has Been Made Meanwhile");
+                refresh();
+            } else {
+                Queries.registerBet(team.getIdsquadra(), player.getIdcalciatore(), Integer.parseInt(betLabel.getText().replace("M", "")));
+    //            model.removePlayer();
+                Views.loadTeamScene();
+            }
+        });
+    }
+    
+    private void refresh() {
+        lastBet = Queries.getLastBet(league.getIdcampionato(), player.getIdcalciatore());
+        int lastBetValue = lastBet.map(PuntataRecord::getValore).orElse((short) 0);
+        playerLabel.setText(player.getNome() + " (" + player.getSquadra() + ")");
+        lastBetLabel.setText("Last Bet: "
+                             + lastBetValue
+                             + "M ("
+                             + lastBet.map(PuntataRecord::getIdsquadra)
+                                      .map(Queries::getTeam)
+                                      .map(Optional::get)
+                                      .map(SquadraRecord::getUsername)
+                                      .orElse("no one") + ")");
+        
+        int teamBudgetAvailable = Queries.getTeamBudget(team.getIdsquadra())
+                                  - (Role.ANY.getMaxInTeam()
+                                     - (int) Queries.getAllPlayersOfTeam(team.getIdsquadra()).count());
 
         // TODO: fix the case when teamBudgetAvailable is lastBetValue + 1
         if (teamBudgetAvailable <= lastBetValue) {
@@ -74,15 +106,5 @@ public class BetInfoController {
             betSlider.setMin(lastBetValue + 1);
             betSlider.setMax(teamBudgetAvailable);
         }
-        cancelButton.setOnAction(e -> {
-            model.removePlayer();
-            Views.loadTeamScene();
-        });
-        
-        betButton.setOnAction(e -> {
-            Queries.registerBet(team.getIdsquadra(), player.getIdcalciatore(), Integer.parseInt(betLabel.getText().replace("M", "")));
-//            model.removePlayer();
-            Views.loadTeamScene();
-        });
     }
 }

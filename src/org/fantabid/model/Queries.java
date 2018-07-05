@@ -172,6 +172,15 @@ public final class Queries {
                     .findFirst();
     }
     
+    public static Optional<PuntataRecord> getBet(int betId) {        
+        return query.select()
+                    .from(PUNTATA)
+                    .where(PUNTATA.IDPUNTATA.eq(betId))
+                    .stream()
+                    .map(r -> r.into(PUNTATA))
+                    .findFirst();
+    }
+    
     public static Stream<AllenatoreRecord> getAllUsers() {
         return query.select()
                     .from(ALLENATORE)
