@@ -2,7 +2,6 @@ package org.fantabid.controller;
 
 import java.sql.Date;
 import java.time.LocalDate;
-import java.time.ZoneOffset;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -46,8 +45,6 @@ public class NewLeagueController {
     @FXML private HBox numTeamsBox;
     private final Spinner<Integer> numTeamsSpinner = new Spinner<>(MIN_NUM_TEAMS, MAX_NUM_TEAMS, DEFAULT_NUM_TEAMS);
     @FXML private TextArea descriptionArea;
-    @FXML private HBox dateTimeBox;
-    private final Spinner<Integer> endingHourSpinner = new Spinner<>(MIN_HOUR, MAX_HOUR, DEFAULT_HOUR);
     @FXML private DatePicker endingDatePicker;
     @FXML private VBox rulesBox;
     @FXML private HBox teamBudgetBox;
@@ -84,7 +81,6 @@ public class NewLeagueController {
         });
 
         numTeamsBox.getChildren().add(numTeamsSpinner);
-        dateTimeBox.getChildren().add(endingHourSpinner);
 
         Arrays.asList(LeagueType.values()).forEach(leagueType.getItems()::add);
         leagueType.getSelectionModel().select(LeagueType.BID);
@@ -106,7 +102,7 @@ public class NewLeagueController {
                                                              descriptionArea.getText(),
                                                              computeBudget(),
                                                              new Date(System.currentTimeMillis()),
-                                                             new Date(computeDateTimeMillis()),
+                                                             Date.valueOf(endingDatePicker.getValue()),
                                                              leagueType.getValue().isBid(),
                                                              computeMaxTeams());
             
@@ -135,12 +131,5 @@ public class NewLeagueController {
         return Optional.of(numTeamsSpinner.getValue().byteValue())
                        .filter(v -> leagueType.getValue().isBid())
                        .orElse(null);
-    }
-    
-    private long computeDateTimeMillis() {
-        return endingDatePicker.getValue()
-                               .atStartOfDay()
-                               .plusHours(endingHourSpinner.getValue() - 2)
-                               .toEpochSecond(ZoneOffset.UTC) * 1000;
     }
 }

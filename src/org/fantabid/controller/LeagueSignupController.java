@@ -1,5 +1,6 @@
 package org.fantabid.controller;
 
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -51,7 +52,10 @@ public class LeagueSignupController {
                           "Closure Date: " + league.getDatachiusura() + "\n" +
                           "Initial Budget: " + league.getBudgetpersquadra());
         
-        rulesLabel.setText("Rules:\n- " + rules.map(RegolaRecord::getNome).collect(Collectors.joining("\n- ")));
+        Optional.of(rules.map(RegolaRecord::getNome))
+                .map(r -> r.collect((Collectors.joining("\n- "))))
+                .filter(String::isEmpty)
+                .ifPresent(s -> rulesLabel.setText("Rules:\n- " + s));
         
         registerButton.setOnAction(e -> {
             Queries.registerTeam(league.getIdcampionato(), model.getUser().getUsername(),

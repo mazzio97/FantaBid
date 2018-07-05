@@ -62,7 +62,7 @@
                   <Font name="System Bold" size="18.0" />
                </font>
             </Label>
-            <Label fx:id="infoLabel" alignment="TOP_CENTER" text="League Info" BorderPane.alignment="TOP_CENTER" VBox.vgrow="ALWAYS">
+            <Label fx:id="infoLabel" alignment="TOP_CENTER" BorderPane.alignment="TOP_CENTER" VBox.vgrow="ALWAYS">
                <font>
                   <Font name="System Italic" size="14.0" />
                </font>
@@ -81,7 +81,7 @@
                   <Font name="System Bold" size="18.0" />
                </font>
             </Label>
-            <Label fx:id="descriptionLabel" alignment="TOP_CENTER" text="League Description" BorderPane.alignment="TOP_CENTER" VBox.vgrow="ALWAYS">
+            <Label fx:id="descriptionLabel" alignment="TOP_CENTER" BorderPane.alignment="TOP_CENTER" VBox.vgrow="ALWAYS">
                <font>
                   <Font name="System Italic" size="14.0" />
                </font>
@@ -100,7 +100,7 @@
                   <Font name="System Bold" size="18.0" />
                </font>
             </Label>
-            <Label fx:id="rulesLabel" alignment="TOP_CENTER" text="League Rules" BorderPane.alignment="TOP_CENTER" VBox.vgrow="ALWAYS">
+            <Label fx:id="rulesLabel" alignment="TOP_CENTER" BorderPane.alignment="TOP_CENTER" VBox.vgrow="ALWAYS">
                <font>
                   <Font name="System Italic" size="14.0" />
                </font>
