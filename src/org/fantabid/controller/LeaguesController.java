@@ -1,8 +1,11 @@
 package org.fantabid.controller;
 
+import java.sql.Date;
+
 import org.fantabid.model.Model;
 import org.fantabid.model.Queries;
 import org.fantabid.view.Buttons;
+import org.fantabid.view.Dialogs;
 import org.fantabid.view.Views;
 
 import javafx.fxml.FXML;
@@ -32,8 +35,12 @@ public class LeaguesController {
                .map(r -> {
                    Button b = Buttons.listButton(r.getNomecampionato() + ", closing at: " + r.getDatachiusura());
                    b.setOnAction(e -> {
-                       model.setLeague(r);
-                       Views.loadLeagueSignupScene();
+                       if(r.getDatachiusura().after(new Date(System.currentTimeMillis()))) {
+                           Dialogs.showErrorDialog("League Expired", "You Can't Signup to this League Anymore.");
+                       } else {
+                           model.setLeague(r);
+                           Views.loadLeagueSignupScene();
+                       }
                    });
                    return b;
                })
