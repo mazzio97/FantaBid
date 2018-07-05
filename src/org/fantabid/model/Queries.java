@@ -83,11 +83,15 @@ public final class Queries {
     }
     
     public static void updateBudgetLeft(int teamId, int amount) {
-        int newBudget = getTeam(teamId).map(s -> s.getCreditoresiduo() + amount).orElse(null).intValue();
         query.update(SQUADRA)
-             .set(SQUADRA.CREDITORESIDUO, (short) newBudget)
+             .set(SQUADRA.CREDITORESIDUO, (short) (getTeamBudget(teamId) + amount))
              .where(SQUADRA.IDSQUADRA.eq(teamId))
              .execute();
+    }
+    
+    public static int getTeamBudget(int teamId) {
+        return getTeam(teamId).map(s -> s.getCreditoresiduo())
+                              .orElseThrow(() -> new IllegalArgumentException());
     }
 
     public static void linkRuleToLeague(int ruleId, int leagueId) {

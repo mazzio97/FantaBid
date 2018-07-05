@@ -88,7 +88,7 @@ public class TeamController {
         filterPlayers();
         playersTable.setItems(filteredPlayers);
         teamTable.setItems(teamPlayers);
-        updateTeamBudget();        
+        updateTeamBudgetLabel();        
         /*
          * Buttons event handler
          */
@@ -105,29 +105,17 @@ public class TeamController {
          */
         if (model.getLeague().getAstarialzo()) {
             biddifyView();
-            addButton.setOnAction(e -> {
-                model.setPlayer(playersTable.getSelectionModel().getSelectedItem());
-                Views.loadBetInfoScene();
-                Optional.ofNullable(model.getPlayer()).ifPresent(c -> {
-                    teamPlayers.add(c);
-                    model.removePlayer();
-                });
-                filterPlayers();
-            });
+            addButton.setOnAction(e -> addPlayerToTeamBidLeague(playersTable.getSelectionModel().getSelectedItem()));
             removeButton.setOnAction(e -> System.out.println("View all the previous bets!"));
         } else {
-            addButton.setOnAction(e -> {
-                addPlayerToTeam(playersTable.getSelectionModel().getSelectedItem());
-                filterPlayers();
-                updateTeamBudget();
-            });
+            addButton.setOnAction(e -> addPlayerToTeamClassicLeague(playersTable.getSelectionModel().getSelectedItem()));
             removeButton.setOnAction(e -> {
                 CalciatoreRecord toRemove = teamTable.getSelectionModel().getSelectedItem();
                 Queries.removePlayerFromTeam(model.getTeam().getIdsquadra(), toRemove.getIdcalciatore());
                 Queries.updateBudgetLeft(model.getTeam().getIdsquadra(), toRemove.getPrezzostandard());
                 teamPlayers.remove(toRemove);
                 filterPlayers();
-                updateTeamBudget();
+                updateTeamBudgetLabel();
             });
         }
     }
@@ -139,7 +127,7 @@ public class TeamController {
         removeButton.setText("INFO"); // TODO: Storico delle puntate su quel giocatore
     }
 
-    private void addPlayerToTeam(CalciatoreRecord c) {
+    private void addPlayerToTeamClassicLeague(CalciatoreRecord c) {
         final Role r = Role.fromString(c.getRuolo());
         final int remainingBudget = model.getTeam().getCreditoresiduo();
         final int remainingPlayers = Role.ANY.getMaxInTeam() - (teamPlayers.size() + 1);
@@ -153,6 +141,25 @@ public class TeamController {
                     Queries.insertPlayerIntoTeam(model.getTeam().getIdsquadra(), c.getIdcalciatore());
                     Queries.updateBudgetLeft(model.getTeam().getIdsquadra(), -c.getPrezzostandard()); 
                 });
+        filterPlayers();
+        updateTeamBudgetLabel();
+    }
+    
+    private void addPlayerToTeamBidLeague(CalciatoreRecord c) {
+        final Role r = Role.fromString(c.getRuolo());
+        Optional.of(teamPlayers)
+                .filter(tp -> tp.size() < Role.ANY.getMaxInTeam())
+                .filter(tp -> tp.stream().filter(p -> p.getRuolo().equals(c.getRuolo())).count() < r.getMaxInTeam())
+                .ifPresent(tp -> {
+                    model.setPlayer(c);
+                    Views.loadBetInfoScene();
+                    Optional.ofNullable(model.getPlayer()).ifPresent(c1 -> {
+                        tp.add(c1);
+                        model.removePlayer();
+                    });
+                });
+        filterPlayers();
+        updateTeamBudgetLabel();
     }
 
     private void filterPlayers() {
@@ -170,7 +177,7 @@ public class TeamController {
                              .forEach(filteredPlayers::add);
     }
 
-    private void updateTeamBudget() {
+    private void updateTeamBudgetLabel() {
         budgetLabel.setText(String.valueOf(Queries.getTeam(model.getTeam().getIdsquadra())
                                                   .map(s -> s.getCreditoresiduo())
                                                   .orElse((short) 0) + "M"));
