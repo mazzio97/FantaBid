@@ -62,7 +62,7 @@
             </Button>
          </left>
          <right>
-            <Button fx:id="refreshButton" mnemonicParsing="false" text="None" visible="false" BorderPane.alignment="CENTER">
+            <Button fx:id="refreshButton" mnemonicParsing="false" prefHeight="40.0" prefWidth="50.0" BorderPane.alignment="CENTER">
                <font>
                   <Font name="System Bold" size="16.0" />
                </font>
