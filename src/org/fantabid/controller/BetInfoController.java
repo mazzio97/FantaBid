@@ -51,13 +51,13 @@ public class BetInfoController {
                                       .orElse("no one") + ")");
         expiryDateLabel.setText("Expiring At: " + new Date(league.getDatachiusura().getTime()));
         
-        if(player.getRuolo() == PORTIERE.getRoleString()) {
+        if(player.getRuolo().equals(PORTIERE.getRoleString())) {
             goalkeeperButton.setDisable(false);
-        } else if(player.getRuolo() == DIFENSORE.getRoleString()) {
+        } else if(player.getRuolo().equals(DIFENSORE.getRoleString())) {
             defenderButton.setDisable(false);
-        } else if(player.getRuolo() == CENTROCAMPISTA.getRoleString()) {
+        } else if(player.getRuolo().equals(CENTROCAMPISTA.getRoleString())) {
             midfielderButton.setDisable(false);
-        } else {
+        } else if(player.getRuolo().equals(ATTACCANTE.getRoleString())) {
             strikerButton.setDisable(false);
         }
         
@@ -72,6 +72,7 @@ public class BetInfoController {
         });
         
         betButton.setOnAction(e -> {
+            Queries.registerBet(model.getTeam().getIdsquadra(), model.getPlayer().getIdcalciatore(), betSlider.valueProperty().intValue());
             model.removePlayer();
             Views.loadTeamScene();
         });

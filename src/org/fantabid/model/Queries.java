@@ -64,19 +64,27 @@ public final class Queries {
         return team;
     }
     
-    public static PuntataRecord registerBet(int teamId, int playerId, int value) {
-        PuntataRecord newBet = new PuntataRecord();
-        newBet.setIdpuntata(getLastBetId().orElse(-1) + 1);
-        newBet.setIdsquadra(teamId);
-        newBet.setIdcalciatore((short) playerId);
-        newBet.setValore((short) value);
-
-        Queries.getLastBet(Queries.getTeam(teamId).get().getIdcampionato(), playerId)
-               .ifPresent(oldBet -> query.update(PUNTATA)
-                                         .set(PUNTATA.PUNTATASUCCESSIVA, newBet.getIdpuntata())
-                                         .where(PUNTATA.IDPUNTATA.eq(oldBet.getIdpuntata())));
-        
-        return newBet;
+    public static void registerBet(int teamId, int playerId, int value) {
+//        PuntataRecord newBet = new PuntataRecord();
+//        newBet.setIdpuntata(getLastBetId().orElse(-1) + 1);
+//        newBet.setPuntatasuccessiva(null);
+//        newBet.setIdsquadra(teamId);
+//        newBet.setIdcalciatore((short) playerId);
+//        newBet.setValore((short) value);
+        Optional<PuntataRecord> oldBet = Queries.getLastBet(Queries.getTeam(teamId).get().getIdcampionato(), playerId);
+        int newBetId = getLastBetId().orElse(0) + 1;
+        query.insertInto(PUNTATA, PUNTATA.IDPUNTATA, PUNTATA.IDSQUADRA, PUNTATA.IDCALCIATORE, PUNTATA.VALORE)
+             .values(newBetId, teamId, (short) playerId, (short) value)
+             .execute();
+        oldBet.ifPresent(p -> {
+            query.update(PUNTATA)
+                 .set(PUNTATA.PUNTATASUCCESSIVA, newBetId)
+                 .where(PUNTATA.IDPUNTATA.eq(p.getIdpuntata()))
+                 .execute();
+            removePlayerFromTeam(p.getIdsquadra(), (short) playerId);
+        });
+        insertPlayerIntoTeam(teamId, (short) playerId);
+//        return newBet;
     }
     
     public static void linkRuleToLeague(int ruleId, int leagueId) {
