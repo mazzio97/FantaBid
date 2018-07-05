@@ -65,12 +65,6 @@ public final class Queries {
     }
     
     public static void registerBet(int teamId, int playerId, int value) {
-//        PuntataRecord newBet = new PuntataRecord();
-//        newBet.setIdpuntata(getLastBetId().orElse(-1) + 1);
-//        newBet.setPuntatasuccessiva(null);
-//        newBet.setIdsquadra(teamId);
-//        newBet.setIdcalciatore((short) playerId);
-//        newBet.setValore((short) value);
         Optional<PuntataRecord> oldBet = Queries.getLastBet(Queries.getTeam(teamId).get().getIdcampionato(), playerId);
         int newBetId = getLastBetId().orElse(0) + 1;
         query.insertInto(PUNTATA, PUNTATA.IDPUNTATA, PUNTATA.IDSQUADRA, PUNTATA.IDCALCIATORE, PUNTATA.VALORE)
@@ -82,11 +76,20 @@ public final class Queries {
                  .where(PUNTATA.IDPUNTATA.eq(p.getIdpuntata()))
                  .execute();
             removePlayerFromTeam(p.getIdsquadra(), (short) playerId);
+            updateBudgetLeft(p.getIdsquadra(), p.getValore());
         });
         insertPlayerIntoTeam(teamId, (short) playerId);
-//        return newBet;
+        updateBudgetLeft(teamId, -value);
     }
     
+    public static void updateBudgetLeft(int teamId, int amount) {
+        int newBudget = getTeam(teamId).map(s -> s.getCreditoresiduo() + amount).orElse(null).intValue();
+        query.update(SQUADRA)
+             .set(SQUADRA.CREDITORESIDUO, (short) newBudget)
+             .where(SQUADRA.IDSQUADRA.eq(teamId))
+             .execute();
+    }
+
     public static void linkRuleToLeague(int ruleId, int leagueId) {
         query.insertInto(REGOLE_PER_CAMPIONATO)
              .values(ruleId, leagueId)
@@ -97,6 +100,7 @@ public final class Queries {
         query.insertInto(MEMBRI_SQUADRA)
              .values(teamId, playerId)
              .execute();
+        
     }
     
     public static void removePlayerFromTeam(int teamId, int playerId) {

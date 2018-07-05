@@ -1,11 +1,9 @@
 package org.fantabid.controller;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.fantabid.generated.tables.records.CalciatoreRecord;
-import org.fantabid.generated.tables.records.PuntataRecord;
 import org.fantabid.model.Model;
 import org.fantabid.model.Queries;
 import org.fantabid.model.Role;
@@ -39,7 +37,6 @@ public class TeamController {
     @FXML private Button backButton;
     private final Model model = Model.get();
 
-    private final List<CalciatoreRecord> allPlayers = Queries.getAllPlayers().collect(Collectors.toList());
     private final ObservableList<CalciatoreRecord> filteredPlayers = FXCollections.observableArrayList();
     private final ObservableList<CalciatoreRecord> teamPlayers = FXCollections.observableArrayList(
                                                                      Queries.getAllPlayersOfTeam(model.getTeam()
@@ -50,15 +47,11 @@ public class TeamController {
     public final void initialize() {
         leagueLabel.setText(model.getLeague().getNomecampionato());
         teamLabel.setText(model.getTeam().getNomesquadra());
-        
         roleComboBox.getItems().addAll(Role.values());
         roleComboBox.getSelectionModel().select(0);
-        
         teamComboBox.getItems().add(ANY);
         Queries.getAllRealTeams().forEach(teamComboBox.getItems()::add);
         teamComboBox.getSelectionModel().select(0);
-        
-        // TODO: create a method to add a column in a table
         /*
          * Create columns for playersTable
          */
@@ -99,18 +92,29 @@ public class TeamController {
         /*
          * Buttons event handler
          */
-
+        backButton.setOnAction(e -> {
+            model.removeTeam();
+            model.removeLeague();
+            Views.loadUserAreaScene();
+        });
+        playerFilterField.textProperty().addListener((observable, oldValue, newValue) -> filterPlayers());
+        roleComboBox.setOnAction(e -> filterPlayers());
+        teamComboBox.setOnAction(e -> filterPlayers());
         /*
-         * Modify the view if the league is bid-based
+         * League-specific view and handlers
          */
         if (model.getLeague().getAstarialzo()) {
             biddifyView();
             addButton.setOnAction(e -> {
                 model.setPlayer(playersTable.getSelectionModel().getSelectedItem());
                 Views.loadBetInfoScene();
-                teamPlayers.addAll(Queries.getAllPlayersOfTeam(model.getTeam().getIdsquadra()).collect(Collectors.toSet()));
+                Optional.ofNullable(model.getPlayer()).ifPresent(c -> {
+                    teamPlayers.add(c);
+                    model.removePlayer();
+                });
                 filterPlayers();
             });
+            removeButton.setOnAction(e -> System.out.println("View all the previous bets!"));
         } else {
             addButton.setOnAction(e -> {
                 addPlayerToTeam(playersTable.getSelectionModel().getSelectedItem());
@@ -120,51 +124,37 @@ public class TeamController {
             removeButton.setOnAction(e -> {
                 CalciatoreRecord toRemove = teamTable.getSelectionModel().getSelectedItem();
                 Queries.removePlayerFromTeam(model.getTeam().getIdsquadra(), toRemove.getIdcalciatore());
+                Queries.updateBudgetLeft(model.getTeam().getIdsquadra(), toRemove.getPrezzostandard());
                 teamPlayers.remove(toRemove);
                 filterPlayers();
                 updateTeamBudget();
             });
         }
-        backButton.setOnAction(e -> {
-            model.removeTeam();
-            model.removeLeague();
-            Views.loadUserAreaScene();
-        });
-        playerFilterField.textProperty().addListener((observable, oldValue, newValue) -> filterPlayers());
-        roleComboBox.setOnAction(e -> filterPlayers());
-        teamComboBox.setOnAction(e -> filterPlayers());
     }
     
     private void biddifyView() {
         playersTable.getColumns().remove(3);
         teamTable.getColumns().remove(3);
-//        TableColumn<PuntataRecord, Integer> teamPriceCol = new TableColumn<>("Bid Price");
-//        teamPriceCol.setCellValueFactory(new PropertyValueFactory<PuntataRecord, Integer>("prezzostandard"));
-//        teamTable.getColumns().add(teamPriceCol);
         addButton.setText(">> BET");
-        removeButton.setVisible(false);
+        removeButton.setText("INFO"); // TODO: Storico delle puntate su quel giocatore
     }
 
     private void addPlayerToTeam(CalciatoreRecord c) {
         final Role r = Role.fromString(c.getRuolo());
-        final int remainingBudget = model.getTeam().getCreditoresiduo() - budgetSpent();
+        final int remainingBudget = model.getTeam().getCreditoresiduo();
         final int remainingPlayers = Role.ANY.getMaxInTeam() - (teamPlayers.size() + 1);
         Optional.of(teamPlayers)
                 .filter(tp -> tp.size() < Role.ANY.getMaxInTeam())
                 .filter(tp -> remainingBudget >= c.getPrezzostandard() + remainingPlayers)
                 .filter(tp -> tp.stream().filter(p -> p.getRuolo().equals(c.getRuolo())).count() < r.getMaxInTeam())
 //                .filter(tp -> !tp.contains(c))
-                .ifPresent(tp -> tp.add(c));
-        Queries.insertPlayerIntoTeam(model.getTeam().getIdsquadra(), c.getIdcalciatore());
+                .ifPresent(tp -> {
+                    tp.add(c);
+                    Queries.insertPlayerIntoTeam(model.getTeam().getIdsquadra(), c.getIdcalciatore());
+                    Queries.updateBudgetLeft(model.getTeam().getIdsquadra(), -c.getPrezzostandard()); 
+                });
     }
-    
-    private int budgetSpent() {
-        return teamPlayers.stream()
-                          .map(CalciatoreRecord::getPrezzostandard)
-                          .mapToInt(p -> p.intValue())
-                          .sum();
-    }
-    
+
     private void filterPlayers() {
         String namePart = Optional.ofNullable(playerFilterField.getText()).map(String::toUpperCase).orElse("");
         String roleFilter = roleComboBox.getSelectionModel().getSelectedItem().getRoleString();
@@ -172,15 +162,17 @@ public class TeamController {
                                     .filter(r -> !r.equals(ANY))
                                     .orElse(null);
         filteredPlayers.clear();
-        allPlayers.stream()
-                  .filter(c -> c.getNome().toUpperCase().contains(namePart))
-                  .filter(c -> roleFilter == null || c.getRuolo().equals(roleFilter))
-                  .filter(c -> teamFilter == null || c.getSquadra().equals(teamFilter))
-                  .filter(c -> !teamPlayers.contains(c))
-                  .forEach(filteredPlayers::add);
+        model.getAllPlayers().stream()
+                             .filter(c -> c.getNome().toUpperCase().contains(namePart))
+                             .filter(c -> roleFilter == null || c.getRuolo().equals(roleFilter))
+                             .filter(c -> teamFilter == null || c.getSquadra().equals(teamFilter))
+                             .filter(c -> !teamPlayers.contains(c))
+                             .forEach(filteredPlayers::add);
     }
 
     private void updateTeamBudget() {
-        budgetLabel.setText(String.valueOf(model.getTeam().getCreditoresiduo() - budgetSpent()) + "M");
+        budgetLabel.setText(String.valueOf(Queries.getTeam(model.getTeam().getIdsquadra())
+                                                  .map(s -> s.getCreditoresiduo())
+                                                  .orElse((short) 0) + "M"));
     }
 }

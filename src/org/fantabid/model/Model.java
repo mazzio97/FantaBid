@@ -1,6 +1,9 @@
 package org.fantabid.model;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.fantabid.generated.tables.records.AllenatoreRecord;
 import org.fantabid.generated.tables.records.CalciatoreRecord;
@@ -10,7 +13,7 @@ import org.fantabid.generated.tables.records.SquadraRecord;
 public final class Model {
     
     private static final Model SINGLETON = new Model();
-
+    private final List<CalciatoreRecord> allPlayers = Queries.getAllPlayers().collect(Collectors.toList());
     private Optional<AllenatoreRecord> currentUser = Optional.empty();
     private Optional<SquadraRecord> currentTeam = Optional.empty();
     private Optional<CampionatoRecord> currentLeague = Optional.empty();
@@ -66,5 +69,9 @@ public final class Model {
     
     public void removePlayer() {
         currentPlayer = Optional.empty();
+    }
+    
+    public Collection<CalciatoreRecord> getAllPlayers() {
+        return this.allPlayers;
     }
 }
