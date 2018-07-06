@@ -1,7 +1,9 @@
 package org.fantabid.controller;
 
+import java.sql.Date;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.fantabid.generated.tables.records.CalciatoreRecord;
 import org.fantabid.model.Model;
@@ -106,15 +108,33 @@ public class TeamController {
         roleComboBox.setOnAction(e -> filterPlayers());
         teamComboBox.setOnAction(e -> filterPlayers());
         addButton.disableProperty().bind(Bindings.isEmpty(playersTable.getSelectionModel().getSelectedItems()));
-        removeButton.disableProperty().bind(Bindings.isEmpty(teamTable.getSelectionModel().getSelectedItems()));
         /*
          * League-specific view and handlers
          */
+        if (Queries.getLeague(model.getLeague().getIdcampionato())
+                   .map(c -> c.getDatachiusura())
+                   .orElse(null)
+                   .before(new Date(System.currentTimeMillis()))) {
+            addButton.setDisable(true);
+            if (!model.getLeague().getAstarialzo()) {
+                removeButton.setDisable(true); // It must be always possible to view the history
+            }
+        }
         if (model.getLeague().getAstarialzo()) {
             biddifyView();
             addButton.setOnAction(e -> addPlayerToTeamBidLeague(playersTable.getSelectionModel().getSelectedItem()));
+//        removeButton.disableProperty().bind(Bindings.isEmpty(FXCollections.observableList(
+//                                                                 Stream.concat(teamTable.getSelectionModel().getSelectedItems().stream(), 
+//                                                                               playersTable.getSelectionModel().getSelectedItems().stream())
+//                                                                       .collect(Collectors.toList()))
+//                                                            ));
             removeButton.setOnAction(e -> {
-                model.setPlayer(teamTable.getSelectionModel().getSelectedItem());
+                CalciatoreRecord selectedPlayer = teamTable.focusedProperty().get() 
+                                                  ? teamTable.getSelectionModel().getSelectedItem() 
+                                                  : playersTable.focusedProperty().get()
+                                                    ? playersTable.getSelectionModel().getSelectedItem()
+                                                    : null;
+                model.setPlayer(selectedPlayer);
                 Views.loadBetHistoryScene();
             });
             refreshButton.setOnAction(e -> {
@@ -126,6 +146,7 @@ public class TeamController {
             });
         } else {
             addButton.setOnAction(e -> addPlayerToTeamClassicLeague(playersTable.getSelectionModel().getSelectedItem()));
+            removeButton.disableProperty().bind(Bindings.isEmpty(teamTable.getSelectionModel().getSelectedItems()));
             removeButton.setOnAction(e -> removePlayerFromTeamClassicLeague(teamTable.getSelectionModel().getSelectedItem()));
             refreshButton.setVisible(false);
         }
