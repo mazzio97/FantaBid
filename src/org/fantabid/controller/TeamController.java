@@ -3,7 +3,6 @@ package org.fantabid.controller;
 import java.sql.Date;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.fantabid.generated.tables.records.CalciatoreRecord;
 import org.fantabid.model.Model;
@@ -107,6 +106,8 @@ public class TeamController {
         playerFilterField.textProperty().addListener((observable, oldValue, newValue) -> filterPlayers());
         roleComboBox.setOnAction(e -> filterPlayers());
         teamComboBox.setOnAction(e -> filterPlayers());
+        teamTable.setOnMouseClicked(e -> playersTable.getSelectionModel().clearSelection());
+        playersTable.setOnMouseClicked(e -> teamTable.getSelectionModel().clearSelection());
         addButton.disableProperty().bind(Bindings.isEmpty(playersTable.getSelectionModel().getSelectedItems()));
         /*
          * League-specific view and handlers
@@ -123,18 +124,11 @@ public class TeamController {
         if (model.getLeague().getAstarialzo()) {
             biddifyView();
             addButton.setOnAction(e -> addPlayerToTeamBidLeague(playersTable.getSelectionModel().getSelectedItem()));
-//        removeButton.disableProperty().bind(Bindings.isEmpty(FXCollections.observableList(
-//                                                                 Stream.concat(teamTable.getSelectionModel().getSelectedItems().stream(), 
-//                                                                               playersTable.getSelectionModel().getSelectedItems().stream())
-//                                                                       .collect(Collectors.toList()))
-//                                                            ));
+            removeButton.disableProperty().bind(Bindings.and(Bindings.isEmpty(teamTable.getSelectionModel().getSelectedItems()), 
+                                                             Bindings.isEmpty(playersTable.getSelectionModel().getSelectedItems())));
             removeButton.setOnAction(e -> {
-                CalciatoreRecord selectedPlayer = teamTable.focusedProperty().get() 
-                                                  ? teamTable.getSelectionModel().getSelectedItem() 
-                                                  : playersTable.focusedProperty().get()
-                                                    ? playersTable.getSelectionModel().getSelectedItem()
-                                                    : null;
-                model.setPlayer(selectedPlayer);
+                model.setPlayer(Optional.ofNullable(teamTable.getSelectionModel().getSelectedItem())
+                                        .orElse(playersTable.getSelectionModel().getSelectedItem()));
                 Views.loadBetHistoryScene();
             });
             refreshButton.setOnAction(e -> {

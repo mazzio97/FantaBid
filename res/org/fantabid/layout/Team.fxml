@@ -23,7 +23,7 @@
                         <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
                      </VBox.margin>
                      <children>
-                        <TextField fx:id="playerFilterField" promptText="find player..." HBox.hgrow="ALWAYS">
+                        <TextField fx:id="playerFilterField" promptText="Find players..." HBox.hgrow="ALWAYS">
                            <font>
                               <Font size="16.0" />
                            </font>

@@ -32,7 +32,7 @@ public class BetHistoryController {
     private void refresh() {
         betsBox.getChildren().clear();
         betsBox.getChildren().addAll(Queries.getAllPlayerBets(Model.get().getPlayer().getIdcalciatore())
-                                            .sorted((p1, p2) -> p1.getValore() > p2.getValore() ? 1 : -1)
+                                            .sorted((p1, p2) -> p1.getIdpuntata() > p2.getIdpuntata() ? -1 : 1)
                                             .map(p -> {
                                                 SquadraRecord team = Queries.getTeam(p.getIdsquadra()).get();
                                                 return Labels.listLabel(team.getNomesquadra() 
@@ -40,5 +40,8 @@ public class BetHistoryController {
                                                                         + p.getValore() + "M");
                                             })
                                             .collect(Collectors.toList()));
+        if (betsBox.getChildren().isEmpty()) {
+            betsBox.getChildren().add(Labels.listLabel("Any bet on this player yet!"));
+        }
     }
 }
