@@ -44,6 +44,10 @@ public final class Views {
         return loadPrimaryStage("BetInfo");
     }
     
+    public static Scene loadBetHistoryScene() {
+        return loadPrimaryStage("BetHistory");
+    }
+    
     private static Scene loadPrimaryStage(String fileName) {
         Scene scene = null;
         try {

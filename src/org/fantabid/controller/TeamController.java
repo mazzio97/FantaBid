@@ -7,6 +7,7 @@ import org.fantabid.generated.tables.records.CalciatoreRecord;
 import org.fantabid.model.Model;
 import org.fantabid.model.Queries;
 import org.fantabid.model.Role;
+import org.fantabid.view.Buttons;
 import org.fantabid.view.Dialogs;
 import org.fantabid.view.Views;
 
@@ -37,6 +38,7 @@ public class TeamController {
     @FXML private Button addButton;
     @FXML private Button removeButton;
     @FXML private Button backButton;
+    @FXML private Button refreshButton;
     private final Model model = Model.get();
 
     private final ObservableList<CalciatoreRecord> filteredPlayers = FXCollections.observableArrayList();
@@ -54,6 +56,7 @@ public class TeamController {
         teamComboBox.getItems().add(ANY);
         Queries.getAllRealTeams().forEach(teamComboBox.getItems()::add);
         teamComboBox.getSelectionModel().select(0);
+        refreshButton.setGraphic(Buttons.REFRESH_BUTTON_GRAPHIC);
         /*
          * Create columns for playersTable
          */
@@ -110,10 +113,21 @@ public class TeamController {
         if (model.getLeague().getAstarialzo()) {
             biddifyView();
             addButton.setOnAction(e -> addPlayerToTeamBidLeague(playersTable.getSelectionModel().getSelectedItem()));
-            removeButton.setOnAction(e -> System.out.println("View all the previous bets!"));
+            removeButton.setOnAction(e -> {
+                model.setPlayer(teamTable.getSelectionModel().getSelectedItem());
+                Views.loadBetHistoryScene();
+            });
+            refreshButton.setOnAction(e -> {
+                teamPlayers.clear();
+                teamPlayers.addAll(Queries.getAllPlayersOfTeam(model.getTeam().getIdsquadra())
+                                          .collect(Collectors.toSet()));
+                filterPlayers();
+                updateTeamBudgetLabel();
+            });
         } else {
             addButton.setOnAction(e -> addPlayerToTeamClassicLeague(playersTable.getSelectionModel().getSelectedItem()));
             removeButton.setOnAction(e -> removePlayerFromTeamClassicLeague(teamTable.getSelectionModel().getSelectedItem()));
+            refreshButton.setVisible(false);
         }
     }
     
@@ -121,7 +135,7 @@ public class TeamController {
         playersTable.getColumns().remove(3);
         teamTable.getColumns().remove(3);
         addButton.setText(">> BET");
-        removeButton.setText("INFO"); // TODO: Storico delle puntate su quel giocatore
+        removeButton.setText("HISTORY");
     }
 
     private void addPlayerToTeamClassicLeague(CalciatoreRecord c) {
@@ -167,7 +181,7 @@ public class TeamController {
                 model.removePlayer();
             });
         } else {
-            Dialogs.showWarningDialog("Can't add player", "You don't have enough budget \n or already " + 
+            Dialogs.showWarningDialog("Can't add player", "You already have" + 
                                                           r.getMaxInTeam() + r.getRoleString() + " in your team.");
         }
         filterPlayers();

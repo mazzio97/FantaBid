@@ -67,8 +67,7 @@ public class BetInfoController {
         });
         
         betButton.setOnAction(e -> {
-            if(lastBet.map(PuntataRecord::getIdpuntata).map(Queries::getBet).map(o -> o.orElse(null))
-                      .map(PuntataRecord::getPuntatasuccessiva).isPresent()) {
+            if (Integer.parseInt(betLabel.getText().replace("M", "")) <= Queries.getLastBet(league.getIdcampionato(), player.getIdcalciatore()).map(p -> p.getValore()).orElse((short) 0)) {
                 Dialogs.showErrorDialog("Cannot Make Bet", "Another Bet Has Been Made Meanwhile");
                 refresh();
             } else {
@@ -77,6 +76,8 @@ public class BetInfoController {
                 Views.loadTeamScene();
             }
         });
+        
+        refreshButton.setOnAction(e -> refresh());
     }
     
     private void refresh() {
@@ -94,7 +95,7 @@ public class BetInfoController {
         
         int teamBudgetAvailable = Queries.getTeamBudget(team.getIdsquadra())
                                   - (Role.ANY.getMaxInTeam()
-                                     - (int) Queries.getAllPlayersOfTeam(team.getIdsquadra()).count());
+                                     - (int) Queries.getAllPlayersOfTeam(team.getIdsquadra()).count()) + 1;
 
         // TODO: fix the case when teamBudgetAvailable is lastBetValue + 1
         if (teamBudgetAvailable <= lastBetValue) {

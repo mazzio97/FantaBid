@@ -41,7 +41,7 @@ public final class Queries {
     public static CampionatoRecord registerLeague(String leagueName, String description, int budget, Date opening,
                                                   Date closure, boolean bid, Byte maxTeams) {
         CampionatoRecord league = new CampionatoRecord();
-        league.setIdcampionato(getLastLeagueId().orElse(-1) + 1);
+        league.setIdcampionato(getLastLeagueId().orElse(0) + 1);
         league.setNomecampionato(leagueName);
         league.setDescrizione(description);
         league.setBudgetpersquadra((short) budget);
@@ -55,7 +55,7 @@ public final class Queries {
     
     public static SquadraRecord registerTeam(int leagueId, String username, String teamName, int budget) {
         SquadraRecord team = new SquadraRecord();
-        team.setIdsquadra(getLastTeamId().orElse(-1) + 1);
+        team.setIdsquadra(getLastTeamId().orElse(0) + 1);
         team.setIdcampionato(leagueId);
         team.setUsername(username);
         team.setNomesquadra(teamName);
@@ -181,6 +181,14 @@ public final class Queries {
                     .findFirst();
     }
     
+    public static Stream<PuntataRecord> getAllPlayerBets(int playerId) {        
+        return query.select()
+                    .from(PUNTATA)
+                    .where(PUNTATA.IDCALCIATORE.eq((short) playerId))
+                    .stream()
+                    .map(r -> r.into(PUNTATA));
+    }
+    
     public static Stream<AllenatoreRecord> getAllUsers() {
         return query.select()
                     .from(ALLENATORE)
@@ -257,6 +265,10 @@ public final class Queries {
                     .fetch()
                     .stream()
                     .map(r -> r.into(SQUADRA));
+    }
+    
+    public static int numTeamsInLeague(int leagueId) {
+        return (int) getAllFantabidTeams().filter(s -> s.getIdcampionato() == leagueId).count();
     }
     
     public static Stream<String> getAllRealTeams() {
