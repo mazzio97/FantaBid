@@ -97,15 +97,14 @@ public class BetInfoController {
                                   - (Role.ANY.getMaxInTeam()
                                      - (int) Queries.getAllPlayersOfTeam(team.getIdsquadra()).count()) + 1;
 
-        // TODO: fix the case when teamBudgetAvailable is lastBetValue + 1
         if (teamBudgetAvailable <= lastBetValue) {
             betLabel.setVisible(false);
-            betSlider.setVisible(false);
             betButton.setDisable(true);
         } else {
             betLabel.textProperty().bind(Bindings.format("%.0fM", betSlider.valueProperty()));
             betSlider.setMin(lastBetValue + 1);
             betSlider.setMax(teamBudgetAvailable);
         }
+        betSlider.setVisible(!(teamBudgetAvailable <= lastBetValue + 1));
     }
 }

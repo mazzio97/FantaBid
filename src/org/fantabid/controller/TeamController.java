@@ -117,12 +117,11 @@ public class TeamController {
                    .orElse(null)
                    .before(new Date(System.currentTimeMillis()))) {
             addButton.setDisable(true);
-            if (!model.getLeague().getAstarialzo()) {
-                removeButton.setDisable(true); // It must be always possible to view the history
-            }
+            removeButton.setDisable(true);
         }
         if (model.getLeague().getAstarialzo()) {
             biddifyView();
+            removeButton.setDisable(false); // It must be always possible to view the history
             addButton.setOnAction(e -> addPlayerToTeamBidLeague(playersTable.getSelectionModel().getSelectedItem()));
             removeButton.disableProperty().bind(Bindings.and(Bindings.isEmpty(teamTable.getSelectionModel().getSelectedItems()), 
                                                              Bindings.isEmpty(playersTable.getSelectionModel().getSelectedItems())));
