@@ -35,7 +35,7 @@ public class LeaguesController {
                .map(r -> {
                    Button b = Buttons.listButton(r.getNomecampionato() + ", closing at: " + r.getDatachiusura());
                    b.setOnAction(e -> {
-                       if (r.getDatachiusura().after(new Date(System.currentTimeMillis()))) {
+                       if (new Date(System.currentTimeMillis()).after(r.getDatachiusura())) {
                            Dialogs.showErrorDialog("League Expired", "You can't signup to this league anymore.");
                        } else if (r.getNumeromassimosquadre() != null && r.getNumeromassimosquadre() == Queries.numTeamsInLeague(r.getIdcampionato())) {
                            Dialogs.showErrorDialog("Max Teams Reached", "You can't signup to this league because the maximum number of teams has been reached.");

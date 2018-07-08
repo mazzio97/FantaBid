@@ -31,6 +31,7 @@ public class TeamController {
     @FXML private Label leagueLabel;
     @FXML private Label teamLabel;
     @FXML private Label budgetLabel;
+    @FXML private Label playersLabel;
     @FXML private TextField playerFilterField;
     @FXML private ComboBox<Role> roleComboBox;
     @FXML private ComboBox<String> teamComboBox;
@@ -43,13 +44,10 @@ public class TeamController {
     private final Model model = Model.get();
 
     private final ObservableList<CalciatoreRecord> filteredPlayers = FXCollections.observableArrayList();
-    private final ObservableList<CalciatoreRecord> teamPlayers = FXCollections.observableArrayList(
-                                                                     Queries.getAllPlayersOfTeam(model.getTeam()
-                                                                                                      .getIdsquadra())
-                                                                            .collect(Collectors.toSet())
-                                                                 );
+    private final ObservableList<CalciatoreRecord> teamPlayers = FXCollections.observableArrayList();
     
     public final void initialize() {
+        refreshButton.setGraphic(Buttons.REFRESH_BUTTON_GRAPHIC);
         leagueLabel.setText(model.getLeague().getNomecampionato());
         teamLabel.setText(model.getTeam().getNomesquadra());
         roleComboBox.getItems().addAll(Role.values());
@@ -57,7 +55,7 @@ public class TeamController {
         teamComboBox.getItems().add(ANY);
         Queries.getAllRealTeams().forEach(teamComboBox.getItems()::add);
         teamComboBox.getSelectionModel().select(0);
-        refreshButton.setGraphic(Buttons.REFRESH_BUTTON_GRAPHIC);
+        refresh();
         /*
          * Create columns for playersTable
          */
@@ -91,13 +89,12 @@ public class TeamController {
         /*
          * Insert data into tables
          */
-        filterPlayers();
         playersTable.setItems(filteredPlayers);
-        teamTable.setItems(teamPlayers);
-        updateTeamBudgetLabel();        
+        teamTable.setItems(teamPlayers);   
         /*
          * Common buttons event handlers and bindings
          */
+        refreshButton.setOnAction(e -> refresh());
         backButton.setOnAction(e -> {
             model.removeTeam();
             model.removeLeague();
@@ -112,12 +109,10 @@ public class TeamController {
         /*
          * League-specific view and handlers
          */
-        if (Queries.getLeague(model.getLeague().getIdcampionato())
-                   .map(c -> c.getDatachiusura())
-                   .orElse(null)
-                   .before(new Date(System.currentTimeMillis()))) {
-            addButton.setDisable(true);
-            removeButton.setDisable(true);
+        if (new Date(System.currentTimeMillis()).after(Queries.getLeague(model.getLeague().getIdcampionato())
+                                                               .map(c -> c.getDatachiusura()).get())) {
+            addButton.setVisible(false);
+            removeButton.setVisible(false);
         }
         if (model.getLeague().getAstarialzo()) {
             biddifyView();
@@ -135,7 +130,7 @@ public class TeamController {
                 teamPlayers.addAll(Queries.getAllPlayersOfTeam(model.getTeam().getIdsquadra())
                                           .collect(Collectors.toSet()));
                 filterPlayers();
-                updateTeamBudgetLabel();
+                refresh();
             });
         } else {
             addButton.setOnAction(e -> addPlayerToTeamClassicLeague(playersTable.getSelectionModel().getSelectedItem()));
@@ -152,7 +147,7 @@ public class TeamController {
         removeButton.setText("HISTORY");
     }
 
-    private void addPlayerToTeamClassicLeague(CalciatoreRecord c) {
+    private void addPlayerToTeamClassicLeague(CalciatoreRecord c) {        
         final Role r = Role.fromString(c.getRuolo());
         final int remainingBudget = model.getTeam().getCreditoresiduo();
         final int remainingPlayers = Role.ANY.getMaxInTeam() - (teamPlayers.size() + 1);
@@ -161,24 +156,23 @@ public class TeamController {
                                        .filter(tp -> remainingBudget >= c.getPrezzostandard() + remainingPlayers)
                                        .filter(tp -> tp.stream().filter(p -> p.getRuolo().equals(c.getRuolo())).count() < r.getMaxInTeam())
                                        .isPresent();
+
         if (canAddPlayer) {
-            teamPlayers.add(c);
             Queries.insertPlayerIntoTeam(model.getTeam().getIdsquadra(), c.getIdcalciatore());
             Queries.updateBudgetLeft(model.getTeam().getIdsquadra(), -c.getPrezzostandard());
+            teamPlayers.add(c);
         } else {
             Dialogs.showWarningDialog("Can't add player", "You don't have enough budget \n or already " + 
                                                           r.getMaxInTeam() + r.getRoleString() + " in your team.");
         }
-        filterPlayers();
-        updateTeamBudgetLabel();
+        refresh();
     }
 
     private void removePlayerFromTeamClassicLeague(CalciatoreRecord c) {
         Queries.removePlayerFromTeam(model.getTeam().getIdsquadra(), c.getIdcalciatore());
         Queries.updateBudgetLeft(model.getTeam().getIdsquadra(), c.getPrezzostandard());
         teamPlayers.remove(c);
-        filterPlayers();
-        updateTeamBudgetLabel();
+        refresh();
     }
 
     private void addPlayerToTeamBidLeague(CalciatoreRecord c) {
@@ -195,11 +189,10 @@ public class TeamController {
                 model.removePlayer();
             });
         } else {
-            Dialogs.showWarningDialog("Can't add player", "You already have" + 
+            Dialogs.showWarningDialog("Can't add player", "You already have " + 
                                                           r.getMaxInTeam() + r.getRoleString() + " in your team.");
         }
-        filterPlayers();
-        updateTeamBudgetLabel();
+        refresh();
     }
 
     private void filterPlayers() {
@@ -217,9 +210,12 @@ public class TeamController {
                              .forEach(filteredPlayers::add);
     }
 
-    private void updateTeamBudgetLabel() {
-        budgetLabel.setText(String.valueOf(Queries.getTeam(model.getTeam().getIdsquadra())
-                                                  .map(s -> s.getCreditoresiduo())
-                                                  .orElse((short) 0) + "M"));
+    private void refresh() {
+        teamPlayers.clear();
+        Queries.getTeam(model.getTeam().getIdsquadra()).ifPresent(model::setTeam);
+        Queries.getAllPlayersOfTeam(model.getTeam().getIdsquadra()).forEach(teamPlayers::add);
+        filterPlayers();
+        budgetLabel.setText(model.getTeam().getCreditoresiduo() + "M");
+        playersLabel.setText(String.valueOf(Role.ANY.getMaxInTeam() - teamPlayers.size()));
     }
 }

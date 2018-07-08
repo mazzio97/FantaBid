@@ -57,8 +57,7 @@ public class UserAreaController {
                               return Pair.of(r.getSecond().getDatachiusura(), b);
                           })
                           .sorted((p1, p2) -> p1.getFirst().after(p2.getFirst()) ? -1 : 1)
-                          .collect(Collectors.groupingBy(p -> p.getFirst()
-                                                               .before(new Date(System.currentTimeMillis()))))
+                          .collect(Collectors.groupingBy(p -> new Date(System.currentTimeMillis()).after(p.getFirst())))
                           .entrySet()
                           .stream()
                           .map(e -> Pair.of(e.getKey(), e.getValue().stream().map(Pair::getSecond)))

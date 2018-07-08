@@ -39,11 +39,7 @@ public final class Main extends Application {
         setPrimaryStage(primaryStage);
         primaryStage.setTitle("Fantabid");
         primaryStage.getIcons().add(new Image("org/fantabid/images/Icon.png"));
-
-        
-//        Queries.testQuery();
         Views.loadLoginScene();
-        
         primaryStage.show();
         primaryStage.setX((Screen.getPrimary().getVisualBounds().getWidth() - primaryStage.getWidth()) / 2);
         primaryStage.setY((Screen.getPrimary().getVisualBounds().getHeight() - primaryStage.getHeight()) / 2);

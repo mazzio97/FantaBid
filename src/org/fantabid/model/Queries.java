@@ -213,7 +213,8 @@ public final class Queries {
     public static Stream<CampionatoRecord> getNotRegisteredLeagues(String user) {
         List<CampionatoRecord> leagues = query.select()
                                               .from(CAMPIONATO)
-                                              .where(CAMPIONATO.DATACHIUSURA.ge(new Date(System.currentTimeMillis())))
+                                              .where(CAMPIONATO.DATACHIUSURA.gt(new Date(System.currentTimeMillis())))
+                                              .orderBy(CAMPIONATO.DATACHIUSURA)
                                               .fetch()
                                               .stream()
                                               .map(r -> r.into(CAMPIONATO))
@@ -328,9 +329,5 @@ public final class Queries {
     
     private static boolean filterNullValues(Object o) {
         return o != null;
-    }
-
-    // TODO: TO BE REMOVED
-    public static void testQuery(Object ...args) {
     }
 }
