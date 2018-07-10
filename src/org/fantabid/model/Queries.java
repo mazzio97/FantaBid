@@ -181,10 +181,14 @@ public final class Queries {
                     .findFirst();
     }
     
-    public static Stream<PuntataRecord> getAllPlayerBets(int playerId) {        
-        return query.select()
+    public static Stream<PuntataRecord> getAllPlayerBets(int playerId, int leagueId) {        
+        return query.select(PUNTATA.asterisk())
                     .from(PUNTATA)
+                    .join(SQUADRA)
+                    .on(PUNTATA.IDSQUADRA.eq(SQUADRA.IDSQUADRA))
                     .where(PUNTATA.IDCALCIATORE.eq((short) playerId))
+                    .and(SQUADRA.IDCAMPIONATO.eq(leagueId))
+                    .fetch()
                     .stream()
                     .map(r -> r.into(PUNTATA));
     }

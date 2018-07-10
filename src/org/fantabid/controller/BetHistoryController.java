@@ -20,9 +20,10 @@ public class BetHistoryController {
     @FXML private VBox betsBox;
     @FXML private Button backButton;
     @FXML private Button refreshButton;
+    private final Model model = Model.get();
     
     public final void initialize() {
-        playerLabel.setText(Model.get().getPlayer().getNome());
+        playerLabel.setText(model.getPlayer().getNome());
         refreshButton.setGraphic(Buttons.REFRESH_BUTTON_GRAPHIC);
         refresh();
         backButton.setOnAction(e -> Views.loadTeamScene());
@@ -31,7 +32,8 @@ public class BetHistoryController {
     
     private void refresh() {
         betsBox.getChildren().clear();
-        betsBox.getChildren().addAll(Queries.getAllPlayerBets(Model.get().getPlayer().getIdcalciatore())
+        betsBox.getChildren().addAll(Queries.getAllPlayerBets(model.getPlayer().getIdcalciatore(), 
+                                                              model.getLeague().getIdcampionato())
                                             .sorted((p1, p2) -> p1.getIdpuntata() > p2.getIdpuntata() ? -1 : 1)
                                             .map(p -> {
                                                 SquadraRecord team = Queries.getTeam(p.getIdsquadra()).get();
