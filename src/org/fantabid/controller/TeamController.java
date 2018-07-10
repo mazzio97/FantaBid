@@ -148,40 +148,22 @@ public class TeamController {
     }
 
     private void addPlayerToTeamClassicLeague(CalciatoreRecord c) {        
-        final Role r = Role.fromString(c.getRuolo());
         final int remainingBudget = model.getTeam().getCreditoresiduo();
         final int remainingPlayers = Role.ANY.getMaxInTeam() - (teamPlayers.size() + 1);
-        boolean canAddPlayer = Optional.of(teamPlayers)
-                                       .filter(tp -> tp.size() < Role.ANY.getMaxInTeam())
-                                       .filter(tp -> remainingBudget >= c.getPrezzostandard() + remainingPlayers)
-                                       .filter(tp -> tp.stream().filter(p -> p.getRuolo().equals(c.getRuolo())).count() < r.getMaxInTeam())
-                                       .isPresent();
-
-        if (canAddPlayer) {
+        if (canAddPlayer(c, remainingBudget >= c.getPrezzostandard() + remainingPlayers)) {
             Queries.insertPlayerIntoTeam(model.getTeam().getIdsquadra(), c.getIdcalciatore());
             Queries.updateBudgetLeft(model.getTeam().getIdsquadra(), -c.getPrezzostandard());
             teamPlayers.add(c);
         } else {
+            final Role r = Role.fromString(c.getRuolo());
             Dialogs.showWarningDialog("Can't add player", "You don't have enough budget \n or already " + 
                                                           r.getMaxInTeam() + r.getRoleString() + " in your team.");
         }
         refresh();
     }
 
-    private void removePlayerFromTeamClassicLeague(CalciatoreRecord c) {
-        Queries.removePlayerFromTeam(model.getTeam().getIdsquadra(), c.getIdcalciatore());
-        Queries.updateBudgetLeft(model.getTeam().getIdsquadra(), c.getPrezzostandard());
-        teamPlayers.remove(c);
-        refresh();
-    }
-
     private void addPlayerToTeamBidLeague(CalciatoreRecord c) {
-        final Role r = Role.fromString(c.getRuolo());
-        boolean canAddPlayer = Optional.of(teamPlayers)
-                                       .filter(tp -> tp.size() < Role.ANY.getMaxInTeam())
-                                       .filter(tp -> tp.stream().filter(p -> p.getRuolo().equals(c.getRuolo())).count() < r.getMaxInTeam())
-                                       .isPresent();
-        if (canAddPlayer) {
+        if (canAddPlayer(c, true)) {
             model.setPlayer(c);
             Views.loadBetInfoScene();
             Optional.ofNullable(model.getPlayer()).ifPresent(c1 -> {
@@ -189,9 +171,25 @@ public class TeamController {
                 model.removePlayer();
             });
         } else {
+            final Role r = Role.fromString(c.getRuolo());
             Dialogs.showWarningDialog("Can't add player", "You already have " + 
                                                           r.getMaxInTeam() + r.getRoleString() + " in your team.");
         }
+        refresh();
+    }
+
+    private final boolean canAddPlayer(CalciatoreRecord c, boolean leagueSpecific) {
+        return Optional.of(teamPlayers)
+                       .filter(tp -> tp.size() < Role.ANY.getMaxInTeam())
+                       .filter(tp -> tp.stream().filter(p -> p.getRuolo().equals(c.getRuolo())).count() < Role.fromString(c.getRuolo()).getMaxInTeam())
+                       .filter(tp -> leagueSpecific)
+                       .isPresent();
+    }
+
+    private void removePlayerFromTeamClassicLeague(CalciatoreRecord c) {
+        Queries.removePlayerFromTeam(model.getTeam().getIdsquadra(), c.getIdcalciatore());
+        Queries.updateBudgetLeft(model.getTeam().getIdsquadra(), c.getPrezzostandard());
+        teamPlayers.remove(c);
         refresh();
     }
 

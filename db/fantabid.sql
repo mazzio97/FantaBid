@@ -8,7 +8,7 @@ create table ALLENATORE (
 create table CALCIATORE (
      idCalciatore numeric(4) not null,
      nome varchar(30) not null,
-     squadra varchar(20) not null,
+     squadra varchar(30) not null,
      prezzoStandard numeric(2) not null,
      ruolo char(1) not null,
      constraint IDCALCIATORE primary key (idCalciatore));
@@ -54,7 +54,7 @@ create table SQUADRA (
      idSquadra numeric(6) not null,
      idCampionato numeric(6) not null,
      username varchar(30) not null,
-     nomeSquadra varchar(20) not null,
+     nomeSquadra varchar(30) not null,
      creditoResiduo numeric(4) not null,
      constraint IDSQUADRA primary key (idSquadra),
      constraint IDSQUADRA_1 unique (idCampionato, username));

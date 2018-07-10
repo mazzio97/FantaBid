@@ -6,6 +6,7 @@ import org.fantabid.model.utils.Limits;
 import org.fantabid.view.Dialogs;
 import org.fantabid.view.Views;
 
+import javafx.beans.binding.BooleanBinding;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
@@ -22,8 +23,17 @@ public class LoginController {
         usernameField.setTextFormatter(Limits.getTextFormatter(Limits.MAX_USERNAME_CHARS));
         passwordField.setTextFormatter(Limits.getTextFormatter(Limits.MAX_PASSWORD_CHARS));
         
+        loginButton.disableProperty().bind(new BooleanBinding() {{
+                super.bind(usernameField.textProperty(), passwordField.textProperty());
+            }
+
+            @Override
+            protected boolean computeValue() {
+                return usernameField.getText().isEmpty() || passwordField.getText().isEmpty();
+            }
+        });
+
         signupButton.setOnAction(e -> Views.loadSignupScene());
-        
         loginButton.setOnAction(e ->  Queries.getUser(usernameField.getText())
                                              .filter(u -> u.getPassword().equals(passwordField.getText()))
                                              .map(u -> {
