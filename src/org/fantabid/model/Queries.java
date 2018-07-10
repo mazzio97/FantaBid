@@ -250,7 +250,7 @@ public final class Queries {
     }
     
     public static Optional<PuntataRecord> getLastBet(int leagueId, int playerId) {
-        return query.select()
+        return query.select(PUNTATA.asterisk())
                     .from(PUNTATA)
                     .join(SQUADRA)
                     .on(PUNTATA.IDSQUADRA.eq(SQUADRA.IDSQUADRA))

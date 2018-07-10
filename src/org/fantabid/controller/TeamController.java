@@ -2,7 +2,6 @@ package org.fantabid.controller;
 
 import java.sql.Date;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.fantabid.generated.tables.records.CalciatoreRecord;
 import org.fantabid.model.Model;
@@ -94,7 +93,6 @@ public class TeamController {
         /*
          * Common buttons event handlers and bindings
          */
-        refreshButton.setOnAction(e -> refresh());
         backButton.setOnAction(e -> {
             model.removeTeam();
             model.removeLeague();
@@ -125,13 +123,7 @@ public class TeamController {
                                         .orElse(playersTable.getSelectionModel().getSelectedItem()));
                 Views.loadBetHistoryScene();
             });
-            refreshButton.setOnAction(e -> {
-                teamPlayers.clear();
-                teamPlayers.addAll(Queries.getAllPlayersOfTeam(model.getTeam().getIdsquadra())
-                                          .collect(Collectors.toSet()));
-                filterPlayers();
-                refresh();
-            });
+            refreshButton.setOnAction(e -> refresh());
         } else {
             addButton.setOnAction(e -> addPlayerToTeamClassicLeague(playersTable.getSelectionModel().getSelectedItem()));
             removeButton.disableProperty().bind(Bindings.isEmpty(teamTable.getSelectionModel().getSelectedItems()));
@@ -154,12 +146,12 @@ public class TeamController {
             Queries.insertPlayerIntoTeam(model.getTeam().getIdsquadra(), c.getIdcalciatore());
             Queries.updateBudgetLeft(model.getTeam().getIdsquadra(), -c.getPrezzostandard());
             teamPlayers.add(c);
+            refresh();
         } else {
             final Role r = Role.fromString(c.getRuolo());
             Dialogs.showWarningDialog("Can't add player", "You don't have enough budget \n or already " + 
                                                           r.getMaxInTeam() + r.getRoleString() + " in your team.");
         }
-        refresh();
     }
 
     private void addPlayerToTeamBidLeague(CalciatoreRecord c) {
@@ -175,7 +167,6 @@ public class TeamController {
             Dialogs.showWarningDialog("Can't add player", "You already have " + 
                                                           r.getMaxInTeam() + r.getRoleString() + " in your team.");
         }
-        refresh();
     }
 
     private final boolean canAddPlayer(CalciatoreRecord c, boolean leagueSpecific) {

@@ -34,7 +34,7 @@ public class BetHistoryController {
         betsBox.getChildren().clear();
         betsBox.getChildren().addAll(Queries.getAllPlayerBets(model.getPlayer().getIdcalciatore(), 
                                                               model.getLeague().getIdcampionato())
-                                            .sorted((p1, p2) -> p1.getIdpuntata() > p2.getIdpuntata() ? -1 : 1)
+                                            .sorted((p1, p2) -> p1.getValore() > p2.getValore() ? -1 : 1)
                                             .map(p -> {
                                                 SquadraRecord team = Queries.getTeam(p.getIdsquadra()).get();
                                                 return Labels.listLabel(team.getNomesquadra() 

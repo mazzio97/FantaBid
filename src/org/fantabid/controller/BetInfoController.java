@@ -72,7 +72,6 @@ public class BetInfoController {
                 refresh();
             } else {
                 Queries.registerBet(team.getIdsquadra(), player.getIdcalciatore(), Integer.parseInt(betLabel.getText().replace("M", "")));
-    //            model.removePlayer();
                 Views.loadTeamScene();
             }
         });
