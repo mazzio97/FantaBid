@@ -1,3 +1,3 @@
-# fantabid
+# FantaBid
 
-A simple bid manager for the Fantasy League
+A simple bid manager for the Fantasy League.
